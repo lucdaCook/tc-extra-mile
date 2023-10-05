@@ -1,0 +1,6 @@
+numpy==1.26.0
+tensorflow==2.12.1
+python-dotenv==1.0.0
+tqdm==4.66.1
+opencv==4.6.0
+mlflow

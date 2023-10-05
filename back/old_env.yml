@@ -1,0 +1,19 @@
+name: retry_gpu
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - tensorflow
+  - python-dotenv
+  - tqdm
+  - opencv
+  - pip
+  - mlflow
+  - pytest=7.4.2
+  - imageio
+  - pydantic
+  - pip:
+    - tensorflow-metal
+    - tensorflow-hub=0.14.0
+    - tensorflow-docs
