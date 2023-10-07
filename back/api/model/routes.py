@@ -1,5 +1,5 @@
-from back.api.model.router import bp 
-from back.scripts.predict import predict_on_video
+from api.model.router import bp 
+from scripts.predict import predict_on_video
 from flask import request
 
 @bp.route('/')

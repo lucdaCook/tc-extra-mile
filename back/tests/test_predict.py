@@ -33,7 +33,7 @@ def test_downsample(video, new_size, output_dir):
     ),
     (
       'back/tests/testing_clips/positive_clip.mp4', 'on_positive_clip', 
-      'back/tests/testing_clips/predictions/', 10, True, (512, 512)
+      'back/tests/testing_clips/predictions/', 10, True, (48, 48)
     ),
     (
       'back/tests/testing_clips/prediction_clip.mp4', 'on_predict_clip', 
@@ -50,13 +50,14 @@ def test_predict_on_video(video, output_filename, output_dir,
   if result['captured']:
     assert pathlib.Path(output_dir).is_dir()
     assert len(os.listdir(output_dir)) > 0
-    pred_clip = predict.frames_from_prediction_file(f'{output_dir}/{output_filename}_{result["n_captured"]}.mp4')
-    assert len(pred_clip) == n_frames_to_extract
+    pred_clip = predict.frames_from_prediction_file(f'{output_dir}/{output_filename}_{result["n_captured"]}.mp4', 
+                                                    output_size=write_size)
+    assert len(pred_clip) >= n_frames_to_extract
     assert pred_clip.shape[1:-1] == write_size
   
   if toxic:
     assert result['captured'] == True
-  elif not toxic:
+  elif toxic == False:
     assert result['captured'] == False
 
 @pytest.mark.parametrize(

@@ -14,7 +14,7 @@ import imageio.v3 as imageio
 - see if this or repredict is faster
 '''
 def downsample(video:str, new_size:tuple=cfg.IMAGE_SIZE,
-               output_dir:str='captured/downsampled/'):
+               output_dir:str='captured/'):
 
   
   fn = pathlib.Path(video).name
@@ -124,8 +124,9 @@ def predict_on_video(video:str,
       if current_frame % frame_step == 0:
 
         f = format_frames(frame, output_size=(image_size))
-
-        f = tf.keras.layers.Rescaling(255)(f)
+        
+        if 'wscaling' in model_name:
+          f = tf.keras.layers.Rescaling(255)(f)
 
         pred = model(tf.expand_dims(f, 0), training=False)
         n_preds += 1

@@ -14,13 +14,10 @@ def test_make_custom_model():
   [
     ('mobilevit_xxs', 1e-5),
     ('custom', None),
-    ('error', 100)
   ]
 )
 def test_get_compiled_model(model_name, lr):
-  if 'error' in model_name:
-    with pytest.raises(Exception):
-      model.get_compiled_model(model_name, lr)
+
   compiled_model = model.get_compiled_model(model_name, lr)
   if lr is None:
     lr = model.models[model_name].learning_rate

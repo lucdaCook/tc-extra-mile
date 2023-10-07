@@ -107,7 +107,7 @@ def compile_model(model:keras.Model,
 
 def get_compiled_model(model_name:str='mobilevit_xxs',
                       learning_rate:float=None) -> keras.Model:
-  
+
   if model_name not in models:
     raise KeyError(f"Unable to find a model with the name `{model_name}`. Please use one of the valid model names: {[name for name in models]}")
   

@@ -10,6 +10,7 @@ import back.config.config as cfg
 from back.scripts.utils import set_seeds, frames_from_video_file
 import os
 import logging
+from decimal import Decimal
 
 def list_files_from_zip(zip):
   '''
@@ -125,7 +126,7 @@ class FrameGen():
         yield frame, label
 
 def write_data(zip_path:str, split_info:dict, 
-                   to_dir=pathlib.Path('data/frissewind'),
+                   to_dir:str|pathlib.PosixPath=pathlib.Path('back/data/frissewind'),
                    base_name='frissewind'):
   '''Write data from zip
 
@@ -145,21 +146,21 @@ def write_data(zip_path:str, split_info:dict,
 
 def get_data_paths(train_size:float=1.0, val_size:float=0.8, resample:bool=True):
   
-  check_train = pathlib.Path('data/frissewind').is_dir()
-  check_eval = pathlib.Path('data/frissewind_eval').is_dir()
+  check_train = pathlib.Path('back/data/frissewind').is_dir()
+  check_eval = pathlib.Path('back/data/frissewind_eval').is_dir()
   
   if check_eval and check_train:
     
     if not resample:
       
-      paths = {str(dir): pathlib.Path(f'data/frissewind/{dir}') for dir in os.listdir('data/frissewind')}
-      eval_paths = {str(dir): pathlib.Path(f'data/frissewind_eval/{dir}') for dir in os.listdir('data/frissewind_eval')}
+      paths = {str(dir): pathlib.Path(f'back/data/frissewind/{dir}') for dir in os.listdir('back/data/frissewind')}
+      eval_paths = {str(dir): pathlib.Path(f'back/data/frissewind_eval/{dir}') for dir in os.listdir('back/data/frissewind_eval')}
       
       return paths, eval_paths
     
     elif resample:
-      shutil.rmtree('data/frissewind')
-      shutil.rmtree('data/frissewind_eval')
+      shutil.rmtree('back/data/frissewind')
+      shutil.rmtree('back/data/frissewind_eval')
     
   elif not resample and not check_eval and not check_train:
     logging.info('Resample arugment passed as False when no data has been written. Resampling anyways..')
@@ -179,10 +180,10 @@ def get_data_paths(train_size:float=1.0, val_size:float=0.8, resample:bool=True)
   eval_files = [f for f in eval_files if f.endswith('.mp4')]
   eval_files_for_class = get_files_per_class(eval_files)
   
-  test_size = 1 - val_size
+  test_size = 1 - Decimal(str(val_size))
   val_size = int(val_size*len(eval_files_for_class['Neg']))
     
-  if test_size > 0.0:
+  if test_size > Decimal('0.0'):
     test_size = int(test_size*len(eval_files_for_class['Neg']))
     eval_split_info = {'val': val_size, 'test': test_size}
     
@@ -190,7 +191,7 @@ def get_data_paths(train_size:float=1.0, val_size:float=0.8, resample:bool=True)
     eval_split_info = {'val': val_size}
   
   eval_paths = write_data(cfg.EVAL_ZIP_PATH, split_info=eval_split_info,
-                              to_dir=pathlib.Path('data/frissewind_eval'), 
+                              to_dir=pathlib.Path('back/data/frissewind_eval'), 
                               base_name='frissewind_eval')
 
   return paths, eval_paths
@@ -206,7 +207,7 @@ augmentation = tf.keras.Sequential([
 
 def get_datasets(resample:bool=True, 
                  train_size:float=1.0, 
-                 val_size:float=0.8,
+                 val_size:float=0.9,
                  BATCH_SIZE:int=32,
                  shuffle_buffer:int=7200,
                  image_size:tuple=cfg.IMAGE_SIZE,
@@ -249,7 +250,7 @@ def get_datasets(resample:bool=True,
       .prefetch(AUTOTUNE)
   )
  
-  if pathlib.Path('data/frissewind_eval/test').is_dir():
+  if pathlib.Path('back/data/frissewind_eval/test').is_dir():
     test_ds = tf.data.Dataset.from_generator(FrameGen(eval_paths['test'], None, image_size=image_size),
                                             output_signature=output_signature)
     test_ds = (
