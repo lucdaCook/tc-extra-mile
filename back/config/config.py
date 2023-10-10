@@ -24,11 +24,18 @@ EVAL_ZIP_PATH = pathlib.Path(BASE_DIR, 'data/' + str(os.environ.get('EVAL_ZIP_PA
 
 #oauth 
 CLIENT_SECRET_JSON = os.environ.get('CLIENT_SECRET_JSON')
+CLIENT_ID = os.environ.get('CLIENT_ID')
+
 REDIRECT_URI = os.environ.get('REDIRECT')
+
 REDIRECT_FRONT=os.environ.get('REDIRECT_FRONT')
+
 SECRET_KEY = secrets.token_hex()
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
+
 SCOPES=os.environ.get('USER_SCOPE')
 API_SERVICE_NAME = os.environ.get('API_SERVICE_NAME')
 API_VERSION = os.environ.get('API_VERSION')
+
 
 logging.basicConfig(level=logging.INFO)

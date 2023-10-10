@@ -14,7 +14,7 @@ import imageio.v3 as imageio
 - see if this or repredict is faster
 '''
 def downsample(video:str, new_size:tuple=cfg.IMAGE_SIZE,
-               output_dir:str='captured/'):
+               output_dir:str=f'{cfg.UPLOAD_FOLDER}/downsampled'):
 
   
   fn = pathlib.Path(video).name
@@ -49,9 +49,9 @@ def downsample(video:str, new_size:tuple=cfg.IMAGE_SIZE,
 
 def predict_on_video(video:str,
                      model_name:str,
-                     output_filename:str,
+                     out_location:str|pathlib.PosixPath='clip',
+                     out_name:str=None,
                      write_size:tuple=(512, 512),
-                     output_dir:str='captured',
                      n_frames_threshold:int=8,
                      n_frames_to_extract:int|str=8,
                      model:tf.keras.Model=None,
@@ -67,9 +67,7 @@ def predict_on_video(video:str,
       
   image_size = models[model_token].img_shape[:-1]
 
-  video_filename = pathlib.Path(video).stem
-
-  video_path = downsample(video, new_size=write_size, output_dir=f'captured/downsampled/{video_filename}')
+  video_path = downsample(video, new_size=write_size)
 
   vid = cv2.VideoCapture(str(video_path))
 
@@ -106,10 +104,8 @@ def predict_on_video(video:str,
   
   out_ext = pathlib.Path(video).suffix
   
-  if output_filename is None:
-    output_filename = pathlib.Path(video).name
-  
-  out_stem = pathlib.Path(output_filename).stem
+  if out_name is None:
+    out_name = pathlib.Path(video).stem
   
   for i in range(int(n_frames)):
     current_frame = int(vid.get(1))
@@ -123,10 +119,11 @@ def predict_on_video(video:str,
 
       if current_frame % frame_step == 0:
 
+        frame = np.array(frame)[..., [2, 1, 0]]
+        
+
         f = format_frames(frame, output_size=(image_size))
         
-        if 'wscaling' in model_name:
-          f = tf.keras.layers.Rescaling(255)(f)
 
         pred = model(tf.expand_dims(f, 0), training=False)
         n_preds += 1
@@ -142,7 +139,8 @@ def predict_on_video(video:str,
             captured = True
             n_captured += 1
 
-            out_path = pathlib.Path(f'{output_dir}/{out_stem}_{n_captured}{out_ext}')
+            out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
+            print(out_path)
             
             out_path.parent.mkdir(parents=True, exist_ok=True)
             
@@ -166,7 +164,8 @@ def predict_on_video(video:str,
       continue
   
   optimism = ". That's a great thing!" 
-  message = f'Captured {n_captured} toxic clouds{f"! You can view them at {output_dir}" if n_captured > 0 else optimism}'
+  message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
+  print(out_path)
   logging.info(message)
   vid.release()
   cv2.destroyAllWindows()

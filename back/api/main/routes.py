@@ -21,6 +21,7 @@ def home():
   
   channel = youtube.channels().list(mine=True, part='snippet').execute()
   
+  
   flask.session['credentials'] = {
   'token': creds.token,
   'refresh_token': creds.refresh_token,
@@ -30,10 +31,12 @@ def home():
   'scopes': creds.scopes
  }
   
-  return flask.jsonify(**channel)
+  return flask.redirect('http://localhost:3000'), channel
 
-@bp.route('/authorize')
+@bp.route('/authorize', methods=['POST', 'OPTIONS', 'GET'])
 def authorize():
+  
+  
   
   flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     cfg.CLIENT_SECRET_JSON,
@@ -44,7 +47,7 @@ def authorize():
  
   authorization_url, state = flow.authorization_url(
     access_type='offline',
-    include_granted_scopes='true'
+    include_granted_scopes='false'
   )
   
   flask.session['state'] = state
@@ -77,5 +80,4 @@ def callback():
     'scopes': creds.scopes
   }
   
-  return flask.redirect(flask.url_for('main.home')) 
-  
+  return flask.redirect(flask.url_for('main.home'))

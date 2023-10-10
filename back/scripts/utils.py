@@ -44,6 +44,6 @@ def frames_from_video_file(video_path, n_frames=None, output_size=(256,256)):
       continue 
     
   src.release()
-  result = np.array(result)[..., [2,1,0]]
+  result = np.array(result)[..., [0, 1, 2]]
 
   return result

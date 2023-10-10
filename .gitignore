@@ -1,3 +1,9 @@
 downsampled/
 data/
 captured/
+client_secret.json
+clip/
+clouds/
+*.mp4
+client_secret*
+test.html
