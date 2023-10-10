@@ -7,3 +7,4 @@ clouds/
 *.mp4
 client_secret*
 test.html
+.env 
