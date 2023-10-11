@@ -7,10 +7,12 @@ import collections
 import pathlib
 import tensorflow as tf 
 import back.config.config as cfg
-from back.scripts.utils import set_seeds, frames_from_video_file
+from back.scripts.utils import set_seeds, format_frames
 import os
 import logging
 from decimal import Decimal
+import cv2
+
 
 def list_files_from_zip(zip):
   '''
@@ -99,32 +101,6 @@ def get_splits(zip, num_classes, splits, to_dir, base_name='frissewind'):
 
   return dirs
 
-class FrameGen():
-  def __init__(self, path, n_frames, training=False, image_size:tuple=cfg.IMAGE_SIZE):
-    self.path = path
-    self.n_frames = n_frames
-    self.training = training
-    self.image_size = image_size
-    self.class_names = sorted(set(p.name for p in self.path.iterdir() if p.is_dir()))
-    self.class_ids_for_name = dict((name, idx) for idx, name in enumerate(self.class_names))
-
-  def get_files_and_classes(self):
-    video_paths = list(self.path.glob('*/*.mp4'))
-    classes = [p.parent.name for p in video_paths]
-    return video_paths, classes
-
-  def __call__(self):
-    video_paths, classes = self.get_files_and_classes()
-
-    pairs = list(zip(video_paths, classes))
-
-    random.shuffle(pairs)
-
-    for path, name in pairs:
-      label = self.class_ids_for_name[name]
-      for frame in frames_from_video_file(path, self.n_frames, output_size=self.image_size):
-        yield frame, label
-
 def write_data(zip_path:str, split_info:dict, 
                    to_dir:str|pathlib.PosixPath=pathlib.Path('back/data/frissewind'),
                    base_name='frissewind'):
@@ -205,63 +181,182 @@ augmentation = tf.keras.Sequential([
   tf.keras.layers.RandomFlip('horizontal_and_vertical')
 ])
 
-def get_datasets(resample:bool=True, 
-                 train_size:float=1.0, 
-                 val_size:float=0.9,
-                 BATCH_SIZE:int=32,
-                 shuffle_buffer:int=7200,
-                 image_size:tuple=cfg.IMAGE_SIZE,
-                 augmentation:tf.keras.Sequential()=augmentation):
 
-  
-  paths, eval_paths = get_data_paths(train_size=train_size, 
-                                     val_size=val_size, resample=resample)
-    
-  output_signature= (tf.TensorSpec(shape=(None, None, 3), dtype=tf.float32),
-                     tf.TensorSpec(shape=(), dtype=tf.int16))
+image_features = {
+    'height': tf.io.FixedLenFeature([], tf.int64),
+    'width': tf.io.FixedLenFeature([], tf.int64),
+    'depth': tf.io.FixedLenFeature([], tf.int64),
+    'label': tf.io.FixedLenFeature([], tf.int64),
+    'image': tf.io.FixedLenFeature([], tf.string)
+}
 
-  train_ds = tf.data.Dataset.from_generator(FrameGen(paths['train'], None, image_size=image_size),
-                                            output_signature=output_signature)
-  
-  val_ds = tf.data.Dataset.from_generator(FrameGen(eval_paths['val'], None, image_size=image_size),
-                                          output_signature=output_signature),
-  
-  
+def int64_feature(val):
+
+  feature = tf.train.Feature(
+      int64_list=tf.train.Int64List(value=[val])
+  )
+  return feature
+
+def bytes_feature(val):
+  if isinstance(val, type(tf.constant(0))):
+    val = val.numpy()
+  feature = tf.train.Feature(
+      bytes_list=tf.train.BytesList(value=[val])
+  )
+  return feature
+
+def write_frames_from_file(video_path):
+
+  src = cv2.VideoCapture(str(video_path))
+
+  video_path = pathlib.Path(video_path)
+
+  video_length = src.get(cv2.CAP_PROP_FRAME_COUNT)
+  frame_step = src.get(cv2.CAP_PROP_FPS)
+
+  n_frames = video_length // frame_step
+
+  start = 0
+
+  src.set(cv2.CAP_PROP_POS_FRAMES, start)
+
+  ret, frame = src.read()
+
+  out_dir = pathlib.Path(f'{video_path.parent.parent}/images/{video_path.parent.name}')
+  out_dir.mkdir(parents=True, exist_ok=True)
+
+  for f in range(int(n_frames)):
+    for _ in range(int(frame_step)): # skip over frames
+      ret, frame = src.read()
+    if f in [0,1]:
+      continue
+    if ret:
+      write_location = pathlib.Path(f'{out_dir}/{video_path.stem}_{str(f)}.jpg')
+      cv2.imwrite(str(write_location), frame)
+    else:
+      continue
+  src.release()
+  return out_dir
+
+
+def get_image_paths(path):
+  path = pathlib.Path(path)
+  video_paths = list(path.glob('*/*.mp4'))
+
+  print(f'{path.name} frames:')
+  for f in tqdm.tqdm(video_paths):
+    image_dir = write_frames_from_file(f)
+  return pathlib.Path(path, 'images')
+
+def convert_to_tfrecord(image_string, image_path):
+  image_shape = tf.io.decode_jpeg(image_string).shape
+  label = get_class(pathlib.Path(image_path))
+
+  class_names = ['Neg', 'Pos']
+  class_ids_for_name = dict((name, idx) for idx, name in enumerate(class_names))
+
+  label = class_ids_for_name[label]
+
+  feature = {
+      'height': int64_feature(image_shape[0]),
+      'width': int64_feature(image_shape[1]),
+      'depth': int64_feature(image_shape[2]),
+      'label': int64_feature(label),
+      'image': bytes_feature(image_string)
+
+  }
+
+  return tf.train.Example(features=tf.train.Features(feature=feature))
+
+
+def write_tfrecords(image_dir):
+  write_dir = pathlib.Path(image_dir).parent
+  record_file = f'{image_dir}/images.tfrecords'
+  with tf.io.TFRecordWriter(record_file) as w:
+    for image in pathlib.Path(image_dir).glob('*/*.jpg'):
+      image_string = open(image, 'rb').read()
+      tf_example = convert_to_tfrecord(image_string, image)
+      w.write(tf_example.SerializeToString())
+  return record_file
+
+def _parse_fn(example, image_size:tuple=(256, 256)):
+  example = tf.io.parse_single_example(example, image_features)
+
+  image = tf.io.decode_jpeg(example['image'], channels=3)
+  image = format_frames(image, output_size=image_size)
+
+  label = tf.cast(example['label'], tf.int32)
+
+  return image, label
+
+def get_tfrecords(records_file, training:bool=False,
+                  image_size:tuple=(256, 256)):
+
   AUTOTUNE = tf.data.AUTOTUNE
-  
-  train_ds = (
-    train_ds
-    .map(scale,
-        num_parallel_calls=AUTOTUNE) 
-    .cache()
-    .shuffle(7200)
-    .batch(BATCH_SIZE)
-    .map(lambda x, y: (augmentation(x, training=True), y),
-         num_parallel_calls = AUTOTUNE)
-    .prefetch(AUTOTUNE)
-  )
-    
-  val_ds = (
-      val_ds[0]
-      .batch(BATCH_SIZE)
-      .map(scale,
-          num_parallel_calls=AUTOTUNE)
+
+  ds = tf.data.TFRecordDataset(records_file)
+
+  preproc = [
+      tf.keras.layers.Rescaling(255)
+  ]
+
+  if training:
+
+    preproc.extend([
+        tf.keras.layers.RandomZoom((0.1, 0.3)),
+        tf.keras.layers.RandomRotation(0.9),
+        tf.keras.layers.RandomFlip('horizontal_and_vertical')
+    ])
+
+    augmentation = tf.keras.Sequential(preproc)
+
+    ds = (
+        ds
+        .map(lambda x: _parse_fn(x, image_size=image_size),
+             num_parallel_calls=AUTOTUNE)
+        .cache()
+        .shuffle(ds.cardinality())
+        .batch(32)
+        .map(lambda x, y: (augmentation(x, training=True), y),
+             num_parallel_calls=AUTOTUNE)
+        .prefetch(AUTOTUNE)
+
+    )
+    return ds
+
+  preproc = tf.keras.Sequential(preproc)
+
+  ds = (
+      ds
+      .map(lambda x: _parse_fn(x, image_size=image_size),
+           num_parallel_calls=AUTOTUNE)
+      .batch(32)
+      .map(lambda x, y: (preproc(x), y),
+           num_parallel_calls = AUTOTUNE)
       .cache()
       .prefetch(AUTOTUNE)
   )
- 
-  if pathlib.Path('back/data/frissewind_eval/test').is_dir():
-    test_ds = tf.data.Dataset.from_generator(FrameGen(eval_paths['test'], None, image_size=image_size),
-                                            output_signature=output_signature)
-    test_ds = (
-      test_ds
-      .batch(BATCH_SIZE)
-      .map(scale,
-          num_parallel_calls=AUTOTUNE)
-      .cache()
-      .prefetch(AUTOTUNE)
-  )
-    return train_ds, val_ds, test_ds
-  
+
+  return ds
+def get_datasets(train_size:float|int=1., val_size:float=0.9,
+                  resample:bool=True, image_size:tuple=(256, 256)):
+
+  paths, eval_paths = get_data_paths(train_size=train_size,
+                                     val_size=val_size,
+                                     resample=resample)
+
+  image_path = get_image_paths(paths['train'])
+
+  eval_image_path = get_image_paths(eval_paths['val'])
+
+  train_records = write_tfrecords(image_path)
+
+  val_records = write_tfrecords(eval_image_path)
+
+  train_ds = get_tfrecords(train_records, training=True,
+                           image_size=image_size)
+
+  val_ds = get_tfrecords(val_records, training=False,
+                         image_size = image_size)
+
   return train_ds, val_ds
-  
