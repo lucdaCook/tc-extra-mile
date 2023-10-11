@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useRef } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
 import { useLoaderData } from "react-router-dom"
 import { useNavigate } from 'react-router-dom'
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 export default function CloudLoader() {
 
   const cloudId = useLoaderData() 
-  const { extracted } = useContext(CloudsContext)
+  const { extracted, setExtracted } = useContext(CloudsContext)
   
   const mainVidRef = useRef()
   const nav = useNavigate()
@@ -37,7 +37,10 @@ export default function CloudLoader() {
 
         <div className='slider-row extras'>
         </div>
-      <button className="window-exit" onClick={() => nav(-1)}>
+      <button className="window-exit" onClick={() => {
+        nav(-1)
+        setExtracted(false)
+        }}>
       <div className='exit-widget'>
         <div className="exit-content"></div>
           </div>

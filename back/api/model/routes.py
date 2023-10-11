@@ -1,6 +1,6 @@
 from api.model.router import bp 
 from scripts.predict import predict_on_video
-from flask import request, send_from_directory, current_app, redirect
+from flask import request, send_from_directory, current_app, Response
 from werkzeug.utils import secure_filename
 import os
 import config.config as cfg
@@ -36,27 +36,49 @@ def extract_toxic_clouds():
     path = os.path.join(cfg.UPLOAD_FOLDER, filename)
     file.save(path)
     
-    # if 'confident' in form['model']:
-    #   model_name = 'confidence'
-    # elif 'sensitive' in model_name:
-    #   model_name = 'sensitive'
+    # model_choice = request.form['model']
     
-    # output_filename
+    #TODO: Change names accordingly once models are organized
+    # if 'Confident' in model_choice:
+    #   model_name = 'mobilevit_xxs_tfr_nopreproc_vl39'
+    # elif 'Sensitive' in model_choice:
+    #   model_name = 'mobilevit_xxs_tfr_nopreproc_vl39' 
+    
+    # if 'model' in request.form: #TODO: FIX MODEL NAMING STRUCTURE TO MATCH CONFIDENT/SENSITIVE
+    #   print(request.form['model'])
+    print(request.form['threshold'])
+    
     
     res = predict_on_video(path, 
                            model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
-                           out_location=current_app.config['UPLOAD_FOLDER'])
-    
-    print(filename, 'FILENAME')
-    print(path, 'PATH')
-    
-    # return json.dumps(res)
-    fn = '_1.'.join(filename.split('.'))
-    print(filename, fn, 'FILENAME FN')
+                           out_location=current_app.config['UPLOAD_FOLDER'],
+                           n_frames_to_extract=int(request.form['n_frames']))
+  
     return json.dumps(res)
   
-  # else :
-  #   return abort(400, 'Video not found')
+@bp.route('/extract-many/', methods=['POST'])
+def extract_for_many_videos():
+  
+  res = list()
+    
+  for f in request.files.getlist('file[]'):
+    fname = secure_filename(f.filename)
+    path = os.path.join(cfg.UPLOAD_FOLDER, fname)
+    f.save(path)
+    
+    
+    res.append(predict_on_video(path,
+                                model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
+                                out_location=current_app.config['UPLOAD_FOLDER'],
+                                n_frames_to_extract=int(request.form['n_frames'])))
+    
+
+    
+    
+      
+  return json.dumps(res)
+      
+  
   
 @bp.route('/clip/<video_id>', methods=['GET'])
 def video_loader(video_id):

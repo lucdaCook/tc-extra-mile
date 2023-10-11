@@ -10,6 +10,7 @@ import CloudsLoader from './components/CloudsLoader';
 import CloudLoader from './components/CloudLoader';
 import {
   createBrowserRouter,
+  redirect,
   RouterProvider
 } from 'react-router-dom'
 
@@ -20,8 +21,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [{
       path: 'extract',
-      element:<Window />,
+      element:<Window many={false}/>,
     }, 
+    {
+      path: 'extract-many',
+      element: <Window many={true}/>,
+    },
     {
       path: 'library',
       element: <Library />
@@ -39,8 +44,7 @@ const router = createBrowserRouter([
       loader: ({ params }) => {
         return params.cloudId
       },
-      
-    }
+    },
 ]}
 ])
 

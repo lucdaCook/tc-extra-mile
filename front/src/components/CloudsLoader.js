@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 export default function CloudsLoader() {
 
   const cloudId = useLoaderData() 
-  const { logs, extracted } = useContext(CloudsContext)
+  const { logs, setExtracted } = useContext(CloudsContext)
   const mainVidRef = useRef()
   const nav = useNavigate()
   const videos = process.env.REACT_APP_SERVER
@@ -49,7 +49,9 @@ export default function CloudsLoader() {
     <div className="container">
       <div className="view-refresh">
         <div className="action-window popup"> 
-{ extracted &&
+{ 
+
+    info?.written.length > 0 ?
   
         <>
           <div className="vid-padding"></div> 
@@ -69,7 +71,7 @@ export default function CloudsLoader() {
           gridTemplateColumns: `repeat(${info.written.length - 1}, 100px)`
         }}>
           {
-            info.written.slice(1).map((vid, i) => (
+            info?.written.slice(1, 3).map((vid, i) => (
               <div className={`extras-widget` + ( i === 0 ? ' align-left' : '')} key={i}>
               <video placeholder="placeholder.png" 
               onClick={(e) => toggleVideo(e)}
@@ -84,13 +86,22 @@ export default function CloudsLoader() {
           ))
         }
         </div>
-      <button className="window-exit" onClick={() => nav(-2)}>
+        </>
+        :
+        <div className="not-captured">
+          <span> No toxic smoke !! </span>
+        </div>
+}
+      <button className="window-exit" 
+      onClick={() => {
+        nav(-2)
+        setExtracted(false)
+        }}
+        >
       <div className='exit-widget'>
         <div className="exit-content"></div>
           </div>
         </button>
-        </>
-}
       </div>
     </div>
       

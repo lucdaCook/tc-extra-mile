@@ -165,7 +165,6 @@ def predict_on_video(video:str,
   
   optimism = ". That's a great thing!" 
   message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
-  print(out_path)
   logging.info(message)
   vid.release()
   cv2.destroyAllWindows()

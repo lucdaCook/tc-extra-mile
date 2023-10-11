@@ -24,16 +24,24 @@ export default function Library() {
   return (
     <div className='container'> 
       <div className='view-refresh'>
-        <div className='library-stage'>
           {/* <div className='align-end'> */}
 { 
+    logs?.length === 0 ?
 
+    <div> 
+      <span> You haven't captured any clouds yet, but hey, that's a good thing right? </span>
+    </div>
+
+    :
+
+      <div className='library-stage'>
+        {
         logs?.map((cap, i ) => (
           <div className='library-shelf' key={i}>
 
             
 {         cap.written?.map((cloud, j) => (
-            <div className={`library-item ${ j === 0 || j % 5 === 0 ? 'align-left' : ''}`} key={j}>
+            <div className={`library-item ${ j === 0 || j % 5 === 0 && cap.written.length > 1 ? 'align-left' : ''}`} key={j}>
               <video 
               src = {vidServer + cloud}
               placeholder='placeholder.png'
@@ -45,11 +53,12 @@ export default function Library() {
             </div>
 ))
 }
-          </div> 
-        ))
+</div>
+
+))
 }
-          {/* </div> */}
-        </div>
+    </div> 
+}
       </div>
     </div>
   )

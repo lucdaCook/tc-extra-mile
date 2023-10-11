@@ -11,19 +11,21 @@ function Root() {
   return (
     <div className='_Root'>
           <div className='root main-grid'>
-            {/* <CredentialsContextProvider> */}
+            <CredentialsContextProvider>
             <CloudsContextProvider>
                 <Topbar>
                 </Topbar>
-                <Sidebar>
-                </Sidebar> 
+                {/* <Sidebar> 
+                change grid temp areas to top top sidebar main if we want back
+                and undo display none ofc
+                </Sidebar>  */}
                 <MainView>
                 </MainView>
                 <div className='outlet-refresh'>
                   <Outlet />
                 </div>
               </CloudsContextProvider>
-            {/* </CredentialsContextProvider> */}
+            </CredentialsContextProvider>
           </div>
         </div>
   );

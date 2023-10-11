@@ -9,7 +9,7 @@ html, body{
 
 }
 
-button {
+button, input {
   border: none;
   background-color: transparent;
   padding: 0;
@@ -29,7 +29,7 @@ button {
   height: 100vh;
   grid-template-areas: 
   "topbar topbar"
-  "sidebar main";
+  "main main";
 }
 
 .main-view{
@@ -42,14 +42,33 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column
+  flex-direction: column;
+  display: none;
 }
 
 .topbar {
   grid-area: topbar;
-  background-color: black;
   z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  background: rgb(57 85 110);
 }
+
+.right-icons, 
+.left-icons {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.right-icons {
+  justify-content: end;
+}
+
+.left-icons {
+  justify-content: start;
+}
+
 
 .background-gradient {
   height: 100%;
@@ -129,41 +148,23 @@ svg.yt-icon {
   width: fit-content;
 }
 
-.sidebar-btn {
+.actions-btn {
   border: none;
   max-height: 40px;
   max-width: 40px;
   background: transparent;
 }
 
-.sidebar-icon {
+.actions-btn.actions {
+  position: relative;
+}
+
+.actions-icon {
   height: 40px;
   width: 40px;
   background-color: transparent;
-  fill: #b3b3b3;
+  fill: #b3b3b3 !important;
 }
-
-div.actions-popup {
-  animation: ease 1s; 
-  transform: translateX(30px);
-  width: 320px;
-  height: 400px;
-  background-color: white;
-
-}
-
-.actions-popup.panel {
-  opacity: 0;
-  transition: opacity ease 200ms;
-  position: relative;
-  z-index: 10;
-}
-
-
-button.sidebar-btn.actions:focus > div.panel {
-  opacity: unset !important;
-
-  }
 
 .action.icon {
   height: 50px;
@@ -171,31 +172,63 @@ button.sidebar-btn.actions:focus > div.panel {
   fill: black;
 }
 
-.actions-popup.rows {
-  height: 70%;
-  width: 100%;
-  display: grid;
-  position: absolute;
-  top: 30%;
-  left: 0;
-  transform: translate(0px, 0px);
-}
-
-.actions-main { 
-  position: fixed;
-  width: 100%;
-  display: grid;
-  padding: 20px;
-  grid-template-columns: repeat(3, 1fr);
-  height: 30%;
-  align-items: center;
-}
-
-
 .library-icon {
   height: 30px;
   width: 35px;
   fill: #b3b3b3;
+}
+
+.actions-btn.actions {
+  position: relative;
+}
+
+.actions-after {
+  position: absolute;
+  height: 400px;
+  width: 300px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 400ms cubic-bezier(0, 1.19, 0.9, 1.86);
+  background-color:aliceblue;
+  display: grid;
+  grid-template-rows: 100px auto;
+}
+
+.actions-main {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 15px;
+  padding-top: 20px;
+}
+
+.actions.main-link {
+  height: 50px;
+  width: 50px;
+}
+
+.active {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.actions.main-link svg { 
+  fill: rgba(87, 94, 99, 0.8);
+}
+
+.quick-actions.rows {
+  display: grid;
+  justify-content: start;
+  align-items: center;
+}
+
+
+
+.actions-btn.actions:focus .actions-after,
+.actions-btn.actions:focus-within .actions-after a:hover {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .sky-view {
@@ -231,6 +264,7 @@ button.sidebar-btn.actions:focus > div.panel {
   position: absolute;
   width: calc(100vw - 4em);
   transform: translateX(4em);
+  overflow: hidden;
 }
 
 .outlet-refresh > div.container {
@@ -255,7 +289,10 @@ button.sidebar-btn.actions:focus > div.panel {
   color: black;
   position: relative;
   z-index: 10;
-  width: 55%;
+  display: flex;
+  width: 80%;
+  max-width: 1030px;
+
 }
 
 .vid-padding {
@@ -272,11 +309,6 @@ button.sidebar-btn.actions:focus > div.panel {
 .player-row {
   height: 100%;
   max-height: calc(100% - 570px);
-  /* display: flex;
-  justify-content: space-evenly;
-  margin-top: 15px;
-  gap: 5em; */
-
   align-items: center;
   display: grid;
   grid-template-columns: 100px 100px 100px;
@@ -321,6 +353,7 @@ button.sidebar-btn.actions:focus > div.panel {
   outline: none;
 }
 
+
 .form-window {
   display: grid;
   height: 75%;
@@ -328,9 +361,10 @@ button.sidebar-btn.actions:focus > div.panel {
   grid-template-columns: 1fr;
   justify-content: center;
   transform: translateY(33px);
-  border: 4px solid black;
   margin: 0 40px;
-  border-radius: 12%;
+  border: dashed 3px rgba(54,85,112,1);
+  margin: 20px;
+  width: 60%;
 }
 
 .video-select {
@@ -343,15 +377,34 @@ button.sidebar-btn.actions:focus > div.panel {
 .form-window > span {
   display: flex;
   justify-content: center;
-  height: 50%;
   font-size: 15px;
-  font-family: sans-serif;
+  font-family: Inter;
   pointer-events: none;
-  height: 10px;
   position: absolute;
   right: 0;
   left: 0;
   transform: translateY(80px);
+  align-self: start;
+  height: 35%;
+  align-items: end;
+}
+
+.form-info {
+  align-items: center;
+  display: flex;
+  max-width: 40%;
+}
+
+.form-info span {
+  height: 75%;
+  align-self: center;
+  font-weight: bold;
+
+}
+
+.form-info p {
+  font-weight: normal;
+  color: #4d4c4c;
 }
 
 .video-placeholder {
@@ -472,10 +525,136 @@ div.extras-widget > video {
   background-color: white;
 }
 
-.cloud-1 {
+#cloud-1 {
   opacity: 0.9;
   transform: scale(1.2);
   left: 120%;
   top: 50px;
 }
 
+.big-cloud {
+  position: absolute;
+  box-shadow: 10px 10px 5px 20px black inset;
+}
+
+button:hover .white,
+button:focus .white
+.white:hover svg,
+.white:focus svg {
+  fill: #ffff !important;
+}
+
+button.settings svg {
+  fill: #b3b3b3;
+  transition: fill 100ms ease-out;
+}
+
+button.settings {
+  margin-right: 25px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.settings-after {
+  position: fixed;
+  opacity: 0;
+  transition: opacity ease 150ms;
+  padding: 20px;
+}
+
+.settings-after * {
+  opacity: 0;
+}
+
+button.settings:focus .settings-after,
+button.settings:focus-within .settings-after {
+  opacity: 1;
+  margin-right: 20px;
+  background: white;
+  border-radius: 5%;
+  width: 250px;
+  height: 320px;
+  top: 60px;
+  transform: translateX(-220px);
+  display: grid;
+}
+
+button.settings:focus-within .settings-after * {
+  opacity: unset;
+}
+
+.model-choices {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.model-config span {
+  align-self: center;  
+}
+
+.settings-row.model-config {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 15px;
+}
+
+.model-choice {
+  background: rgb(219, 230, 239, 0.5);
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+.not-captured {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.sidebar svg {
+  cursor: default;
+}
+
+.auth-input { 
+  opacity: 0;
+}
+
+div.settings-choice span {
+  display: block;
+  margin: 15px;
+}
+
+.settings-save input {
+  background: rgb(190, 198, 205, 0.5);
+  border: none;
+  padding: 10px;
+  width: 180px;
+  margin-top: 10px;
+  border-radius: 20px;
+  transition: background-color ease 100ms;
+}
+
+.settings-save input:hover {
+  background: rgb(190, 198, 205, 1);
+}
+
+.model-choice:hover {
+  background: rgb(219, 230, 239, 1);
+}
+
+.settings-choice.num-frames input {
+  text-align: center;
+}
+
+input[type='button'].active {
+  background: #5b9bb8 !important;
+  transition: background-color 200ms ease;
+}
+
+.form-info p {
+  width: 80%;
+}

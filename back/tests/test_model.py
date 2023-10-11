@@ -14,9 +14,15 @@ def test_make_custom_model():
   [
     ('mobilevit_xxs', 1e-5),
     ('custom', None),
+    ('err', None)
   ]
 )
 def test_get_compiled_model(model_name, lr):
+  
+  if model_name == 'err' :
+    with pytest.raises(KeyError):
+      err = model.get_compiled_model(model_name, lr)
+      
 
   compiled_model = model.get_compiled_model(model_name, lr)
   if lr is None:

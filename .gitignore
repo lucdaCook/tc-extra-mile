@@ -9,3 +9,11 @@ client_secret*
 test.html
 .env 
 tmp/ 
+*.coverage.*
+.coverage
+mlruns/
+testing/
+/*.mp4
+.pytest*
+actions/
+htmlcov/

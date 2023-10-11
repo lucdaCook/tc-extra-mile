@@ -44,9 +44,9 @@ def test_downsample(video, new_size, output_dir):
 def test_predict_on_video(video, output_filename, output_dir, 
                           n_frames_to_extract, toxic, write_size):
   
-  result = predict.predict_on_video(video, model_name='mobilevit_xxs_best_so_far',
+  result = predict.predict_on_video(video, model_name='mobilevit_xxs_vl35',
                                     n_frames_to_extract=n_frames_to_extract, write_size=write_size,
-                                    output_dir=output_dir, output_filename=output_filename)
+                                    out_location=output_dir, out_name=output_filename)
   if result['captured']:
     assert pathlib.Path(output_dir).is_dir()
     assert len(os.listdir(output_dir)) > 0
@@ -62,7 +62,7 @@ def test_predict_on_video(video, output_filename, output_dir,
 
 @pytest.mark.parametrize(
   'video_path, output_size',
-  [('back/tests/testing_clips/predictions/on_positive_clip_1.mp4', (28, 28))]
+  [('clip/positive_clip_1.mp4', (28, 28))]
 )
 def test_frames_from_prediction_file(video_path, output_size):
   
