@@ -48,12 +48,12 @@ def extract_toxic_clouds():
     #   print(request.form['model'])
     print(request.form['threshold'])
     
-    
     res = predict_on_video(path, 
                            model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
                            out_location=current_app.config['UPLOAD_FOLDER'],
-                           n_frames_to_extract=int(request.form['n_frames']))
-  
+                           n_frames_to_extract=int(request.form['n_frames']),
+                           threshold=float(request.form['threshold']))
+   
     return json.dumps(res)
   
 @bp.route('/extract-many/', methods=['POST'])
@@ -80,6 +80,6 @@ def extract_for_many_videos():
       
   
   
-@bp.route('/clip/<video_id>', methods=['GET'])
-def video_loader(video_id):
+@bp.route('clip/<video_id>', methods=['GET']) 
+def video_loader(video_id): 
   return send_from_directory(current_app.config['UPLOAD_FOLDER'], video_id)

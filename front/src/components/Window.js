@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { CloudsContext } from "../contexts/CloudsContext"
 
@@ -7,32 +7,39 @@ export default function Window({ many }) {
   const { predictOnVideo, predictOnManyVideos, setExtracted } = useContext(CloudsContext)
   const nav = useNavigate()
 
-
-  {/* <div></div>
-  <div></div> form square aroud player and on click exit with Links
-  <div></div>
-  <div></div> */}
+  const [ extracting, setExtracting ] = useState(false)
 
   return (
-      <div className="container">
-        <div className="view-refresh">
-          <div className="action-window popup"> 
-            <div className="form-window">
 
-              {
-                many ? 
+    <div className="container">
+        <div className="view-refresh">
+          <div className="action-window action-popup" > 
+              { extracting ?
+                <div className="clouds-loading">Loading..</div>
+              :
+              <>
+              <div className="form-window">
+              
+            { 
+              many ? 
                 <input type="file" 
                 name='file' 
                 multiple
-                onChange={e => predictOnManyVideos(e, nav)}
-                className="video-select"
-                  /> 
+                className="video-select" 
+                onChange={e => {
+                  setExtracting(true)
+                  predictOnManyVideos(e, nav)
+                }}
+                /> 
                 :
-                <input type="file" 
-                name='file' 
-                onChange={e => predictOnVideo(e, nav)}
-                className="video-select"
-                  /> 
+                  <input type="file" 
+                  name='file' 
+                  onChange={e => {
+                    setExtracting(true)
+                    predictOnVideo(e, nav)
+                  }}
+                  className="video-select"
+                    /> 
               }
               </div>
               <div className="form-info">
@@ -40,7 +47,10 @@ export default function Window({ many }) {
                   <p>Upload your file{ many ? 's' : ''} here and I'll 
                     let you know if there are any toxic clouds present.</p>
                 </span>
+
               </div>
+              </>
+              }
             <button className="window-exit" 
             onClick={() => {
               nav(-1)

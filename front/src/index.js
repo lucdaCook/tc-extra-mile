@@ -8,17 +8,28 @@ import Library from './components/Library';
 import Window from './components/Window';
 import CloudsLoader from './components/CloudsLoader';
 import CloudLoader from './components/CloudLoader';
+import NoCloudsFound from './components/NoCloudsFound';
 import {
   createBrowserRouter,
+  RouterProvider,
   redirect,
-  RouterProvider
 } from 'react-router-dom'
+import YoutubeUploader from './components/YoutubeUploader';
 
+console.log(window.innerWidth, window.innerHeight)
 const router = createBrowserRouter([
   {
     path:'/',
     element: <Root />,
     errorElement: <ErrorPage />,
+    loader: () => {
+      const code =  new URLSearchParams(window.location.hash).get('access_token')
+      if (code !== null) {
+        window.history.pushState({}, null, '/')
+        console.log(code) 
+      }
+      return code
+    },
     children: [{
       path: 'extract',
       element:<Window many={false}/>,
@@ -32,19 +43,47 @@ const router = createBrowserRouter([
       element: <Library />
     },
     {
-      path: 'clouds/:cloudIds',
+      path: 'clouds/:cloudsId',
       element: <CloudsLoader/>,
       loader: ({ params }) => {
-        return params.cloudIds
+        return params.cloudsId
+    },
+  },
+  {
+    path: 'cloud/:cloudId',
+    element: <CloudLoader />,
+    loader: async ({ params }) => {
+
+      const cloudId = params.cloudId
+      return cloudId
+    },
+  },
+  {
+    path: 'no-clouds',
+    element: <NoCloudsFound />,
+    loader: () => {
+      if (JSON.parse(localStorage.getItem('showTata') === true)) {
+        return redirect('/')
+      } 
+      return null
+    }
+  },
+  {
+    path: 'yt',
+    children: [
+      { index: true, element: <div>Hey Youtube</div>},
+    {
+      path: 'send',
+      element: <YoutubeUploader />,
+      action: async ({ request }) => {
+        const formData = await request.formData()
+        console.log(formData, 'from action')
+        return formData
       }
     },
-    {
-      path: 'cloud/:cloudId',
-      element: <CloudLoader />,
-      loader: ({ params }) => {
-        return params.cloudId
-      },
-    },
+    
+  ]
+  }
 ]}
 ])
 

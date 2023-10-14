@@ -25,3 +25,4 @@ yarn-error.log*
 .env
 *.mp4
 test.html
+clip/

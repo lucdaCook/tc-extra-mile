@@ -17,3 +17,5 @@ testing/
 .pytest*
 actions/
 htmlcov/
+node_modules/.cache
+clip/

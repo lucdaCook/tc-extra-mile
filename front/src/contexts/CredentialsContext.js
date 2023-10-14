@@ -1,22 +1,18 @@
 import { useState, createContext } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export const CredentialsContext = createContext()
 
 
-export default function CredentialsContextProvider({ children }) {
+export default function CredentialsContextProvider({ defaultYtCode, children }) {
 
-  const [ user, setUser ] = useState({})
-  const [ loggedIn, setLoggedIn ] = useState(false)
+  const [ youtube, setYoutube ] = useState(defaultYtCode)
 
-  const login = () => {
-    fetch('http://localhost:8000/authorize')
-    .then(res => console.log(res))
-  }
+  const [ sp, setSp ] = useSearchParams()
 
   const values = {
-    user,
-    login,
-    setUser,
+    youtube,
+    setYoutube
   }
 
   return (

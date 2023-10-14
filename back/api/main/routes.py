@@ -31,7 +31,7 @@ def home():
   'scopes': creds.scopes
  }
   
-  return flask.redirect('http://localhost:3000'), channel
+  return flask.redirect('http://localhost:3000')
 
 @bp.route('/authorize', methods=['POST', 'OPTIONS', 'GET'])
 def authorize():

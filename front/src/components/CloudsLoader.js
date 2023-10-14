@@ -1,31 +1,33 @@
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
-import { useLoaderData } from "react-router-dom"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLoaderData, Form } from 'react-router-dom'
+import { CloudDownload, UploadCloud } from '../svg/clouds'
 
 export default function CloudsLoader() {
 
-  const cloudId = useLoaderData() 
+  const cloudsId = useLoaderData() 
   const { logs, setExtracted } = useContext(CloudsContext)
   const mainVidRef = useRef()
   const nav = useNavigate()
   const videos = process.env.REACT_APP_SERVER
-
-
-  console.log(logs)
-
+  const [ currentVidBlob, setCurrentVidBlob ] = useState()
   
-
-  const info = logs[cloudId]
+  const info = logs[cloudsId]
   
-
   useEffect(() => {
     if(info === undefined) { 
       nav('/extract')
     }
   }, [])
 
-
+  function fetchCurrentBlob(vid) {
+    fetch(vid)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob)
+      setCurrentVidBlob(url)
+    })
+  }
 
   function toggleVideo(e) {
     const prevMainSrc = mainVidRef.current.src
@@ -39,16 +41,21 @@ export default function CloudsLoader() {
     mainVidRef.current.width = '512'
     mainVidRef.current.height = '512'
     mainVidRef.current.focus()
+
+    fetchCurrentBlob(mainVidRef.current.src)
     
   }
 
+  useEffect(() => {
+    if (mainVidRef.current !== undefined)
+    fetchCurrentBlob(mainVidRef.current.src)
+  }, [mainVidRef])
+
 
   return (
-
-
     <div className="container">
       <div className="view-refresh">
-        <div className="action-window popup"> 
+        <div className="action-popup clouds-display"> 
 { 
 
     info?.written.length > 0 ?
@@ -61,35 +68,51 @@ export default function CloudsLoader() {
                 ref={mainVidRef} 
                 src={`${videos}/model/${info.written[0]}`}
                 onMouseEnter={(e) => e.currentTarget.controls = true}
-                onMouseLeave={(e) => e.currentTarget.controls = false}
+                onMouseLeave={(e) => e.currentTarget.controls = false} 
                 />
               </div> 
             </div> 
             
 
-        <div className='player-row extras' style={{
-          gridTemplateColumns: `repeat(${info.written.length - 1}, 100px)`
-        }}>
+        <div className='player-row extras' >
+          <div className="video-widgets">
           {
             info?.written.slice(1, 3).map((vid, i) => (
-              <div className={`extras-widget` + ( i === 0 ? ' align-left' : '')} key={i}>
+              <div className={`extras-widget` + ( info.written.length >= 3 && i === 0 ? ' align-left' : '')} key={i}>
               <video placeholder="placeholder.png" 
               onClick={(e) => toggleVideo(e)}
               className="video-placeholder"
               width='512'
               height='512'
-              src={`${videos}/model/${vid}`}
-              
+              src={`${videos}/model/${vid}`} 
               > 
               </video>
             </div>
           ))
         }
         </div>
+        <div className="player-extras buttons">
+        {/* <Form action="/yt/send" method="POST">
+              <input type='hidden'
+                name='upload'
+                value = {JSON.stringify(info)}
+              /> */}
+              {
+                mainVidRef.current &&
+              <a className="download-cloud"
+                type="submit" download={mainVidRef.current.src.split('/').at(-1)} href={currentVidBlob}>
+                <CloudDownload />
+              </a>
+              }
+            {/* </Form> */}
+          <a>
+            View in library
+          </a>
+        </div>
+        </div>
         </>
         :
         <div className="not-captured">
-          <span> No toxic smoke !! </span>
         </div>
 }
       <button className="window-exit" 

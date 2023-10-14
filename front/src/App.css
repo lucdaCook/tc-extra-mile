@@ -22,6 +22,10 @@ button, input {
   height: 60px;
 }
 
+a.active svg{
+  fill: #fff;
+}
+
 .main-grid { 
   display: grid;
   grid-template-columns: 4em auto;
@@ -65,8 +69,24 @@ button, input {
   justify-content: end;
 }
 
+div#cloud-counter {
+  display: flex;
+  flex-direction: column;
+}
+
+#cloud-counter span {
+  text-align: center;
+  font-size: 14px;
+  min-height: 15px;
+}
+
+#cloud-counter svg {
+  fill: #5b9bb8;
+  margin-top: 17px;
+}
+
 .left-icons {
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 
@@ -186,8 +206,8 @@ svg.yt-icon {
   position: absolute;
   height: 400px;
   width: 300px;
-  opacity: 0;
   visibility: hidden;
+  opacity: 0;
   transition: opacity 400ms cubic-bezier(0, 1.19, 0.9, 1.86);
   background-color:aliceblue;
   display: grid;
@@ -214,16 +234,14 @@ svg.yt-icon {
 }
 
 .actions.main-link svg { 
-  fill: rgba(87, 94, 99, 0.8);
+  fill: rgba(0, 0, 0, 0.79);
 }
 
 .quick-actions.rows {
   display: grid;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
 }
-
-
 
 .actions-btn.actions:focus .actions-after,
 .actions-btn.actions:focus-within .actions-after a:hover {
@@ -264,7 +282,8 @@ svg.yt-icon {
   position: absolute;
   width: calc(100vw - 4em);
   transform: translateX(4em);
-  overflow: hidden;
+  overflow-x: hidden;
+  height: 100vh;
 }
 
 .outlet-refresh > div.container {
@@ -281,7 +300,8 @@ svg.yt-icon {
   justify-content: center;
 }
 
-.action-window.popup {
+.action-window,
+.action-popup {
   background-color: whitesmoke;
   border-radius: 3%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -292,8 +312,41 @@ svg.yt-icon {
   display: flex;
   width: 80%;
   max-width: 1030px;
-
+  animation: window_enter 80ms ease-in-out forwards;
 }
+
+.action-popup.clouds-display {
+  display: grid;
+  width: 80%;
+  max-width: 1030px;
+}
+
+div.clouds-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-clouds { 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  
+}
+
+.not-captured {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+
 
 .vid-padding {
   padding: 10px;
@@ -302,7 +355,7 @@ svg.yt-icon {
 
 .player-window {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -322,6 +375,66 @@ svg.yt-icon {
 
 .extras-widget.align-left {
   margin-left: 35px;
+}
+
+div.blob-link {
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+a.blob-anchor {
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+a.blob-anchor:hover svg {
+  scale: 1.1;
+}
+
+a.blob-anchor svg {
+  height: 40px;
+  width: 40px;
+  fill: none;
+}
+
+.player-row.extras {
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-self: center;
+}
+
+.video-widgets {
+  justify-self: end;
+  display: grid;
+  gap: 60px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.player-extras.buttons {
+  display: grid;
+  justify-self: end;
+  gap: 30px;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+.player-extras.buttons form {
+  justify-self: end;
+}
+
+.download-cloud svg {
+  width: 40px;
+  height: 40px;
+  fill: none;
+}
+
+.download-cloud:hover svg {
+  scale: 1.1;
+
 }
 
 .window-exit {
@@ -351,6 +464,9 @@ svg.yt-icon {
 
 .main-video {
   outline: none;
+  margin-left: 30px;
+  width: 620px;
+  height: 500px;
 }
 
 
@@ -384,7 +500,7 @@ svg.yt-icon {
   right: 0;
   left: 0;
   transform: translateY(80px);
-  align-self: start;
+  align-self: flex-start;
   height: 35%;
   align-items: end;
 }
@@ -432,7 +548,9 @@ div.extras-widget > video {
   z-index: 10;
   height: calc(75% - 10rem);
   gap: 4rem;
-
+  animation: show_library 500ms ease forwards;
+  margin-right: 60px;
+  height: 60%;
 }
 
 .library-shelf {
@@ -440,6 +558,47 @@ div.extras-widget > video {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   align-items: center;
   gap: 4rem;
+  margin: 0 14px;
+  position: relative;
+}
+
+button.select-blobs {
+  right: 80px;
+  height: 30px;
+  background: black;
+  top: 80px;
+  width: 30px;
+}
+
+button.download-blobs {
+  position: relative;
+  pointer-events: all;
+  z-index: 10;
+}
+
+button.download-blobs a {
+  pointer-events: none;
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+div.select-flex {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  position: absolute;
+  top: 100px;
+  right: 60px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.selected-vid-blob {
+  filter: opacity(0.5);
 }
 
 .library-item {
@@ -451,10 +610,6 @@ div.extras-widget > video {
 .library-item > .item-pad {
   z-index: -10;
   padding: 100px;
-}
-
-.library-item.align-left {
-  margin-left: 4em;
 }
 
 .item-pad {
@@ -478,7 +633,6 @@ div.extras-widget > video {
 
 .circle2 {
   top: 50px;
-  left: -40px;
 }
 
 .circle3 {
@@ -498,7 +652,7 @@ div.extras-widget > video {
 
 .circle6 {
   top: 100px;
-  left: 130px;
+  left: 120px;
 }
 
 .small-circle {
@@ -506,7 +660,7 @@ div.extras-widget > video {
   width: 100px;
   border-radius: 100%;
   position: absolute;
-  background-color: white;
+  background-color: rgb(222 227 235);
 }
 
 .mid-circle { 
@@ -514,7 +668,7 @@ div.extras-widget > video {
   width: 150px;
   border-radius: 100%;
   position: absolute;
-  background-color: white;
+  background-color: rgb(222 227 235);
 }
 
 .large-circle {
@@ -522,14 +676,24 @@ div.extras-widget > video {
   width: 150px;
   border-radius: 100%;
   position: absolute;
-  background-color: white;
+  background-color: rgb(222 227 235);
 }
 
 #cloud-1 {
+  animation: drift_cloud1 27s linear 22s infinite;
   opacity: 0.9;
-  transform: scale(1.2);
   left: 120%;
-  top: 50px;
+  top: 60px;
+  max-width: 90vw;
+}
+
+#cloud-2 {
+  opacity: 0.87;
+  right: -60%;
+  top: 130px;
+  scale: 0.75;
+  animation: drift_cloud2 39s linear 20s infinite;
+  max-width: 90vw;
 }
 
 .big-cloud {
@@ -538,10 +702,16 @@ div.extras-widget > video {
 }
 
 button:hover .white,
-button:focus .white
+button:focus .white,
+a:hover .white,
+a:focus .white,
 .white:hover svg,
 .white:focus svg {
   fill: #ffff !important;
+}
+
+.white svg {
+  transition: fill 200ms ease;
 }
 
 button.settings svg {
@@ -607,14 +777,6 @@ button.settings:focus-within .settings-after * {
   border: none;
 }
 
-.not-captured {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
 .sidebar svg {
   cursor: default;
 }
@@ -638,6 +800,10 @@ div.settings-choice span {
   transition: background-color ease 100ms;
 }
 
+.settings-save input:focus {
+  scale: 0.9;
+}
+
 .settings-save input:hover {
   background: rgb(190, 198, 205, 1);
 }
@@ -658,3 +824,106 @@ input[type='button'].active {
 .form-info p {
   width: 80%;
 }
+
+.tata-backdrop {
+  min-width: calc(100vw - 4em);
+  height: 420px;
+  position: fixed;
+  bottom: -33px;
+  left: 20px;
+  animation: show_tata 3s ease-out forwards;
+}
+
+.bye-tata {
+  width: 100vw;
+  height: 420px;
+  position: fixed;
+  bottom: -33px;
+  left: 20px; 
+  animation: hide_tata 2s ease-in forwards;
+} 
+
+.extract path {
+  stroke-width: 1;
+}
+
+@keyframes drift_cloud1 {
+
+  from {
+    right: 10%;
+  }
+
+  to {
+    left: -20%;
+  }
+}
+
+@keyframes drift_cloud2 {
+    0% {
+      left: 100%;
+  }
+
+  100% {
+      left: -130%;
+  }
+}
+
+@keyframes hide_tata {
+  10% {
+    opacity: 1;
+    width: 100vw;
+  }
+
+  60% {
+  transform: rotateX(90deg);
+  }
+
+  75% {
+    width: 100vw;
+    height: 420px;
+    opacity: 0;
+  }
+
+  100% {
+    visibility: hidden;
+    width: 0%;
+    height: 0%;
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
+
+
+}
+
+@keyframes show_tata {
+
+from {
+  opacity: 0;
+}
+
+ to {
+    opacity: 1;
+    position: fixed; 
+    width: 100vw;
+    height: 420px;
+    position: fixed;
+    bottom: -33px;
+    left: 20px;
+  }
+}
+
+@keyframes show_library {
+  from {
+    opacity: 0;
+  } to {
+    opacity: 1;
+  }
+}
+
+@keyframes window_enter {
+    from {
+      top: -40px;
+    } to {
+      top: 0;
+    }
+} 

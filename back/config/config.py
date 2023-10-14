@@ -16,7 +16,7 @@ MLFLOW_TRACKING_URI = 'file://' + str(MODEL_REGISTRY_DIR.absolute())
 IMAGE_SIZE = (256, 256,)
 IMAGE_SHAPE = IMAGE_SIZE+(3,)
 
-load_dotenv()
+load_dotenv('.env', override=True)
 
  
 ZIP_PATH = pathlib.Path(BASE_DIR, 'data/' + str(os.environ.get('ZIP_PATH'))) 
