@@ -19,3 +19,4 @@ actions/
 htmlcov/
 node_modules/.cache
 clip/
+*/node_modules
