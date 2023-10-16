@@ -37,6 +37,7 @@ const routerConf = [
     },
     {
       path: 'clouds/:cloudsId',
+      element: <CloudsLoader />,
       loader: ({ params }) => {
         if (params.cloudId === 'error') {
           return redirect('/error')
