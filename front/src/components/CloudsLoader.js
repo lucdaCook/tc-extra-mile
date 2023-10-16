@@ -1,12 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
-import { useNavigate, useLoaderData, Form } from 'react-router-dom'
-import { CloudDownload, UploadCloud } from '../svg/clouds'
+import { useNavigate, useLoaderData } from 'react-router-dom'
+import { CloudDownload, CloudIcon } from '../svg/clouds'
+import FeedbackForm from "./FeedbackForm"
 
 export default function CloudsLoader() {
 
   const cloudsId = useLoaderData() 
-  const { logs, setExtracted } = useContext(CloudsContext)
+  const { logs, setExtracted, submitFeedback } = useContext(CloudsContext)
   const mainVidRef = useRef()
   const nav = useNavigate()
   const videos = process.env.REACT_APP_SERVER
@@ -16,7 +17,7 @@ export default function CloudsLoader() {
   
   useEffect(() => {
     if(info === undefined) { 
-      nav('/extract')
+      nav('/extract', {state: {'from': '/'}})
     }
   }, [])
 
@@ -43,14 +44,16 @@ export default function CloudsLoader() {
     mainVidRef.current.focus()
 
     fetchCurrentBlob(mainVidRef.current.src)
+    mainVidRef.current.focus()
     
   }
 
   useEffect(() => {
-    if (mainVidRef.current !== undefined)
-    fetchCurrentBlob(mainVidRef.current.src)
+    if (mainVidRef.current.src !== undefined) {
+      fetchCurrentBlob(mainVidRef.current.src)
+      mainVidRef.current.focus()
+    }
   }, [mainVidRef])
-
 
   return (
     <div className="container">
@@ -72,8 +75,7 @@ export default function CloudsLoader() {
                 />
               </div> 
             </div> 
-            
-
+            <FeedbackForm info={info}/>
         <div className='player-row extras' >
           <div className="video-widgets">
           {
@@ -92,11 +94,6 @@ export default function CloudsLoader() {
         }
         </div>
         <div className="player-extras buttons">
-        {/* <Form action="/yt/send" method="POST">
-              <input type='hidden'
-                name='upload'
-                value = {JSON.stringify(info)}
-              /> */}
               {
                 mainVidRef.current &&
               <a className="download-cloud"
@@ -104,10 +101,12 @@ export default function CloudsLoader() {
                 <CloudDownload />
               </a>
               }
-            {/* </Form> */}
-          <a>
-            View in library
-          </a>
+          <span 
+          className="nav-library view-library"
+          onClick={() => nav('/library', {state: {'justCaptured': info.n_captured}})}
+          >
+            View in Library
+          </span>
         </div>
         </div>
         </>

@@ -32,22 +32,21 @@ export default function CloudsContextProvider({ children }) {
     }
   }
 
-
   const [ userConfig, setUserConfig ] = useState({
-      'model': defaultConfig['model'], 
-      'threshold': defaultConfig['threshold'],
-      'n_frames': defaultConfig['n_frames']
+    'model': defaultConfig['model'], 
+    'threshold': defaultConfig['threshold'],
+    'n_frames': defaultConfig['n_frames']
   })
-
+  
   function updateConfig(e) {
     setUserConfig({
       ...userConfig,
       [e.target.name]: e.target.value
     })
   }
-
+  
   useEffect(() => {
-
+    
     localStorage.setItem('Config', JSON.stringify(userConfig))
 
   }, [userConfig])
@@ -81,13 +80,14 @@ export default function CloudsContextProvider({ children }) {
 
       if (totalCaps > 0) {
 
-      setLogs(prev => prev.concat(json.sort((a, b) => b.n_captured - a.n_captured)))
+      setLogs(prev => prev.concat(json))
 
-      console.log(json)
+      localStorage.setItem('logs', 
+      JSON.stringify([...JSON.parse(localStorage.getItem('logs'))].concat(json).sort((a, b) => b.n_captured - a.n_captured)))
 
       setExtracted(true)
 
-      nav('/library', {'justCaptured': totalCaps})
+      nav('/library', {state: {'justCaptured': totalCaps}})
 
       const vidsWithClouds = json.filter(cap => cap.captured === true).length
 
@@ -128,14 +128,17 @@ export default function CloudsContextProvider({ children }) {
     fetch(`${server}/extract/`, {
       method: 'POST', 
       body: formData,
-      }).then(res => res.json())
+    }).then(res => res.json())
     .then(json => {
-
+      
       if (json.n_captured > 0) {
+        
+        setTata(true) 
+        
+        setLogs(prev => prev.concat(json))
 
-      setTata(true) 
-
-      setLogs(prev => prev.concat(json))
+        localStorage.setItem('logs', 
+        JSON.stringify([...JSON.parse(localStorage.getItem('logs'))].concat(json).sort((a, b) => b.n_captured - a.n_captured)))
 
       setExtracted(true)
 
@@ -159,9 +162,29 @@ export default function CloudsContextProvider({ children }) {
     })
   }
 
-  useEffect(() => {
-    localStorage.setItem('logs', JSON.stringify(logs.sort((a, b) => b.n_captured - a.n_captured)))
-  }, [logs])
+   function submitFeedback(e, numStars, cloudInfo) {
+    e.preventDefault()
+    console.log(cloudInfo)
+    console.log(e.target.children.text.value)
+    console.log(numStars)
+
+
+
+    // fetch(`${process.env.REACT_APP_SERVER}/model/feedback`, {
+    //   method: "POST", 
+    //   body: {
+    //     'stars': numStars,
+    //     // 'text': text
+    //   }
+    // }).then(res => console.log(res.status))
+  }
+
+  // useEffect(() => {
+  //   console.log(logs, 'this is what is setting localstorage')
+  //   if (logs.length > 0 ){
+  //   localStorage.setItem('logs', JSON.stringify([...logs].sort((a, b) => b.n_captured - a.n_captured)))
+  //   }
+  // }, [logs])
 
   useEffect(() => {
 
@@ -188,7 +211,8 @@ export default function CloudsContextProvider({ children }) {
     setExtracted,
     predictOnVideo,
     predictOnManyVideos,
-    updateConfig
+    updateConfig,
+    submitFeedback
   }
 
   return (

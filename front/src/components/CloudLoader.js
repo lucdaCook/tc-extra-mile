@@ -1,15 +1,21 @@
 import { useContext, useRef, useEffect, useState } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
-import { useNavigate, useLoaderData } from 'react-router-dom'
+import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { CloudDownload } from "../svg/clouds"
+import FeedbackForm from "./FeedbackForm"
 
 export default function CloudLoader() {
 
   const cloudId = useLoaderData()  
-
-  console.log(cloudId)
   const { extracted, setExtracted } = useContext(CloudsContext)
   const [ blobUrl, setBlobUrl ] = useState('')
+  const locState = useLocation().state
+
+  let exitTo;
+
+  if(locState !== null && locState.from) {
+    exitTo = locState.from
+  }
   
   const mainVidRef = useRef()
   const nav = useNavigate()
@@ -22,6 +28,7 @@ export default function CloudLoader() {
     .then(blob => {
      const url = URL.createObjectURL(blob)
      setBlobUrl(url)
+     setExtracted(true)
     })
   }, []) 
 
@@ -44,17 +51,22 @@ export default function CloudLoader() {
               </div> 
             </div> 
             
-
-        <div className='slider-row extras'>
-          {/* <div className="blob-link"> */}
+          <FeedbackForm info={cloudId}/>
+        <div className='slider-row extras'
+        style={{'transform': 'translate(50%)'}}>
           <a href={blobUrl} download={cloudId} className='blob-anchor' 
           title="Download">
             <CloudDownload />
           </a> 
           </div>
-        {/* </div> */}
       <button className="window-exit" onClick={() => {
+
+        if (exitTo) {
+          nav(exitTo)
+        }
+        else {
         nav(-1)
+        }
         setExtracted(false)
         }}>
       <div className='exit-widget'>

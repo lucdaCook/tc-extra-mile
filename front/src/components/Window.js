@@ -1,11 +1,19 @@
 import { useContext, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { CloudsContext } from "../contexts/CloudsContext"
+import { PlayIcon, VideoAdd } from "../svg/clouds"
 
 export default function Window({ many }) {
 
   const { predictOnVideo, predictOnManyVideos, setExtracted } = useContext(CloudsContext)
   const nav = useNavigate()
+  const locState = useLocation().state
+
+  let exitTo;
+
+  if(locState !== null && locState.from) {
+    exitTo = locState.from
+  }
 
   const [ extracting, setExtracting ] = useState(false)
 
@@ -41,6 +49,8 @@ export default function Window({ many }) {
                   className="video-select"
                     /> 
               }
+              <VideoAdd />
+              <PlayIcon />
               </div>
               <div className="form-info">
                 <span>Let's say tata to emissions!
@@ -53,7 +63,11 @@ export default function Window({ many }) {
               }
             <button className="window-exit" 
             onClick={() => {
+              if (exitTo){
+                nav(exitTo)
+              } else {
               nav(-1)
+              }
               setExtracted(false)
             }}
               >

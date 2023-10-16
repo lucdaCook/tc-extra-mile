@@ -15,242 +15,84 @@ import PIL.Image as Image
 - see if this or repredict is faster
 '''
 
-def downsample(video:str, new_size:tuple=cfg.IMAGE_SIZE,
-               output_dir:str=f'{cfg.UPLOAD_FOLDER}/downsampled'):
-
+# def frames_from_prediction_file(video_path:str):
   
-  fn = pathlib.Path(video).name
+#   src = cv2.VideoCapture(str(video_path))
   
-  output_path = pathlib.Path(output_dir, fn)
+#   n_frames = src.get(cv2.CAP_PROP_FRAME_COUNT)
   
-  output_path.parent.mkdir(parents=True, exist_ok=True)
-
-  vid = cv2.VideoCapture(video)
-
-  n_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
-
-  fps = vid.get(cv2.CAP_PROP_FPS)
-
-  fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-
-  writer = cv2.VideoWriter(str(output_path), fourcc, fps, new_size)
-
-  for _ in range(int(n_frames)):
-    ret, frame = vid.read()
-    if ret:
-      resized = cv2.resize(frame, new_size)
-      writer.write(resized)
-    else:
-      break
-
-  vid.release()
-  writer.release()
-  cv2.destroyAllWindows()
+#   toxic_cloud = []
   
-  return output_path
-
-def predict_on_video(video:str,
-                     model_name:str,
-                     out_location:str|pathlib.PosixPath=cfg.UPLOAD_FOLDER,
-                     out_name:str=None,
-                     write_size:tuple=(512, 512),
-                     n_frames_threshold:int=8,
-                     n_frames_to_extract:int|str=8,
-                     model:tf.keras.Model=None,
-                     threshold:float=0.5,
-                     write_fps:int=None):
-  
-  for model in models:
-    if model in model_name:
-      model_token = model
-      break
-    else:
-      raise KeyError('That model name is not valid')
-      
-  image_size = models[model_token].img_shape[:-1]
-
-  video_path = downsample(video, new_size=write_size)
-
-  vid = cv2.VideoCapture(str(video_path))
-
-  frame_step = vid.get(cv2.CAP_PROP_FPS)
-  height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-  width = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-  n_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
-  frames_slice = int(n_frames_to_extract) * int(frame_step)
+#   for _ in range(int(n_frames)):
+#     ret, frame = src.read()
+#     if ret:
+#       toxic_cloud.append(frame)
+#     else:
+#       continue 
     
-  n_extractable_frames = n_frames // frame_step
+#   capture = np.array(toxic_cloud)[..., [2,1,0]]
+#   src.release()
   
-  if n_frames_to_extract > n_extractable_frames:
-    logging.info(f'The given video is too short to extract `{n_frames_to_extract}` frames. Falling back to {n_extractable_frames} instead')
-    n_frames_to_extract = int(n_extractable_frames)
+#   return capture
+
+# def capture_to_mpeg(images, output_file, fps, verbose:int=0):
+#   converted_images = np.array(images).astype('uint8')
+#   pathlib.Path(output_file).touch(exist_ok=True)
+#   imageio.imwrite(output_file, converted_images, fps=fps)
+  
+#   if verbose:
+#     logging.info(f'A capture was written to {output_file}!')
     
-  elif 'max' in str(n_frames_to_extract):
-    n_frames_to_extract = int(n_extractable_frames)
-  
-  if write_fps is None:
-    write_fps = frame_step
 
-  frames = []
-  toxic_clouds = []
-  out_paths = []
-
-  ret, frame = vid.read()
-  
-  model = tf.keras.saving.load_model(f'back/models/{model_name}')
-  
-  captured = False
-  n_captured = 0
-  n_pos = 0
-  n_preds = 0
-  
-  out_ext = pathlib.Path(video).suffix
-  
-  if out_name is None:
-    out_name = pathlib.Path(video).stem
-  
-  for i in range(int(n_frames)):
-    current_frame = int(vid.get(1))
-
-    ret, frame = vid.read()
-    
-    frames.append(frame)
-    
-    
-    if ret:
-
-      if current_frame % frame_step == 0:
-
-        frame = np.array(frame)[..., [2, 1, 0]]
-        
-
-        f = format_frames(frame, output_size=(image_size))
-        
-
-        pred = model(tf.expand_dims(f, 0), training=False)
-        n_preds += 1
-
-        if pred >= threshold:
-          n_pos += 1
-
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-
-        if n_preds >= n_frames_to_extract:
-
-          if n_pos >= n_frames_threshold:
-            captured = True
-            n_captured += 1
-
-            out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
-            print(out_path)
-            
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            
-            out_paths.append(str(out_path))
-
-            writer = cv2.VideoWriter(str(out_path), fourcc, frame_step, (int(width), int(height)))
-
-            toxic_clouds = frames[-frames_slice:].copy()
-            
-            for spt in toxic_clouds:
-              writer.write(spt)
-            writer.release()
-            
-            capture_to_mpeg(frames_from_prediction_file(out_path), 
-                           out_path, fps=write_fps)
-              
-            logging.info(f'A toxic cloud has been captured! The clip has been written to {out_path}.')
-            n_pos = 0
-            n_preds = 0
-    else:
-      continue
-  
-  optimism = ". That's a great thing!" 
-  message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
-  logging.info(message)
-  vid.release()
-  cv2.destroyAllWindows()
-  
-  data = {
-    "video_file": video,
-    "captured": captured,
-    "n_captured": n_captured,
-    "written": out_paths,
-    "message": message
-  }
-  return data
+# def downsample(video:str, n_frames_to_extract, new_size:tuple=(512, 512)):
 
 
-def frames_from_prediction_file(video_path:str):
-  
-  src = cv2.VideoCapture(str(video_path))
-  
-  n_frames = src.get(cv2.CAP_PROP_FRAME_COUNT)
-  
-  toxic_cloud = []
-  
-  for _ in range(int(n_frames)):
-    ret, frame = src.read()
-    if ret:
-      toxic_cloud.append(frame)
-    else:
-      continue 
-    
-  capture = np.array(toxic_cloud)[..., [2,1,0]]
-  src.release()
-  
-  return capture
-
-def capture_to_mpeg(images, output_file, fps, verbose:int=0):
-  converted_images = np.array(images).astype('uint8')
-  pathlib.Path(output_file).touch(exist_ok=True)
-  imageio.imwrite(output_file, converted_images, fps=fps)
-  
-  if verbose:
-    logging.info(f'A capture was written to {output_file}!')
-    
-    
-#TODO: in order to convert back to og vid size use this.
-  # final_vid = []
-  # for im in converted_images:
-  #   final_vid.append(np.array(Image.fromarray(im).resize((1920, 1080), resample=Image.LANCZOS)))
-  # pathlib.Path(output_file).touch(exist_ok=True)
-  # imageio.imwrite(output_file, final_vid, fps=fps)
-  
-  
-  #in downsample(): return og im size with cv2.CAP_PROP_FRAME_HEIGHT & WIDTH. PASS IT TO FRAMES_FROM_PRED_FILE, 
-  # AND THEN PASS IT TO CAPTURE_TO_MPEG PASS HEIGHT AND WIDTH TO PIL RESIZE 
+#   vid = cv2.VideoCapture(video)
 
 
+#   frame_step = vid.get(cv2.CAP_PROP_FPS)
+#   n_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
+#   frames_slice = int(n_frames_to_extract) * int(frame_step)
+
+#   n_extractable_frames = n_frames // frame_step
+
+#   ret, frame = vid.read()
 
 
+#   frames = []
+
+#   for _ in range(int(n_frames)):
 
 
+#     current_frame = vid.get(1)
+#     ret, frame = vid.read()
+
+#     if ret and current_frame % frame_step == 0:
+#       ret, frame = vid.read()
+#       frames.append(cv2.resize(frame, new_size))
+#     else:
+#       continue
+
+#   vid.release()
+
+#   vid_info = {
+#               'frame_step': frame_step,
+#               'n_frames': n_frames,
+#               'frames_slice': frames_slice,
+#               'n_extractable_frames': n_extractable_frames
+#               }
 
 
-
-
-
-
-
-
-
-
-#this is another way. Just get the frames from the original video like so and it is better :
-#we also have tried to make this faster in colab untitled117 and it's a bit faster but we lose one second of the og clip
-
+#   return np.array(frames)[..., [2, 1, 0]], vid_info
 
 
 # def predict_on_video(video:str,
 #                      model_name:str,
-#                      out_location:str|pathlib.PosixPath='clip',
-#                      out_name:str=None,
-#                      write_size:tuple=cfg.IMAGE_SIZE,
+#                      out_location:str|pathlib.PosixPath=cfg.UPLOAD_FOLDER,
 #                      n_frames_threshold:int=8,
 #                      n_frames_to_extract:int|str=8,
 #                      model:tf.keras.Model=None,
-#                      threshold:float=0.5,
-#                      write_fps:int=None):
+#                      threshold:float=0.5):
 
 #   for model in models:
 #     if model in model_name:
@@ -261,31 +103,20 @@ def capture_to_mpeg(images, output_file, fps, verbose:int=0):
 
 #   image_size = models[model_token].img_shape[:-1]
 
-#   video_path = downsample(video, new_size=write_size)
+#   vid, vid_info = downsample(video, n_frames_to_extract=n_frames_to_extract)
 
-#   vid = cv2.VideoCapture(str(video_path))
+#   frame_step = int(vid_info['frame_step'])
+#   frames_slice = int(vid_info['frames_slice'])
 
-#   frame_step = vid.get(cv2.CAP_PROP_FPS)
-#   n_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
-#   frames_slice = int(n_frames_to_extract) * int(frame_step)
-
-#   n_extractable_frames = n_frames // frame_step
+#   n_extractable_frames = int(vid_info['n_extractable_frames'])
 
 #   if n_frames_to_extract > n_extractable_frames:
 #     logging.info(f'The given video is too short to extract `{n_frames_to_extract}` frames. Falling back to {n_extractable_frames} instead')
-#     n_frames_to_extract = int(n_extractable_frames)
-
-#   elif 'max' in str(n_frames_to_extract):
-#     n_frames_to_extract = int(n_extractable_frames)
-
-#   if write_fps is None:
-#     write_fps = frame_step
-
+#     n_frames_to_extract = n_extractable_frames
+    
 #   frames = []
 #   toxic_clouds = []
 #   out_paths = []
-
-#   ret, frame = vid.read()
 
 #   model = tf.keras.saving.load_model(f'back/models/{model_name}')
 
@@ -296,63 +127,53 @@ def capture_to_mpeg(images, output_file, fps, verbose:int=0):
 
 #   out_ext = pathlib.Path(video).suffix
 
-#   if out_name is None:
-#     out_name = pathlib.Path(video).stem
+#   out_name = pathlib.Path(video).stem
 
-#   for i in range(int(n_frames)):
-#     current_frame = int(vid.get(1))
+#   for i, f in enumerate(vid):
 
-#     ret, frame = vid.read()
+#     frames.append(f)
 
-#     frames.append(frame)
+#     toxic_clouds.extend(range((i * int(frame_step)) + frame_step))
 
-#     toxic_clouds.append(i)
 
-#     if ret:
+#     f = np.array(f)[..., [2, 1, 0]]
 
-#       if current_frame % frame_step == 0:
+#     f = format_frames(f, output_size=image_size)
 
-#         frame = np.array(frame)[..., [2, 1, 0]]
+#     pred = model(tf.expand_dims(f, 0), training=False)
+#     n_preds += 1
 
-#         f = format_frames(frame, output_size=image_size)
+#     if pred >= threshold:
 
-#         pred = model(tf.expand_dims(f, 0), training=False)
-#         n_preds += 1
+#       n_pos += 1
 
-#         if pred >= threshold:
+#     if n_preds >= n_frames_to_extract:
 
-#           n_pos += 1
+#       if n_pos >= n_frames_threshold:
+#         captured = True
+#         n_captured += 1
 
-#         if n_preds >= n_frames_to_extract:
+#         out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
 
-#           if n_pos >= n_frames_threshold:
-#             captured = True
-#             n_captured += 1
+#         out_path.parent.mkdir(parents=True, exist_ok=True)
 
-#             out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
+#         out_paths.append(str(out_path))
 
-#             print(out_path, 'this from out path')
 
-#             out_path.parent.mkdir(parents=True, exist_ok=True)
+#         cloud = video_from_predictions(video, toxic_clouds[-frames_slice:], out_path)
 
-#             out_paths.append(str(out_path))
+#         capture_to_mpeg(frames_from_prediction_file(cloud),
+#                         out_path, fps=frame_step) 
 
-#             cloud = video_from_predictions(video, toxic_clouds[-frames_slice:], out_path)
-
-#             capture_to_mpeg(frames_from_prediction_file(cloud),
-#                             out_path, fps=write_fps)
-
-#             logging.info(f'A toxic cloud has been captured! The clip has been written to {out_path}.')
-#             n_pos = 0
-#             n_preds = 0
+#         logging.info(f'A toxic cloud has been captured! The clip has been written to {out_path}.')
+#         n_pos = 0
+#         n_preds = 0
 #     else:
 #       continue
 
 #   optimism = ". That's a great thing!"
 #   message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
 #   logging.info(message)
-#   vid.release()
-#   cv2.destroyAllWindows()
 
 #   data = {
 #     "video_file": video,
@@ -370,7 +191,7 @@ def capture_to_mpeg(images, output_file, fps, verbose:int=0):
 
 #   pathlib.Path(out_path).parent.mkdir(parents=True, exist_ok=True)
 
-#   frame_step = int(vid.get(cv2.CAP_PROP_FPS))
+#   frame_step = vid.get(cv2.CAP_PROP_FPS)
 #   n_frames = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
 #   height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
 #   width =  int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -379,12 +200,12 @@ def capture_to_mpeg(images, output_file, fps, verbose:int=0):
 
 #   fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-#   writer = cv2.VideoWriter(str(out_path), fourcc, float(frame_step), (width, height))
+#   writer = cv2.VideoWriter(str(out_path), fourcc, frame_step, (width, height))
 
 #   for i in range(n_frames):
 
 #     ret, frame = vid.read()
-    
+
 #     if ret and i in toxic_frames:
 #       writer.write(frame)
 
@@ -392,3 +213,175 @@ def capture_to_mpeg(images, output_file, fps, verbose:int=0):
 #   writer.release()
 #   cv2.destroyAllWindows()
 #   return out_path
+
+
+
+
+def capture_to_mpeg(images, output_file, fps, verbose:int=0):
+
+  converted_images = np.array(images).astype('uint8')
+  pathlib.Path(output_file).touch(exist_ok=True)
+  imageio.imwrite(output_file, converted_images, fps=fps)
+  
+  if verbose:
+    logging.info(f'A capture was written to {output_file}!')
+
+def downsample(video:str, n_frames_to_extract, new_size:tuple=(512, 512)):
+
+  vid = cv2.VideoCapture(video)
+
+
+  frame_step = int(vid.get(cv2.CAP_PROP_FPS))
+  n_frames = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+  frames_slice = n_frames_to_extract * frame_step
+
+  n_extractable_frames = n_frames // frame_step
+
+  ret, frame = vid.read()
+
+
+  frames = []
+
+  for _ in range(n_frames):
+
+
+    current_frame = vid.get(1)
+    ret, frame = vid.read()
+
+    if ret and current_frame % frame_step == 0:
+      frames.append(cv2.resize(frame, new_size))
+    else:
+      continue
+
+  vid.release()
+
+  vid_info = {
+              'frame_step': frame_step,
+              'n_frames': n_frames,
+              'frames_slice': frames_slice,
+              'n_extractable_frames': n_extractable_frames
+              }
+
+
+  return np.array(frames)[..., [2, 1, 0]], vid_info
+
+
+def predict_on_video(video:str,
+                     model_name:str,
+                     out_location:str|pathlib.PosixPath=cfg.UPLOAD_FOLDER,
+                     n_frames_threshold:int=8,
+                     n_frames_to_extract:int|str=8,
+                     threshold:float=0.5):
+
+  for model in models:
+    if model in model_name:
+      model_token = model
+      break
+    else:
+      raise KeyError('That model name is not valid')
+
+  image_size = models[model_token].img_shape[:-1]
+
+  vid, vid_info = downsample(video, new_size=image_size, n_frames_to_extract=n_frames_to_extract)
+
+  frame_step = vid_info['frame_step']
+  frames_slice = vid_info['frames_slice']
+  n_extractable_frames = vid_info['n_extractable_frames']
+
+  if n_frames_to_extract > n_extractable_frames:
+    logging.info(f'The given video is too short to extract `{n_frames_to_extract}` frames. Falling back to {n_extractable_frames} instead')
+    n_frames_to_extract = n_extractable_frames
+
+  elif 'max' in str(n_frames_to_extract):
+    n_frames_to_extract = n_extractable_frames
+
+  frames = []
+  toxic_clouds = []
+  out_paths = []
+
+  model = tf.keras.saving.load_model(f'back/models/{model_name}')
+
+  captured = False
+  n_captured = 0
+  n_pos = 0
+  n_preds = 0
+
+  out_name = pathlib.Path(video).stem
+
+  out_ext = pathlib.Path(video).suffix
+
+  for i, f in enumerate(vid):
+
+    frames.append(f)
+
+    toxic_clouds.extend(range((i * int(frame_step)) + frame_step))
+
+
+    f = np.array(f)[..., [2, 1, 0]]
+
+    f = format_frames(f, output_size=image_size)
+
+    pred = model(tf.expand_dims(f, 0), training=False)
+    n_preds += 1
+
+    if pred >= threshold:
+
+      n_pos += 1
+
+    if n_preds >= n_frames_to_extract:
+
+      if n_pos >= n_frames_threshold:
+        captured = True
+        n_captured += 1
+
+        out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        out_paths.append(str(out_path))
+
+
+        cloud = video_from_predictions(video, toxic_clouds[-frames_slice:])
+
+        capture_to_mpeg(cloud, out_path,
+                        fps=frame_step)
+
+        logging.info(f'A toxic cloud has been captured! The clip has been written to {out_path}.')
+        n_pos = 0
+        n_preds = 0
+    else:
+      continue
+
+  optimism = ". That's a great thing!"
+  message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
+  logging.info(message)
+
+  data = {
+    "video_file": video,
+    "captured": captured,
+    "n_captured": n_captured,
+    "written": out_paths,
+    "message": message
+  }
+  return data
+
+
+def video_from_predictions(video, toxic_frames):
+
+  vid = cv2.VideoCapture(str(video))
+
+  n_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
+
+  ret, frame = vid.read()
+
+  frames = []
+
+  for i in range(int(n_frames)):
+
+    ret, frame = vid.read()
+
+    if ret and i in toxic_frames:
+      frames.append(frame)
+
+  vid.release()
+  return np.array(frames)[..., [2,1,0]]

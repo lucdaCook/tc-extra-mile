@@ -14,7 +14,6 @@ export default function YoutubeUploader() {
     
     return before + after
   }
-  console.log(uploadInfo)
 
   const uploadLink = undefined
 

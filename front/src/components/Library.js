@@ -1,24 +1,32 @@
 import { useContext, useState, useEffect } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { CloudDownload, CloudLock, CloudUnlock } from '../svg/clouds'
 
 export default function Library() {
 
-  const { logs, setExtracted } = useContext(CloudsContext)
+  const { setExtracted } = useContext(CloudsContext)
   const vidServer = `${process.env.REACT_APP_SERVER}/model/`
   const nav = useNavigate()
+  const locState = useLocation().state
   const [ activeSelect, setActiveSelect ] = useState(false)
   const [ selectionBlobs, setSelectionBlobs ] = useState([])
 
-  let numWritten = 0
+  let logs = JSON.parse(localStorage.getItem('logs'))
 
-  logs.map(log => {
-    numWritten += log.written.length
-  })
+  if(logs === null){
+    logs = []
+  }
+
+  let justCaptured;
+
+  if (locState !== null && locState.justCaptured) {
+    justCaptured = Array(locState.justCaptured).fill(locState.justCaptured)
+  }
 
   function watchCloud(cloud) {
     setExtracted(true)
-    nav(`/cloud/${cloud}`)
+    nav(`/cloud/${cloud}`, {state: {'from': '/library'}})
   }
 
   useEffect(() => {
@@ -49,73 +57,77 @@ export default function Library() {
 
   return (
     <div className='container'> 
-      <div className='view-refresh'>
+      <div className='view-refresh'> 
 { 
     logs?.length === 0 ?
-
     <div> 
       <span> You haven't captured any clouds yet, but hey, that's a good thing right?</span>
     </div>
 
     :
     <>
+      {
+      justCaptured?.map((num, i) => (
+        <div className={`just-captured`}
+        style={{left: Math.random() * (90 - 20) + 20 + '%', top: Math.random() * (80-20) + 20 + '%'}}
+        key={i}
+        >
+          {`+${num}`}
+          </div>
+      ))
+    }
       <div className='library-stage'>
       <div className='select-flex'>
-        <button onClick={() => setActiveSelect(prev => !prev)} className='select-blobs'></button>
-        <button className='download-blobs' onClick={(e) => downloadMultipleBlobs(e)}>
-          Download Selection
-
-          { 
-            selectionBlobs?.length > 0 && selectionBlobs.map((info, i) => (
-              <a href={info['blob']} 
-              className={`anchor-blob`} 
-              download={info['cloud']}
-              key={i}
-              target='_blank'>Load</a>
-            ))
-          }
+        <button onClick={() => setActiveSelect(prev => !prev)} 
+        className='select-blobs' title='Toggle download selection'>
+         { !activeSelect ? <CloudLock /> : <CloudUnlock /> }
         </button>
+
+{ activeSelect && 
+          <>
+          <CloudDownload />
+          <button className='download-blobs' onClick={(e) => downloadMultipleBlobs(e)}>
+
+            { 
+              selectionBlobs?.length > 0 && selectionBlobs.map((info, i) => (
+                <a href={info['blob']} 
+                className={`anchor-blob`} 
+                download={info['cloud']}
+                key={i}
+                target='_blank'>Load</a>
+              ))
+            }
+          </button>
+        </>
+
+        }
       </div>
-        <div className='library-shelf'>
-        {
-          logs?.map((cap, i ) => (
-          cap.written.length > 2 && i > 0 && logs[i + 1].written.length > 2 ?  
-          <div className='library-shelf' key={i}>
-            
-{         cap.written?.map((cloud, j) => (
+   
+      <div className='library-shelves'>
+      {
+          logs?.map(cap => (
 
-            <div className='library-item' key={j}>
-              <video 
-              src = {vidServer + cloud}
-              placeholder='placeholder.png'
-              onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))}
-              className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''}` + 'video-thumbnail'}
-              
-              >
-              </video>  
-              <div className='item-pad'></div>
-            </div>
-))
-}
-          </div>
-          :
-        cap.written?.map((cloud, j) => (
-      <div className='library-item' key={j}>
-        <video 
-        src = {vidServer + cloud}
-        placeholder='placeholder.png'
-        className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''} video-thumbnail`}
-        onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))} 
-        > 
-        </video>
-        <div className='item-pad'></div>
+
+            cap.written?.map((cloud, i) => (
+              <div className='library-item' key={i}>
+                <video 
+                src = {vidServer + cloud}
+                placeholder='placeholder.png'
+                onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))}
+                className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''}` + 'video-thumbnail'}
+                
+                >
+                </video>  
+                <div className='item-pad'></div>
+              </div>
+            ))
+
+
+          ))
+        }
+
       </div>
-))
-
-))
-
-}
-    </div> 
+      <div className='shelves-padding'></div>
     </div>
   </>
 }
@@ -124,3 +136,65 @@ export default function Library() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// <div className='library-shelf'>
+// {
+//   logs?.map((cap, i ) => (
+//   cap.written.length > 2 && i > 0 && logs[i + 1].written.length > 2 ? 
+//   <div className='library-shelf' key={i}>
+    
+// {         cap.written?.map((cloud, j) => (
+
+//     <div className='library-item' key={j}>
+//       <video 
+//       src = {vidServer + cloud}
+//       placeholder='placeholder.png'
+//       onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))}
+//       className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''}` + 'video-thumbnail'}
+      
+//       >
+//       </video>  
+//       <div className='item-pad'></div>
+//     </div>
+// ))
+// }
+//   </div>
+//   :
+// cap.written?.map((cloud, j) => (
+// <div className='library-item' key={j}>
+// <video 
+// src = {vidServer + cloud}
+// placeholder='placeholder.png'
+// className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''} video-thumbnail`}
+// onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))} 
+// > 
+// </video>
+// <div className='item-pad'></div>
+// </div>
+// ))
+
+// ))
+
+// }
+// </div> 

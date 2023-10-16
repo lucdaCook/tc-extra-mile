@@ -1,6 +1,6 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import SettingsIcon from '../svg/SettingsIcon'
-import { useContext, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
 import { 
   CloudIcon, 
@@ -15,7 +15,17 @@ export default function Topbar() {
 
   const { updateConfig } = useContext(CloudsContext)
 
-  const defaultVals = JSON.parse(localStorage.getItem('Config'))
+  let defaultVals = JSON.parse(localStorage.getItem('Config'))
+
+  if (defaultVals === null) {
+    defaultVals = {
+      'model': 'Confident',
+      'threshold': '0.5',
+      'n_frames': '8'
+    }
+  }
+
+  const loc = useLocation()
 
   const cloudCount = JSON.parse(localStorage.getItem('cloudCount')) 
 
@@ -32,14 +42,13 @@ export default function Topbar() {
     otherBtn.current.classList.remove('active')
   }
 
-  const ytParams = {
-    'clientId': '208551081122-23vbrtn2fr01uftns27nigcs085g1vb5.apps.googleusercontent.com',
-    'redirect_uri': 'http://localhost:3000/',
-    'response_type': 'token',
-    'scope': 'https://www.googleapis.com/auth/youtube.force-ssl',
-    'include_granted_scopes': 'true',
-    'state': 'pass-through value'
-  }
+  useEffect(() => {
+    if (confRef.current !== undefined && defaultVals.model === 'Confident') {
+      confRef.current.classList.add('active')
+    } else if (sensRef.current !== undefined && defaultVals.model === 'Sensitive') {
+      sensRef.current.classList.add('active')
+    }
+  }, [confRef, sensRef])
 
   return (
     <div className='topbar nav'>
@@ -51,10 +60,14 @@ export default function Topbar() {
             <CloudIcon />
             <div className='actions-after' >
               <div className='actions-main'>
-              <Link  to='/extract' className='actions main-link extract'>
+              <Link  to='/extract' 
+              state={{'from': loc.pathname}}
+              className='actions main-link extract'>
                 <CloudSearchIcon /> 
               </Link>
-              <Link to= '/extract-many' className='actions main-link extract-many'>
+              <Link to= '/extract-many' 
+              className='actions main-link extract-many'
+              state={{'from': loc.pathname}}>
                 <TwoClouds />
               </Link>
               <Link className='actions main-link'>
@@ -62,10 +75,24 @@ export default function Topbar() {
               </Link>
             </div>
               <div className='quick-actions rows'>
-                <Link>Hey</Link>
-                <a>Hey</a>
-                <a>Hey</a>
-                <a>Hey</a>
+                <Link to='/extract'
+                  state={{'from': loc.pathname}}
+                  className='action-row extract actions '>
+                  <CloudSearchIcon />
+                <span>Capture from a single file</span>
+                </Link>
+                <Link to='/extract-many'
+                  state={{'from': loc.pathname}}
+                  className='action-row actions'>
+                  <TwoClouds />
+                <span>Capture from many files</span>
+                </Link>
+                <Link to='/extract'
+                  state={{'from': loc.pathname}}
+                  className='action-row actions '>
+                  <FactoryIcon />
+                <span>Capture from livestream</span>
+                </Link>
               </div>
             </div>
           </button>
@@ -106,13 +133,13 @@ export default function Topbar() {
         </NavLink>
         <button className='settings'>
           <SettingsIcon /> 
-          <form 
+          <form
           className='settings-after'
           onSubmit={e => {
             e.preventDefault()
           }}
             >
-            <div className='settings-row model-config'>
+            <div className='settings-row model-config'> 
               <span>Model Nature</span>
                 <div className='model-choices setting-choice'>
                 <input type='button' 
@@ -126,8 +153,7 @@ export default function Topbar() {
                 ref={sensRef}
                 />
                 <input type='button'
-                className={'model-choice'
-                }
+                className='model-choice'
                 ref={confRef}
                 name='model'
                 value='Confident'
@@ -152,7 +178,7 @@ export default function Topbar() {
               />
             </div>
             <div className='num-frames settings-choice'>
-              <span>Seconds per capture</span>
+              <span>Seconds Per Capture</span>
               <input type='number'
               name='n_frames'
               min='8'
@@ -160,11 +186,11 @@ export default function Topbar() {
               defaultValue={defaultVals['n_frames']}
               />
             </div>
-            <div className='settings-save'>
+            <div className='settings-save submit-input'>
               <input type='submit'
               name='video_size'
-              value='save' 
-              onClick={unfocus}/>
+              value='Done' 
+              onClick={e => unfocus(e)}/>
             </div>
           </form> 
         </button> 

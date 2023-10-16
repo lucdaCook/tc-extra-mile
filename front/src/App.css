@@ -17,9 +17,9 @@ button, input {
 }
 
 .home-link { 
-  width: 60px;
+  width: 40px;
   display: inline-block;
-  height: 60px;
+  height: 40px;
 }
 
 a.active svg{
@@ -57,6 +57,22 @@ a.active svg{
   justify-content: space-between;
   background: rgb(57 85 110);
 }
+
+/* 
+if we want scrolling to keep back gradient
+.topbar.nav {
+  position: fixed;
+  width: 100%;
+}
+
+.background-gradient {
+  width: 150%;
+}
+
+#cloud-1 {
+  top: 90px;
+} 
+*/
 
 .right-icons, 
 .left-icons {
@@ -173,6 +189,25 @@ svg.yt-icon {
   max-height: 40px;
   max-width: 40px;
   background: transparent;
+  cursor: pointer;
+}
+
+.actions-btn:focus {
+  animation: btn_bounce 90ms linear forwards
+}
+
+.actions-btn:hover > svg,
+.actions-btn:focus > svg {
+  fill: #fff !important;
+  scale: 1.1;
+}
+
+.actions-btn:focus > svg {
+  animation: action_spin 180ms linear forwards;
+}
+
+.actions-btn svg {
+  transition: fill 500ms ease;
 }
 
 .actions-btn.actions {
@@ -196,6 +231,29 @@ svg.yt-icon {
   height: 30px;
   width: 35px;
   fill: #b3b3b3;
+  margin-top: 4px;
+}
+
+.play-icon {
+  position: absolute;
+  height: 40px;
+  width: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: calc(46% + 3px);
+  stroke-width: 5px;
+  pointer-events: none;
+}
+
+.vid-add {
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 
 .actions-btn.actions {
@@ -228,19 +286,49 @@ svg.yt-icon {
   width: 50px;
 }
 
+a.action-row {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  text-decoration: none;
+  color: black;
+}
+
+a.action-row svg {
+  height: 40px;
+  width: 40px;
+}
+
+.action-row span {
+  padding-top: 10px;
+}
+
 .active {
   visibility: visible !important;
   opacity: 1 !important;
 }
 
 .actions.main-link svg { 
-  fill: rgba(0, 0, 0, 0.79);
+  fill: #84a4b6c9;
+  stroke: #004870c9;
+}
+
+.actions.main-link.extract:first-child:first-child {
+  stroke: #004870c9;
+  fill: rgba(132, 164, 182, 0.788);
+}
+
+.action-row svg,
+.action-row path {
+  stroke: #004870c9;
+  fill: rgba(132, 164, 182, 0.788);
 }
 
 .quick-actions.rows {
   display: grid;
   justify-content: flex-start;
   align-items: center;
+  padding: 0 17px;
 }
 
 .actions-btn.actions:focus .actions-after,
@@ -319,6 +407,10 @@ svg.yt-icon {
   display: grid;
   width: 80%;
   max-width: 1030px;
+  grid-template-columns: 1.5fr 1fr;
+  column-gap: 30px;
+  grid-template-areas: "video form"
+                        "extras extras";
 }
 
 div.clouds-loading {
@@ -346,17 +438,72 @@ div.clouds-loading {
   height: 100%;
 }
 
+div.feedback {
+  grid-area: form;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 60%;
+  justify-content: center;
+  margin-top: 70px;
+}
 
+.feedback span {
+  margin-right: 20px;
+  margin-bottom: 15px;
+}
+
+.feedback-star {
+  color: transparent;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.feedback-form input:focus-visible {
+  width: 80%;
+  outline: none;
+}
+
+h4.give-feedback {
+  margin-bottom: 0;
+  border-bottom: solid 1px #121212;
+  padding-bottom: 15px;
+  width: 85%;
+}
+
+.active-star {
+  color: #5b9bb8 !important;
+}
+
+.feedback-star svg {
+  stroke: #4d4c4c;
+  fill: currentColor !important;
+}
+
+input.feedback-star {
+  height: 40px;
+  width: 40px;
+}
+
+input.feedback-star {
+  background: url('./svg/CloudIcon.js');
+}
 
 .vid-padding {
   padding: 10px;
-  position: relative;
+  position: absolute;
+  width: 100%;
 }
 
 .player-window {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  grid-area: video;
 }
 
 .player-row {
@@ -367,6 +514,7 @@ div.clouds-loading {
   grid-template-columns: 100px 100px 100px;
   justify-content: center;
   gap: 5em;
+  grid-area: extras;
 }
 
 .extras-widget {
@@ -400,7 +548,7 @@ a.blob-anchor svg {
 }
 
 .player-row.extras {
-  width: 80%;
+  width: fit-content;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
@@ -432,6 +580,22 @@ a.blob-anchor svg {
   fill: none;
 }
 
+.player-extras a.download-cloud {
+  justify-self: flex-end;
+}
+
+.player-extras span {
+  text-wrap: nowrap;
+  align-items: flex-end;
+  margin-top: 15px;
+}
+
+.nav-library.view-library {
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+
 .download-cloud:hover svg {
   scale: 1.1;
 
@@ -456,6 +620,16 @@ a.blob-anchor svg {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.exit-widget:hover {
+  background-color: #979595;
+}
+
+.window-exit:focus,
+.window-exit:focus-within {
+  animation: push_btn 100ms linear forwards;
 }
 
 .exit-content::after {
@@ -472,7 +646,7 @@ a.blob-anchor svg {
 
 .form-window {
   display: grid;
-  height: 75%;
+  height: 70%;
   align-items: center;
   grid-template-columns: 1fr;
   justify-content: center;
@@ -481,6 +655,10 @@ a.blob-anchor svg {
   border: dashed 3px rgba(54,85,112,1);
   margin: 20px;
   width: 60%;
+}
+
+.form-window svg path {
+  stroke: rgb(39, 63, 84) !important;
 }
 
 .video-select {
@@ -515,7 +693,7 @@ a.blob-anchor svg {
   height: 75%;
   align-self: center;
   font-weight: bold;
-
+  margin-left: 25px;
 }
 
 .form-info p {
@@ -550,30 +728,47 @@ div.extras-widget > video {
   gap: 4rem;
   animation: show_library 500ms ease forwards;
   margin-right: 60px;
-  height: 60%;
 }
 
-.library-shelf {
+.just-captured {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  z-index: 11;
+  font-size: 21px;
+  color: rgba(0, 0, 0, 0.46);
+  animation: float_top 3s linear forwards;
+}
+
+.library-shelves {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   align-items: center;
   gap: 4rem;
   margin: 0 14px;
   position: relative;
+  column-gap: 1.7em;
+}
+
+.shelves-padding {
+  padding-top: 30px;
 }
 
 button.select-blobs {
   right: 80px;
-  height: 30px;
-  background: black;
+  height: 40px;
   top: 80px;
-  width: 30px;
+  width: 40px;
 }
 
 button.download-blobs {
-  position: relative;
   pointer-events: all;
   z-index: 10;
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  left: 100px;
+  top: 5px;
 }
 
 button.download-blobs a {
@@ -584,6 +779,14 @@ button.download-blobs a {
   top: 0;
   left: 0;
   right: 0;
+  color: transparent;
+}
+
+svg:has( + button.download-blobs) {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  left: 100px;
 }
 
 div.select-flex {
@@ -591,9 +794,9 @@ div.select-flex {
   justify-content: space-between;
   flex-direction: row-reverse;
   position: absolute;
-  top: 100px;
-  right: 60px;
-  width: 100%;
+  top: 85px;
+  right: 85px;
+  width: calc(100% - 3em);
   align-items: flex-start;
 }
 
@@ -692,7 +895,7 @@ div.select-flex {
   right: -60%;
   top: 130px;
   scale: 0.75;
-  animation: drift_cloud2 39s linear 20s infinite;
+  animation: drift_cloud2 40s linear 27s infinite;
   max-width: 90vw;
 }
 
@@ -790,8 +993,9 @@ div.settings-choice span {
   margin: 15px;
 }
 
-.settings-save input {
-  background: rgb(190, 198, 205, 0.5);
+.submit-input input,
+input.submit-input {
+  background: rgb(219, 230, 239, 0.5);
   border: none;
   padding: 10px;
   width: 180px;
@@ -800,11 +1004,13 @@ div.settings-choice span {
   transition: background-color ease 100ms;
 }
 
-.settings-save input:focus {
+.submit-input input:focus,
+input.submit-input:focus {
   scale: 0.9;
 }
 
-.settings-save input:hover {
+.submit-input input:hover,
+input.submit-input:hover {
   background: rgb(190, 198, 205, 1);
 }
 
@@ -814,6 +1020,7 @@ div.settings-choice span {
 
 .settings-choice.num-frames input {
   text-align: center;
+  margin-left: 15px;
 }
 
 input[type='button'].active {
@@ -826,11 +1033,11 @@ input[type='button'].active {
 }
 
 .tata-backdrop {
-  min-width: calc(100vw - 4em);
+  max-width: calc(100vw - 4em);
   height: 420px;
-  position: fixed;
-  bottom: -33px;
-  left: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 56px;
   animation: show_tata 3s ease-out forwards;
 }
 
@@ -845,6 +1052,85 @@ input[type='button'].active {
 
 .extract path {
   stroke-width: 1;
+ }  
+
+@media screen and (max-width: 1200px) {
+  .action-window {
+    height: 64%;
+    width: 74%;
+  }
+  
+}
+
+
+@media screen and (min-width: 1000px) and (max-width: 1430px) {
+
+  .action-popup.clouds-display {
+    width: 68%;
+    height: 70%;
+  }
+
+  .slider-row.extras {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 30px;
+  }
+
+
+  a.blob-anchor {
+    padding-right: 20px;
+    padding-bottom: 20px;
+  }
+
+  .video-overlay video {
+    width: 500px;
+    padding-bottom: 60px;
+  }
+
+  .player-window {
+    max-height: 800px;
+  }
+
+  .slider-row.extras {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 30px;
+  }
+
+  .video-widgets {
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  #cloud-1 {
+    scale: 0.7;
+   }
+
+   .action-window {
+    height: 63%;
+    width: 63%;
+  }
+  
+  .form-info {
+    letter-spacing: 0.2px;
+    font-size: 15px;
+  }
+
+  #cloud-2 {
+    scale: 0.65;
+  }
+}
+
+@media screen and (max-height: 970px) {
+  .vid-padding {
+    display: none;
+  }
+
+  span.nav-library.nav-library.view-library {
+    display: inline;
+    margin-right: 65px;
+  }
 }
 
 @keyframes drift_cloud1 {
@@ -860,7 +1146,7 @@ input[type='button'].active {
 
 @keyframes drift_cloud2 {
     0% {
-      left: 100%;
+      left: 110%;
   }
 
   100% {
@@ -903,12 +1189,6 @@ from {
 
  to {
     opacity: 1;
-    position: fixed; 
-    width: 100vw;
-    height: 420px;
-    position: fixed;
-    bottom: -33px;
-    left: 20px;
   }
 }
 
@@ -927,3 +1207,34 @@ from {
       top: 0;
     }
 } 
+
+@keyframes action_spin {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes btn_bounce {
+  from {
+    margin-bottom: 5px;
+  } to {
+    margin-bottom: 0px;
+  }
+}
+
+@keyframes float_top {
+  to {
+    top: -20%;
+  }
+}
+
+@keyframes push_btn {
+  from {
+    scale: 0.89;
+  }
+  to {
+    scale: unset;
+  }
+}

@@ -36,20 +36,18 @@ def extract_toxic_clouds():
     path = os.path.join(cfg.UPLOAD_FOLDER, filename)
     file.save(path)
     
-    # model_choice = request.form['model']
     
-    #TODO: Change names accordingly once models are organized
-    # if 'Confident' in model_choice:
-    #   model_name = 'mobilevit_xxs_tfr_nopreproc_vl39'
-    # elif 'Sensitive' in model_choice:
-    #   model_name = 'mobilevit_xxs_tfr_nopreproc_vl39' 
+    model_choice = request.form['model']
     
-    # if 'model' in request.form: #TODO: FIX MODEL NAMING STRUCTURE TO MATCH CONFIDENT/SENSITIVE
-    #   print(request.form['model'])
+    if 'Confident' in model_choice:
+      model_name = 'mobilevit_xxs_tfr_nopreproc_vl39'
+    elif 'Sensitive' in model_choice:
+      model_name = 'mobilevit_xxs_tfr_nopreproc_vl39' 
+    
     print(request.form['threshold'])
     
     res = predict_on_video(path, 
-                           model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
+                           model_name=model_name,
                            out_location=current_app.config['UPLOAD_FOLDER'],
                            n_frames_to_extract=int(request.form['n_frames']),
                            threshold=float(request.form['threshold']))
@@ -83,3 +81,8 @@ def extract_for_many_videos():
 @bp.route('clip/<video_id>', methods=['GET']) 
 def video_loader(video_id): 
   return send_from_directory(current_app.config['UPLOAD_FOLDER'], video_id)
+
+@bp.route('feedback')
+def get_feedback():
+  
+  return Response(200)
