@@ -5,9 +5,3 @@ addopts = "--strict-markers --disable-pytest-warnings"
 markers = [
   "training: tests that involve training models"
 ]
-
-[tool.coverage.run]
-omit = [
-  private/var/*
-  *conftest.py
-]

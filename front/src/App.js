@@ -1,10 +1,8 @@
-import { Outlet, ScrollRestoration, useLoaderData, useNavigation } from 'react-router-dom';
+import { Outlet, useLoaderData, } from 'react-router-dom';
 import './App.css';
 import MainView from './components/MainView';
 import Topbar from './components/Topbar';
-import CredentialsContextProvider from './contexts/CredentialsContext';
 import CloudsContextProvider from './contexts/CloudsContext';
-import { useEffect } from 'react';
 
 function Root() {
 
@@ -13,7 +11,7 @@ function Root() {
   return (
     <div className='_Root'>
           <div className='root main-grid'>
-            <CredentialsContextProvider defaultYtCode={ytCode}>
+            {/* <CredentialsContextProvider defaultYtCode={ytCode}> */}
             <CloudsContextProvider>
                 <Topbar>
                 </Topbar>
@@ -24,9 +22,8 @@ function Root() {
                   <Outlet />
                 </div>
               </CloudsContextProvider>
-            </CredentialsContextProvider>
+            {/* </CredentialsContextProvider> */}
           </div>
-          <ScrollRestoration />
         </div>
   );
 }

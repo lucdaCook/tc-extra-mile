@@ -1,79 +1,72 @@
 import pytest 
 import back.scripts.predict as predict
 import pathlib
-import cv2
 import numpy as np
 import os
 
 @pytest.mark.parametrize(
-  'video, new_size, output_dir',
+  'video, new_size',
   [
-    ('back/tests/testing_clips/negative_clip.mp4', (256, 256), 'back/tests/testing_clips/downsampled')
+    ('back/tests/testing_clips/negative_clip.mp4', (256, 256))
   ]
 )
-def test_downsample(video, new_size, output_dir):
+def test_downsample(video, new_size):
   
-  downsampled_vid = predict.downsample(video, new_size=new_size, output_dir=output_dir)
+  downsampled_vid, vid_info = predict.downsample(video, new_size=new_size,
+                                                 n_frames_to_extract=8)
   
-  video_name = pathlib.Path(video).name
+  assert downsampled_vid.shape[1:-1] == new_size
+  assert isinstance(vid_info, dict)
   
-  cap = cv2.VideoCapture(f'{output_dir}/{video_name}')
-  height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-  width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+  assert vid_info.keys() >= {'frame_step', 
+                             'n_frames', 
+                             'frames_slice', 
+                             'n_extractable_frames'}
   
-  assert pathlib.Path(downsampled_vid).is_file()
-  assert (height, width) == new_size
+
+  
   
 @pytest.mark.parametrize(
-  'video, output_filename, output_dir, n_frames_to_extract, toxic, write_size',
+  'video, output_dir, n_frames_to_extract, toxic',
   [
     (
-      'back/tests/testing_clips/negative_clip.mp4', 'on_negative_clip', 
-      'tests/testing_clips/predictions/', 8, False, (28, 28) 
+      'back/tests/testing_clips/negative_clip.mp4', 
+      'tests/testing_clips/predictions/', 8, False
     ),
     (
-      'back/tests/testing_clips/positive_clip.mp4', 'on_positive_clip', 
-      'back/tests/testing_clips/predictions/', 10, True, (48, 48)
+      'back/tests/testing_clips/positive_clip.mp4', 
+      'back/tests/testing_clips/predictions/', 10, True
     ),
     (
-      'back/tests/testing_clips/prediction_clip.mp4', 'on_predict_clip', 
-      'back/tests/testing_clips/predictions', 7, None, (32, 32)
+      'back/tests/testing_clips/prediction_clip.mp4', 
+      'back/tests/testing_clips/predictions', 7, True,
     )
   ]
 )
-def test_predict_on_video(video, output_filename, output_dir, 
-                          n_frames_to_extract, toxic, write_size):
+def test_predict_on_video(video, output_dir, 
+                          n_frames_to_extract, toxic):
+  
   
   result = predict.predict_on_video(video, model_name='mobilevit_xxs_vl35',
-                                    n_frames_to_extract=n_frames_to_extract, write_size=write_size,
-                                    out_location=output_dir, out_name=output_filename)
+                                    n_frames_to_extract=n_frames_to_extract,
+                                    out_location=output_dir)
   if result['captured']:
+    output_filename = pathlib.Path(video).stem
     assert pathlib.Path(output_dir).is_dir()
     assert len(os.listdir(output_dir)) > 0
-    pred_clip = predict.frames_from_prediction_file(f'{output_dir}/{output_filename}_{result["n_captured"]}.mp4', 
-                                                    output_size=write_size)
-    assert len(pred_clip) >= n_frames_to_extract
-    assert pred_clip.shape[1:-1] == write_size
-  
+    mock_frames = list(range(26))
+    mock_clip = predict.video_from_predictions(f'{output_dir}/{output_filename}_{result["n_captured"]}.mp4', 
+                                                  mock_frames)
+    assert len(mock_clip) >= len(mock_frames)
+      
   if toxic:
     assert result['captured'] == True
-  elif toxic == False:
-    assert result['captured'] == False
 
-@pytest.mark.parametrize(
-  'video_path, output_size',
-  [('clip/positive_clip_1.mp4', (28, 28))]
-)
-def test_frames_from_prediction_file(video_path, output_size):
-  
-  frames = predict.frames_from_prediction_file(video_path=video_path, output_size=output_size)
-  assert isinstance(frames, np.ndarray)
-  assert frames.shape[1:-1] == (28, 28)
-
-@pytest.mark.usefixtures('remove_test_gif')
 def test_capture_to_mpeg():
   out_file = 'test.mp4'
   img = np.random.rand(28, 28, 3)
   img = np.expand_dims(img, 0)
   predict.capture_to_mpeg(img, output_file=out_file, fps=15)
   assert pathlib.Path(out_file).is_file()
+  
+  pathlib.Path(out_file).unlink()

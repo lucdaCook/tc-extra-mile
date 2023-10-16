@@ -24,9 +24,9 @@ export default function Library() {
     justCaptured = Array(locState.justCaptured).fill(locState.justCaptured)
   }
 
-  function watchCloud(cloud) {
+  function watchCloud(cloud, info) {
     setExtracted(true)
-    nav(`/cloud/${cloud}`, {state: {'from': '/library'}})
+    nav(`/cloud/${cloud}`, {state: {'from': '/library', 'cloudInfo': info}})
   }
 
   useEffect(() => {
@@ -113,9 +113,8 @@ export default function Library() {
                 <video 
                 src = {vidServer + cloud}
                 placeholder='placeholder.png'
-                onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1))}
+                onClick={activeSelect ? (e) => updateSelections(e, cloud) : () => watchCloud(cloud.split('/').at(-1), cap)}
                 className={`${selectionBlobs.some(selections => selections.cloud === cloud) ? 'selected-vid-blob ' : ''}` + 'video-thumbnail'}
-                
                 >
                 </video>  
                 <div className='item-pad'></div>

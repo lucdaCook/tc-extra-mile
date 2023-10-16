@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import SettingsIcon from '../svg/SettingsIcon'
+import { SettingsIcon } from '../svg/clouds'
 import { useContext, useEffect, useRef } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
 import { 

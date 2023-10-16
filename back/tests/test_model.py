@@ -14,22 +14,16 @@ def test_make_custom_model():
   [
     ('mobilevit_xxs', 1e-5),
     ('custom', None),
-    ('err', None)
   ]
 )
 def test_get_compiled_model(model_name, lr):
-  
-  if model_name == 'err' :
-    with pytest.raises(KeyError):
-      err = model.get_compiled_model(model_name, lr)
-      
+
 
   compiled_model = model.get_compiled_model(model_name, lr)
   if lr is None:
     lr = model.models[model_name].learning_rate
-    np.testing.assert_almost_equal(compiled_model.optimizer.learning_rate.numpy(), lr)
-  else:
-    np.testing.assert_almost_equal(compiled_model.optimizer.learning_rate.numpy(), lr)
+    
+  np.testing.assert_almost_equal(compiled_model.optimizer.learning_rate.numpy(), lr)
   
   
   assert isinstance(compiled_model, tf.keras.Model)

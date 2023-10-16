@@ -329,6 +329,9 @@ a.action-row svg {
   justify-content: flex-start;
   align-items: center;
   padding: 0 17px;
+  grid-template-rows: repeat(3, 50px);
+  grid-template-columns: 100%;
+  font-size: 13px;
 }
 
 .actions-btn.actions:focus .actions-after,
@@ -377,6 +380,14 @@ a.action-row svg {
 .outlet-refresh > div.container {
   height: 100vh;
   width: 100vw;
+}
+
+div.error {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
 }
 
 .view-refresh {
@@ -448,8 +459,17 @@ div.feedback {
   margin-top: 70px;
 }
 
+.feedback input[type='text'] {
+  background: #dfdfdf;
+  width: 80%;
+  height: 30px;
+  padding-left: 10px;
+  font-size: 12px;
+}
+
 .feedback span {
   margin-right: 20px;
+  font-size: 15px;
   margin-bottom: 15px;
 }
 
@@ -484,14 +504,7 @@ h4.give-feedback {
   fill: currentColor !important;
 }
 
-input.feedback-star {
-  height: 40px;
-  width: 40px;
-}
 
-input.feedback-star {
-  background: url('./svg/CloudIcon.js');
-}
 
 .vid-padding {
   padding: 10px;
@@ -1054,21 +1067,13 @@ input[type='button'].active {
   stroke-width: 1;
  }  
 
-@media screen and (max-width: 1200px) {
-  .action-window {
-    height: 64%;
-    width: 74%;
-  }
-  
-}
-
+ @media screen and (max-width: 1120px) {
+    .action-popup.action-popup.clouds-display {
+      width: 90%;
+    }
+ }
 
 @media screen and (min-width: 1000px) and (max-width: 1430px) {
-
-  .action-popup.clouds-display {
-    width: 68%;
-    height: 70%;
-  }
 
   .slider-row.extras {
     display: flex;
@@ -1107,11 +1112,6 @@ input[type='button'].active {
     scale: 0.7;
    }
 
-   .action-window {
-    height: 63%;
-    width: 63%;
-  }
-  
   .form-info {
     letter-spacing: 0.2px;
     font-size: 15px;

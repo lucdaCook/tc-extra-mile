@@ -46,11 +46,11 @@ export default function Window({ many }) {
                     setExtracting(true)
                     predictOnVideo(e, nav)
                   }}
+                  title="Upload a file"
                   className="video-select"
                     /> 
               }
               <VideoAdd />
-              <PlayIcon />
               </div>
               <div className="form-info">
                 <span>Let's say tata to emissions!
