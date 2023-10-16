@@ -90,25 +90,25 @@ def test_write_data(zip_path, split_info, to_dir, base_name, files):
   
   
 
-@pytest.mark.parametrize(
-  'path, n_frames, image_size',
-  [
-    (pathlib.Path('back/data/frissewind/train'), None, (28, 28)),
-    (pathlib.Path('back/data/frissewind_eval/val'), None, (32, 32)),
-    (pathlib.Path('back/data/frissewind_eval/test'), None, (32, 32))
-  ]
-)
-def test_FrameGen(path, n_frames, image_size):
-  mock_gen = data.FrameGen(path, n_frames, image_size=image_size)
+# @pytest.mark.parametrize(
+#   'path, n_frames, image_size',
+#   [
+#     (pathlib.Path('back/data/frissewind/train'), None, (28, 28)),
+#     (pathlib.Path('back/data/frissewind_eval/val'), None, (32, 32)),
+#     (pathlib.Path('back/data/frissewind_eval/test'), None, (32, 32))
+#   ]
+# )
+# def test_FrameGen(path, n_frames, image_size):
+#   mock_gen = data.FrameGen(path, n_frames, image_size=image_size)
   
-  frame, label = next(mock_gen())
+#   frame, label = next(mock_gen())
   
-  image_shape = image_size + (3,)
+#   image_shape = image_size + (3,)
   
-  assert isinstance(frame, np.ndarray)
-  assert isinstance(label, int)
-  assert 1 >= label >= 0
-  assert frame.shape == image_shape
+#   assert isinstance(frame, np.ndarray)
+#   assert isinstance(label, int)
+#   assert 1 >= label >= 0
+#   assert frame.shape == image_shape
 
 def test_scale():
   example = np.random.rand(28, 28, 3)
@@ -139,26 +139,65 @@ def test_get_data_paths(train_size, val_size, resample, test_fallback):
       assert isinstance(path, pathlib.PosixPath)
   
 
-@pytest.mark.parametrize(
-  'val_size',
-  [(0.8), (1.0)]
-)
-def test_get_datasets(val_size):
+# @pytest.mark.parametrize(
+#   'val_size',
+#   [(0.8), (1.0)]
+# )
+# def test_get_datasets(val_size):
   
-  train, val = None, None
+#   train, val = None, None
 
-  if val_size < 1.:
-    train, val, test = data.get_datasets(train_size=0.1, val_size=val_size)
-    datasets = [train, val, test]
-  elif val_size == 1.:
-    with pytest.raises(Exception):
-      train, val, test = data.get_datasets(train_size=0.1, val_size=val_size)
+#   if val_size < 1.:
+#     train, val, test = data.get_datasets(train_size=0.1, val_size=val_size)
+#     datasets = [train, val, test]
+#   elif val_size == 1.:
+#     with pytest.raises(Exception):
+#       train, val, test = data.get_datasets(train_size=0.1, val_size=val_size)
       
-    train, val  = data.get_datasets(train_size=0.1, val_size=val_size)
-    datasets = [train, val]
+#     train, val  = data.get_datasets(train_size=0.1, val_size=val_size)
+#     datasets = [train, val]
 
+#   for ds in datasets:
+#     assert isinstance(ds, tf.data.Dataset)
+    
+def test_get_image_paths():
+  
+  image_dir = data.get_image_paths('back/data/frissewind_eval/val')
+  
+  assert (image_dir).is_dir() 
+  assert len(list(image_dir.glob('*/*.jpg'))) > 0
+  
+def test_write_tfrecords():
+  
+  image_dir = 'back/data/frissewind_eval/val/images'
+  
+  record_file = data.write_tfrecords(image_dir)
+  
+  assert pathlib.Path(record_file).is_file()
+
+@pytest.mark.parametrize(
+  'resample, check_dir, image_size', [
+    (True, 'frissewind_eval/val', (256, 256)),
+    (False, 'frissewind/train', (224, 224))
+  ]
+)
+def test_get_datasets(resample, check_dir, image_size): 
+  
+  train_ds, val_ds = data.get_datasets(0.01, val_size=0.02, resample=resample,
+                                       image_size=image_size)
+  
+  data_dir = pathlib.Path('back/data')
+  assert data_dir.is_dir()
+  assert len(list(data_dir.glob('*/'))) > 0
+  assert len(list(data_dir.glob('*/*/'))) > 0
+  
+  assert pathlib.Path(data_dir, check_dir, 'images', 'images.tfrecords').is_file()
+  
+  datasets = [train_ds, val_ds]
+  
   for ds in datasets:
     assert isinstance(ds, tf.data.Dataset)
-    
+    assert ds.element_spec[0].shape == [None, image_size[0], image_size[1], 3]
+  
   
   

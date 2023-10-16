@@ -270,7 +270,6 @@ def convert_to_tfrecord(image_string, image_path):
 
 
 def write_tfrecords(image_dir):
-  write_dir = pathlib.Path(image_dir).parent
   record_file = f'{image_dir}/images.tfrecords'
   with tf.io.TFRecordWriter(record_file) as w:
     for image in pathlib.Path(image_dir).glob('*/*.jpg'):

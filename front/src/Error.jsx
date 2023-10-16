@@ -1,10 +1,14 @@
 import { useRouteError } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function ErrorPage() {
-  const error = useRouteError()
-  console.error(error)
+
+  const err = useLocation().state.errorInfo
+  console.log(err, 'THIS THE ERRRRRRRRRRRRRRR')
 
   return (
-    <div>Error Page. Debug time</div>
+    <div className="error">
+      ERRRRRRRORRRRR
+    </div>
   )
 }

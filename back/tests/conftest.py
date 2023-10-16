@@ -13,10 +13,6 @@ def pytest_addoption(parser):
   parser.addoption('--model', action='store', default = None, 
                    help=f'Name of model to train. One of {[name for name in models]}')
 
-#train 
-# def pytest_addoption(parser):
-#   parser.addoption('--model', action='store', default = None, help=f'Name of model to train. One of {[name for name in models]}')
-  
 @pytest.fixture
 def remove_test_experiment():
   def _remove_test_exp(exp_dir):
@@ -42,17 +38,13 @@ def files_per_class():
   return _files_per_class
 
 #cleanup
-@pytest.fixture
-def remove_test_gif():
-  yield remove_test_gif
-  pathlib.Path('test.mp4').unlink()
-
 @pytest.fixture(scope="session", autouse=True)
-def remove_tested_dirs():
+def remove_tested_dirs(request):
   yield remove_tested_dirs
-  if pathlib.Path('back/data/frissewind').is_dir() and pathlib.Path('back/data/frissewind_eval').is_dir():
-    shutil.rmtree('back/data/frissewind')
-    shutil.rmtree('back/data/frissewind_eval')
+  if request.config.getoption('--persist_files') is False:
+    if pathlib.Path('back/data/frissewind').is_dir() and pathlib.Path('back/data/frissewind_eval').is_dir():
+      shutil.rmtree('back/data/frissewind')
+      shutil.rmtree('back/data/frissewind_eval')
 
 @pytest.fixture(scope='session', autouse=True)
 def clean_files(request):

@@ -8,6 +8,8 @@ export default function CloudsContextProvider({ children }) {
 
   let defaultTata = JSON.parse(localStorage.getItem('showTata'))
   let defaultCloudCount = JSON.parse(localStorage.getItem('cloudCount'))
+
+  const storedLogs = JSON.parse(localStorage.getItem('logs'))
   
   if (defaultTata == null) {
     defaultTata = true
@@ -81,9 +83,15 @@ export default function CloudsContextProvider({ children }) {
       if (totalCaps > 0) {
 
       setLogs(prev => prev.concat(json))
-
+      
+      if ( storedLogs !== null && storedLogs.length > 0) {
       localStorage.setItem('logs', 
-      JSON.stringify([...JSON.parse(localStorage.getItem('logs'))].concat(json).sort((a, b) => b.n_captured - a.n_captured)))
+      JSON.stringify(json.concat([...JSON.parse(localStorage.getItem('logs'))])))
+      // .sort((a, b) => b.n_captured - a.n_captured)
+      } else {
+        localStorage.setItem('logs', 
+      JSON.stringify([json]))
+      }
 
       setExtracted(true)
 
@@ -128,7 +136,12 @@ export default function CloudsContextProvider({ children }) {
     fetch(`${server}/extract/`, {
       method: 'POST', 
       body: formData,
-    }).then(res => res.json())
+    }).then(res => {
+      if (res.ok){
+        return res.json()
+      } else {
+        throw new Error(res.status)
+      }})
     .then(json => {
       
       if (json.n_captured > 0) {
@@ -137,9 +150,15 @@ export default function CloudsContextProvider({ children }) {
         
         setLogs(prev => prev.concat(json))
 
-        localStorage.setItem('logs', 
-        JSON.stringify([...JSON.parse(localStorage.getItem('logs'))].concat(json).sort((a, b) => b.n_captured - a.n_captured)))
 
+        if (storedLogs !== null && storedLogs.length > 0) {
+          localStorage.setItem('logs', 
+          JSON.stringify([json].concat([...JSON.parse(localStorage.getItem('logs'))])))
+          // .sort((a, b) => b.n_captured - a.n_captured)
+          } else {
+            localStorage.setItem('logs', 
+          JSON.stringify([json]))
+          }
       setExtracted(true)
 
       localStorage.setItem('cloudCount', 
@@ -159,6 +178,8 @@ export default function CloudsContextProvider({ children }) {
 
         nav('/no-clouds')
       }
+    }).catch((err) => {
+      nav('/error', {state: {'errorInfo': err}})
     })
   }
 
@@ -178,13 +199,6 @@ export default function CloudsContextProvider({ children }) {
     //   }
     // }).then(res => console.log(res.status))
   }
-
-  // useEffect(() => {
-  //   console.log(logs, 'this is what is setting localstorage')
-  //   if (logs.length > 0 ){
-  //   localStorage.setItem('logs', JSON.stringify([...logs].sort((a, b) => b.n_captured - a.n_captured)))
-  //   }
-  // }, [logs])
 
   useEffect(() => {
 

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
 import { useNavigate, useLoaderData } from 'react-router-dom'
-import { CloudDownload, CloudIcon } from '../svg/clouds'
+import { CloudDownload } from '../svg/clouds'
 import FeedbackForm from "./FeedbackForm"
 
 export default function CloudsLoader() {

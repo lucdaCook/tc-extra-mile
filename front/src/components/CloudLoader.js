@@ -6,6 +6,8 @@ import FeedbackForm from "./FeedbackForm"
 
 export default function CloudLoader() {
 
+
+
   const cloudId = useLoaderData()  
   const { extracted, setExtracted } = useContext(CloudsContext)
   const [ blobUrl, setBlobUrl ] = useState('')
@@ -51,7 +53,7 @@ export default function CloudLoader() {
               </div> 
             </div> 
             
-          <FeedbackForm info={cloudId}/>
+          <FeedbackForm info={locState.cloudInfo}/>
         <div className='slider-row extras'
         style={{'transform': 'translate(50%)'}}>
           <a href={blobUrl} download={cloudId} className='blob-anchor' 

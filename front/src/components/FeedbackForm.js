@@ -58,6 +58,7 @@ export default function FeedbackForm({ info }) {
           >
           <input type="text" 
           defaultValue='Got anything to say..?' 
+          autoComplete="off"
           name="text"/>
           <input type='submit' value='Submit'
           className="submit-input"
