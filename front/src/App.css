@@ -58,22 +58,6 @@ a.active svg{
   background: rgb(57 85 110);
 }
 
-/* 
-if we want scrolling to keep back gradient
-.topbar.nav {
-  position: fixed;
-  width: 100%;
-}
-
-.background-gradient {
-  width: 150%;
-}
-
-#cloud-1 {
-  top: 90px;
-} 
-*/
-
 .right-icons, 
 .left-icons {
   display: flex;
@@ -82,7 +66,7 @@ if we want scrolling to keep back gradient
 }
 
 .right-icons {
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 div#cloud-counter {
@@ -96,8 +80,12 @@ div#cloud-counter {
   min-height: 15px;
 }
 
+#cloud-counter.plus-one svg {
+  animation: plus_one 900ms linear
+}
+
 #cloud-counter svg {
-  fill: #5b9bb8;
+  fill: #b3b3b3;
   margin-top: 17px;
 }
 
@@ -218,7 +206,7 @@ svg.yt-icon {
   height: 40px;
   width: 40px;
   background-color: transparent;
-  fill: #b3b3b3 !important;
+  fill: #b3b3b3;
 }
 
 .action.icon {
@@ -383,11 +371,19 @@ a.action-row svg {
 }
 
 div.error {
-  display: flex;
-  align-items: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   justify-content: center;
+  display: flex;
+}
+
+div.error .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  align-items: center;
+  gap: 40px;
 }
 
 .view-refresh {
@@ -412,6 +408,12 @@ div.error {
   width: 80%;
   max-width: 1030px;
   animation: window_enter 80ms ease-in-out forwards;
+}
+
+.action-window.youtube {
+  width: 90% !important;
+  justify-content: center;
+  max-width: 1090px !important;
 }
 
 .action-popup.clouds-display {
@@ -504,8 +506,6 @@ h4.give-feedback {
   fill: currentColor !important;
 }
 
-
-
 .vid-padding {
   padding: 10px;
   position: absolute;
@@ -528,6 +528,8 @@ h4.give-feedback {
   justify-content: center;
   gap: 5em;
   grid-area: extras;
+  justify-self: flex-end;
+  margin-right: 30px;
 }
 
 .extras-widget {
@@ -569,7 +571,7 @@ a.blob-anchor svg {
 }
 
 .video-widgets {
-  justify-self: end;
+  justify-self: flex-end;
   display: grid;
   gap: 60px;
   grid-template-columns: 1fr 1fr;
@@ -577,14 +579,14 @@ a.blob-anchor svg {
 
 .player-extras.buttons {
   display: grid;
-  justify-self: end;
+  justify-self: flex-end;
   gap: 30px;
   grid-template-columns: 1fr 1fr;
   align-items: center;
 }
 
 .player-extras.buttons form {
-  justify-self: end;
+  justify-self: flex-end;
 }
 
 .download-cloud svg {
@@ -693,7 +695,7 @@ a.blob-anchor svg {
   transform: translateY(80px);
   align-self: flex-start;
   height: 35%;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .form-info {
@@ -835,7 +837,7 @@ div.select-flex {
 }
 
 .align-end {
-  align-self: end;
+  align-self: flex-end;
 }
 
 .video-thumbnail {
@@ -908,7 +910,7 @@ div.select-flex {
   right: -60%;
   top: 130px;
   scale: 0.75;
-  animation: drift_cloud2 40s linear 27s infinite;
+  animation: drift_cloud2 50s linear 14s infinite;
   max-width: 90vw;
 }
 
@@ -1018,12 +1020,14 @@ input.submit-input {
 }
 
 .submit-input input:focus,
-input.submit-input:focus {
+input.submit-input:focus,
+button.submit {
   scale: 0.9;
 }
 
 .submit-input input:hover,
-input.submit-input:hover {
+input.submit-input:hover,
+button.submit {
   background: rgb(190, 198, 205, 1);
 }
 
@@ -1066,6 +1070,109 @@ input[type='button'].active {
 .extract path {
   stroke-width: 1;
  }  
+
+ .livestream-choices {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+ }
+
+ .livestream-choices.active {
+  gap: 40px;
+ }
+
+ .stream-extras {
+  display: grid;
+  margin-left: 20px;
+  row-gap: 12px;
+  text-align: center;
+  align-self: flex-end;
+  margin-bottom: 40px;
+ }
+
+ .stream-extras a {
+  font-size: 15px;
+  padding: 9px;
+  text-decoration: none;
+  color: black;
+ }
+
+ .livestream-choice {
+    display: grid;
+    grid-template-rows: 10% auto;
+    height: 360px;
+    gap: 20px;
+ }
+
+ .livestream-choices button {
+  cursor: pointer;
+  border-radius: 10px;
+ }
+
+ .livestream {
+  position: relative;
+ }
+
+ div.live-counter{
+  position: relative;
+  margin-bottom: 20px;
+ }
+
+ .live-counter.plus-one {
+  animation: live_reward 200ms ease-out;
+ }
+
+ .live-capture.reward-container {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  opacity: 1;
+  scale: 0.4;
+  /* animation: live_reward 2s ease-out 300ms forwards */
+ }
+
+ /* .live-capture.reward-container video {
+  position: relative;
+ } */
+
+ .live-capture.reward-container span {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  font-size: 36px;
+ }
+
+ button.choose-livestream {
+  background: rgb(219, 230, 239, 0.5);
+  border-radius: 10px;
+  width: 40%;
+  justify-self: center;
+  transition: background-color ease 100ms;
+ }
+
+ button.stop-livestream {
+  background: #5b9bb8 !important;
+  padding: 9px;
+  border-radius: 12px;
+ }
+
+ button.stop-livestream:hover {
+  opacity: 0.9;
+ }
+
+ button.stop-livestream:focus {
+  scale: 0.9;
+ }
+
+button.choose-livestream:hover {
+  scale: 1.1;
+}
+
+button.choose-livestream:focus {
+  scale: 0.9;
+}
 
  @media screen and (max-width: 1120px) {
     .action-popup.action-popup.clouds-display {
@@ -1238,3 +1345,37 @@ from {
     scale: unset;
   }
 }
+
+@keyframes live_reward {
+0% {
+  bottom: 0px;
+} 50% {
+  bottom: 10px;
+} 100% {
+  bottom: 0px;
+}
+}
+
+@keyframes plus_one {
+  0% {
+
+  } 25% {
+    fill: #5b9bb8;
+  } 100% {
+
+  }
+}
+
+/* this is keeping the background gradient scrollable */
+.topbar.nav {
+  position: fixed;
+  width: 100%;
+}
+
+.background-gradient {
+  width: 172%;
+}
+
+#cloud-1 {
+  top: 90px;
+} 

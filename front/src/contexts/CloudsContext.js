@@ -72,7 +72,13 @@ export default function CloudsContextProvider({ children }) {
     method:'POST',
     body: formData
   }
-    ).then(res => res.json())
+    ).then(res => {
+      if(res.ok){
+        return res.json()
+      } else {
+        throw new Error(res.status)
+      }
+    })
     .then(json => {
       
       let totalCaps = 0
@@ -90,7 +96,7 @@ export default function CloudsContextProvider({ children }) {
       // .sort((a, b) => b.n_captured - a.n_captured)
       } else {
         localStorage.setItem('logs', 
-      JSON.stringify([json]))
+      JSON.stringify(json))
       }
 
       setExtracted(true)
@@ -115,7 +121,9 @@ export default function CloudsContextProvider({ children }) {
 
       nav('/no-clouds')
 
-  }})
+  }}).catch(err => {
+    nav('/error', {state: {'errorInfo': err, 'from': '/extract-many'}})
+  })
   }
 
   function predictOnVideo(e, nav) {
@@ -179,26 +187,69 @@ export default function CloudsContextProvider({ children }) {
         nav('/no-clouds')
       }
     }).catch((err) => {
-      nav('/error', {state: {'errorInfo': err}})
+      nav('/error', {state: {'errorInfo': err, from: '/extract'}})
     })
   }
 
-   function submitFeedback(e, numStars, cloudInfo) {
-    e.preventDefault()
-    console.log(cloudInfo)
-    console.log(e.target.children.text.value)
-    console.log(numStars)
+  
+  async function extractFromLivestream(video) {
+    console.log(video)
+    
+    const formData = new FormData()
+    
+    formData.append('video', video)
+    formData.append('model', userConfig['model'])
+    formData.append('threshold', userConfig['threshold'])
+    formData.append('n_frames', userConfig['n_frames'])
+    
+    
+    const res = await fetch(`${server}/extract-live`, {
+      method: 'POST',
+      body: formData
+    })
 
+    if (res.ok) {
+      const j = await res.json()
 
+      setLogs(prev => [j].concat(prev))
 
-    // fetch(`${process.env.REACT_APP_SERVER}/model/feedback`, {
-    //   method: "POST", 
-    //   body: {
-    //     'stars': numStars,
-    //     // 'text': text
-    //   }
-    // }).then(res => console.log(res.status))
+      if ( storedLogs !== null && storedLogs.length > 0) {
+        localStorage.setItem('logs', 
+        JSON.stringify([j].concat([...JSON.parse(localStorage.getItem('logs'))])))
+        // .sort((a, b) => b.n_captured - a.n_captured)
+        } else {
+          localStorage.setItem('logs', 
+        JSON.stringify([j]))
+        }
+
+      localStorage.setItem('cloudCount', 
+      JSON.parse(localStorage.getItem('cloudCount')) + 1)
+
+      return j
+
+    } else {
+      console.log('ERROR', res.status)
+    }
+    
+    
   }
+  
+  function submitFeedback(e, numStars, cloudInfo) {
+   e.preventDefault()
+   console.log(cloudInfo)
+   console.log(e.target.children.text.value)
+   console.log(numStars)
+
+
+
+   // fetch(`${process.env.REACT_APP_SERVER}/model/feedback`, {
+   //   method: "POST", 
+   //   body: {
+   //     'stars': numStars,
+   //     // 'text': text
+   //   }
+   // }).then(res => console.log(res.status))
+ }
 
   useEffect(() => {
 
@@ -225,8 +276,9 @@ export default function CloudsContextProvider({ children }) {
     setExtracted,
     predictOnVideo,
     predictOnManyVideos,
+    extractFromLivestream,
     updateConfig,
-    submitFeedback
+    submitFeedback,
   }
 
   return (

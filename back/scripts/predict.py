@@ -1,13 +1,11 @@
 import back.config.config as cfg
-from back.scripts.utils import format_frames
+from back.scripts.utils import format_frames, capture_to_mpeg
 from back.scripts.model import models
 import tensorflow as tf
 import cv2 
 import numpy as np
 import pathlib
 import logging
-import imageio.v3 as imageio
-import PIL.Image as Image
 
 #TODO: 
 '''
@@ -214,18 +212,6 @@ import PIL.Image as Image
 #   cv2.destroyAllWindows()
 #   return out_path
 
-
-
-
-def capture_to_mpeg(images, output_file, fps, verbose:int=0):
-
-  converted_images = np.array(images).astype('uint8')
-  pathlib.Path(output_file).touch(exist_ok=True)
-  imageio.imwrite(output_file, converted_images, fps=fps)
-  
-  if verbose:
-    logging.info(f'A capture was written to {output_file}!')
-
 def downsample(video:str, n_frames_to_extract, new_size:tuple=(512, 512)):
 
   vid = cv2.VideoCapture(video)
@@ -269,31 +255,29 @@ def downsample(video:str, n_frames_to_extract, new_size:tuple=(512, 512)):
 def predict_on_video(video:str,
                      model_name:str,
                      out_location:str|pathlib.PosixPath=cfg.UPLOAD_FOLDER,
-                     n_frames_threshold:int=8,
                      n_frames_to_extract:int|str=8,
                      threshold:float=0.5):
 
   for model in models:
     if model in model_name:
-      model_token = model
+      model_token = models[model]
       break
     else:
       raise KeyError('That model name is not valid')
 
-  image_size = models[model_token].img_shape[:-1]
+  image_size = model_token.img_shape[:-1]
 
   vid, vid_info = downsample(video, new_size=image_size, n_frames_to_extract=n_frames_to_extract)
 
   frame_step = vid_info['frame_step']
   frames_slice = vid_info['frames_slice']
   n_extractable_frames = vid_info['n_extractable_frames']
+    
 
   if n_frames_to_extract > n_extractable_frames:
     logging.info(f'The given video is too short to extract `{n_frames_to_extract}` frames. Falling back to {n_extractable_frames} instead')
     n_frames_to_extract = n_extractable_frames
 
-  elif 'max' in str(n_frames_to_extract):
-    n_frames_to_extract = n_extractable_frames
 
   frames = []
   toxic_clouds = []
@@ -316,7 +300,6 @@ def predict_on_video(video:str,
 
     toxic_clouds.extend(range((i * int(frame_step)) + frame_step))
 
-
     f = np.array(f)[..., [2, 1, 0]]
 
     f = format_frames(f, output_size=image_size)
@@ -328,9 +311,7 @@ def predict_on_video(video:str,
 
       n_pos += 1
 
-    if n_preds >= n_frames_to_extract:
-
-      if n_pos >= n_frames_threshold:
+    if n_preds >= n_frames_to_extract and n_pos >= n_frames_to_extract:
         captured = True
         n_captured += 1
 

@@ -31,6 +31,7 @@ export default function Topbar() {
 
   const confRef= useRef()
   const sensRef = useRef()
+  const cloudRef = useRef()
 
 
   function unfocus(e) {
@@ -49,7 +50,7 @@ export default function Topbar() {
       sensRef.current.classList.add('active')
     }
   }, [confRef, sensRef])
-
+  
   return (
     <div className='topbar nav'>
       <div className='left-icons'>
@@ -87,7 +88,7 @@ export default function Topbar() {
                   <TwoClouds />
                 <span>Capture from many files</span>
                 </Link>
-                <Link to='/extract'
+                <Link to='/extract-live'
                   state={{'from': loc.pathname}}
                   className='action-row actions '>
                   <FactoryIcon />
@@ -97,7 +98,7 @@ export default function Topbar() {
             </div>
           </button>
 
-          <form action={process.env.REACT_APP_AUTH_URI}>
+          {/* <form action={process.env.REACT_APP_AUTH_URI}>
             <input type='hidden' 
             name='client_id'
             value = {process.env.REACT_APP_CLIENT_ID} />
@@ -116,15 +117,16 @@ export default function Topbar() {
             <input type='hidden'
             name='state'
             value ='pass-through value' />
-            <button type='submit'
-              style={{width: '60px'}}>
-              <YoutubeIcon />
-            </button>
-          </form>
+          </form> */}
 
+          <Link
+            to='/yt/auth'
+            style={{width: '60px'}}>
+            <YoutubeIcon />
+          </Link>
       </div>
       <div className='right-icons'>
-        <div id='cloud-counter'>
+        <div id='cloud-counter' ref={cloudRef}>
           <CloudIcon />
           <span>{cloudCount}</span>
         </div>
