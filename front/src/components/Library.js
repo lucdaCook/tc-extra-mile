@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CloudDownload, CloudLock, CloudUnlock } from '../svg/clouds'
+import { CloudDownload, CloudLock, CloudUnlock, DeleteIcon } from '../svg/clouds'
 
 export default function Library() {
 
@@ -11,11 +11,10 @@ export default function Library() {
   const locState = useLocation().state
   const [ activeSelect, setActiveSelect ] = useState(false)
   const [ selectionBlobs, setSelectionBlobs ] = useState([])
+  const [ logs, setLogs ] = useState(JSON.parse(localStorage.getItem('logs')))
 
-  let logs = JSON.parse(localStorage.getItem('logs'))
-
-  if(logs === null){
-    logs = []
+  if(setLogs === null){
+    setLogs = []
   }
 
   let justCaptured;
@@ -55,6 +54,31 @@ export default function Library() {
   setSelectionBlobs([])
  }
 
+ function deleteClips(logs, selections) {
+
+  const  toDelete = selections.map(cloud => cloud.cloud)
+  console.log(toDelete)
+  const ret = logs.map(l => {
+    const prev = {...l}
+    prev.written = prev.written.filter(j => !toDelete.includes(j))
+
+    return prev
+  })
+
+  setLogs(ret)
+
+  setLogs(prev => {
+    return prev.filter(pre => {
+      return pre.written?.length > 0
+    })
+  })
+
+}
+
+useEffect(() => {
+  localStorage.setItem('logs', JSON.stringify(logs))
+}, [logs])
+
   return (
     <div className='container'> 
       <div className='view-refresh'> 
@@ -85,6 +109,11 @@ export default function Library() {
 
 { activeSelect && 
           <>
+          <button className='delete-clip'
+            onClick={() => deleteClips(logs, selectionBlobs)}
+          >
+          <DeleteIcon />
+          </button>
           <CloudDownload />
           <button className='download-blobs' onClick={(e) => downloadMultipleBlobs(e)}>
 
