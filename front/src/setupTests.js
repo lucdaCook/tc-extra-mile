@@ -8,10 +8,17 @@ import {
   RouterProvider,
   createMemoryRouter
 } from 'react-router-dom'
+import CredentialsContextProvider from './contexts/CredentialsContext';
+import CloudsContextProvider from './contexts/CloudsContext';
 
 export const renderWithRouter = (path, element, options) => {
   const router = createMemoryRouter([{path: path, element: element}], {
   })
 
-  return render(<RouterProvider router={router}/>, {...options})
+  return render( 
+  <CredentialsContextProvider>
+  <CloudsContextProvider >
+      <RouterProvider router={router} />
+    </CloudsContextProvider>
+  </CredentialsContextProvider>, {...options})
 }

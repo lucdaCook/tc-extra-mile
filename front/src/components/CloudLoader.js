@@ -55,7 +55,7 @@ export default function CloudLoader() {
             
           <FeedbackForm info={locState.cloudInfo}/>
         <div className='slider-row extras'
-        style={{'transform': 'translate(50%)'}}>
+        style={{display: 'flex', alignItems: 'flex-end', marginBottom: '30px'}}>
           <a href={blobUrl} download={cloudId} className='blob-anchor' 
           title="Download">
             <CloudDownload />

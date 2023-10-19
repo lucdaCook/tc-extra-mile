@@ -88,11 +88,13 @@ export default function YoutubeWindow() {
   }, [])
 
   useEffect(() => {
-    if (recentCapture.totalCaps > 0) {
+    if (liveCounterRef.current !== null && recentCapture.totalCaps > 0) {
       liveCounterRef.current.classList.add('plus-one')
 
       setTimeout(() => {
-        liveCounterRef.current.classList.remove('plus-one')
+        if (liveCounterRef.current !== null) {
+          liveCounterRef.current.classList.remove('plus-one')
+        }
       }, 2000)
     }
   }, [recentCapture])
@@ -171,6 +173,7 @@ export default function YoutubeWindow() {
           <button className="window-exit"
             onClick={() => {
               setKeepMonitoring(false)
+              setRecentCapture({'totalCaps': 0})
               if (exitTo) {
                 nav(exitTo)
               } else {

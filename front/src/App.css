@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@100;300&family=Roboto:wght@400;700&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 
 }
 
@@ -550,6 +553,7 @@ a.blob-anchor {
   display: flex;
   justify-content: flex-end;
   width: 90%;
+  margin-left: 50%;
 }
 
 a.blob-anchor:hover svg {
@@ -583,6 +587,10 @@ a.blob-anchor svg {
   gap: 30px;
   grid-template-columns: 1fr 1fr;
   align-items: center;
+}
+
+.player-extras.buttons.plural {
+  margin-right: -20%;
 }
 
 .player-extras.buttons form {
@@ -795,6 +803,7 @@ button.download-blobs a {
   left: 0;
   right: 0;
   color: transparent;
+  cursor: pointer;
 }
 
 svg:has( + button.download-blobs) {
@@ -802,6 +811,15 @@ svg:has( + button.download-blobs) {
   width: 40px;
   position: absolute;
   left: 100px;
+}
+
+button.delete-clip {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 40px;
+  fill: none;
+  cursor: pointer;
 }
 
 div.select-flex {
@@ -1124,16 +1142,24 @@ input[type='button'].active {
   animation: live_reward 200ms ease-out;
  }
 
- .live-capture.reward-container {
+ .live-counter span {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(130deg, #000000, #004b7d);
+    animation: text_flow 17s linear infinite
+ }
+
+ /* .live-capture.reward-container {
   position: absolute;
   bottom: 50%;
   left: 50%;
   opacity: 1;
-  scale: 0.4;
-  /* animation: live_reward 2s ease-out 300ms forwards */
+  scale: 0.4; 
+  animation: live_reward 2s ease-out 300ms forwards 
  }
 
- /* .live-capture.reward-container video {
+ .live-capture.reward-container video {
   position: relative;
  } */
 
@@ -1174,13 +1200,10 @@ button.choose-livestream:focus {
   scale: 0.9;
 }
 
- @media screen and (max-width: 1120px) {
-    .action-popup.action-popup.clouds-display {
-      width: 90%;
-    }
- }
-
-@media screen and (min-width: 1000px) and (max-width: 1430px) {
+@media screen and (max-width: 1430px) {
+  div.slider-row.extras:not(.plural) {
+    margin-bottom: 50px;
+  }
 
   .slider-row.extras {
     display: flex;
@@ -1192,6 +1215,7 @@ button.choose-livestream:focus {
   a.blob-anchor {
     padding-right: 20px;
     padding-bottom: 20px;
+    margin-left: 140%;
   }
 
   .video-overlay video {
@@ -1229,6 +1253,32 @@ button.choose-livestream:focus {
   }
 }
 
+@media screen and (max-width: 1120px) {
+  .action-popup.action-popup.clouds-display {
+    width: 90%;
+  }
+
+  .player-extras.buttons.plural {
+    margin-right: unset;
+  }
+}
+
+@media screen and (max-width: 970px) {
+  .video-overlay video {
+    width: 440px;
+  } 
+
+  .feedback span {
+    font-size: 13px;
+    font-weight: 650;
+    color: #5b5959;
+  }
+
+  a.blob-anchor {
+    margin-left: 135%;
+  }
+}
+
 @media screen and (max-height: 970px) {
   .vid-padding {
     display: none;
@@ -1237,6 +1287,12 @@ button.choose-livestream:focus {
   span.nav-library.nav-library.view-library {
     display: inline;
     margin-right: 65px;
+  }
+}
+
+@media screen and (min-width: 970px) {
+  a.blob-anchor {
+    margin-left: 140%;
   }
 }
 
@@ -1365,6 +1421,12 @@ from {
 
   }
 }
+
+@keyframes text_flow {
+  to {
+    background-position: 100vh;
+  }
+ }
 
 /* this is keeping the background gradient scrollable */
 .topbar.nav {

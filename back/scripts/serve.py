@@ -2,7 +2,6 @@ import logging
 import subprocess
 import tensorflow as tf
 import cv2
-import os
 import pathlib
 from datetime import datetime
 from back.scripts.model import models
@@ -29,8 +28,6 @@ def predict_on_stream(stream:str,
   vid = cv2.VideoCapture(src)
 
   frame_step = int(vid.get(cv2.CAP_PROP_FPS))
-  height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
-  width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
 
   cont = True
 
@@ -39,7 +36,6 @@ def predict_on_stream(stream:str,
   n_preds = 0
   frames = []
   status = 200
-  fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
   pathlib.Path(write_location).mkdir(parents=True, exist_ok=True)
 

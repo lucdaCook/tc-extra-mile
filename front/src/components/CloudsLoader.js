@@ -93,7 +93,7 @@ export default function CloudsLoader() {
           ))
         }
         </div>
-        <div className="player-extras buttons">
+        <div className="player-extras buttons plural">
               {
                 mainVidRef.current &&
               <a className="download-cloud"
