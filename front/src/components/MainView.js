@@ -28,7 +28,7 @@ function MainView() {
 
   return (
       <main className='main-view'>
-        <div className={`background-gradient` } >  
+        <div className='background-gradient'>  
             <SkyView>
             </SkyView>
           <div className='bottom-panel'>

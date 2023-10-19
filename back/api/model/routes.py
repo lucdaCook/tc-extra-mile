@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import config.config as cfg
 import json
+from scripts.serve import predict_on_stream
 
 
 @bp.route('/')
@@ -75,7 +76,25 @@ def extract_for_many_videos():
     
       
   return json.dumps(res)
-      
+
+
+@bp.route('/extract-live/', methods=['POST'])
+def extract_from_livestream():
+  
+  if 'video' in request.form: 
+    
+    req = request.form
+    print(req['video'], 'Live vid')
+    
+    res = predict_on_stream(req['video'],
+                            model_name='mobilevit_xxs_tfr_nopreproc_vl39',
+                            n_frames_to_extract=int(req['n_frames']),
+                            threshold=float(req['threshold']))
+    
+    return json.dumps(res)
+  
+  return Response('An error occured', 400)
+  
   
   
 @bp.route('clip/<video_id>', methods=['GET']) 

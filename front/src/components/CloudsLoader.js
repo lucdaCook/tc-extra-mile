@@ -16,10 +16,10 @@ export default function CloudsLoader() {
   const info = logs[cloudsId]
   
   useEffect(() => {
-    if(info === undefined) { 
+    if(info === undefined || info === null) { 
       nav('/extract', {state: {'from': '/'}})
     }
-  }, [])
+  }, [info])
 
   function fetchCurrentBlob(vid) {
     fetch(vid)
@@ -49,7 +49,7 @@ export default function CloudsLoader() {
   }
 
   useEffect(() => {
-    if (mainVidRef.current.src !== undefined) {
+    if (mainVidRef.current && mainVidRef.current.src !== undefined) {
       fetchCurrentBlob(mainVidRef.current.src)
       mainVidRef.current.focus()
     }

@@ -7,6 +7,8 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 import routerConf from './routes';
+import CredentialsContextProvider from './contexts/CredentialsContext';
+import CloudsContextProvider from './contexts/CloudsContext';
 
 console.log(window.innerWidth, window.innerHeight)
 const router = createBrowserRouter(routerConf)
@@ -14,7 +16,11 @@ const router = createBrowserRouter(routerConf)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <CredentialsContextProvider>
+        <CloudsContextProvider >
+            <RouterProvider router={router} />
+          </CloudsContextProvider>
+        </CredentialsContextProvider>
     </React.StrictMode>
 );
 

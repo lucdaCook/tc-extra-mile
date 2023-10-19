@@ -1,14 +1,18 @@
-import { useRouteError } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import SkyView from "./components/SkyView";
 
-export default function ErrorPage() {
+export default function ErrorPage({ notFound }) {
 
-  const err = useLocation().state.errorInfo
-  console.log(err, 'THIS THE ERRRRRRRRRRRRRRR')
+  const state = useLocation().state
 
+  console.log(notFound)
+  
   return (
     <div className="error">
-      ERRRRRRRORRRRR
+      <div className="info">
+        <span>Oops...That didn't work for some reason.</span>
+        <Link to={state?.goTo? state.goTo : state?.from ? state.from : '/'} state={{'from': '/'}}>{state.message ? state.message : 'Maybe try again?'}</Link>
+      </div>
     </div>
   )
 }

@@ -9,20 +9,14 @@ import {
   redirect,
 } from 'react-router-dom'
 import YoutubeUploader from './components/YoutubeUploader';
+import YoutubeWindow from './components/YoutubeWindow';
+import YoutubeAuthorizer from './components/YoutubeAuth';
 
 const routerConf = [
   {
     path:'/',
     element: <Root />,
-    errorElement: <ErrorPage />,
-    loader: () => {
-      const code =  new URLSearchParams(window.location.hash).get('access_token')
-      if (code !== null) {
-        window.history.pushState({}, null, '/')
-        console.log(code) 
-      }
-      return code
-    },
+    errorElement: <ErrorPage notFound={true} />,
     children: [{
       path: 'extract',
       element:<Window many={false}/>,
@@ -30,6 +24,10 @@ const routerConf = [
     {
       path: 'extract-many',
       element: <Window many={true}/>,
+    },
+    {
+      path: 'extract-live',
+      element: <YoutubeWindow />,
     },
     {
       path: 'library',
@@ -69,21 +67,31 @@ const routerConf = [
     path: 'yt',
     children: [
       { index: true, element: <div>Hey Youtube</div>},
-    {
-      path: 'send',
-      element: <YoutubeUploader />,
-      action: async ({ request }) => {
-        const formData = await request.formData()
-        console.log(formData, 'from action')
-        return formData
-      }
+      {
+        path: 'auth',
+        element: <YoutubeAuthorizer />,
+        loader: () => {
+          const code =  new URLSearchParams(window.location.hash).get('access_token')
+          if (code !== null) {
+            window.history.pushState({}, null, '/')
+            return code
+        } return null
+      },
     },
-    
+      {
+        path: 'send',
+        element: <YoutubeUploader />,
+        action: async ({ request }) => {
+          const formData = await request.formData()
+          console.log(formData, 'from action')
+          return formData
+        },
+      },
   ]
   },
   {
     path: 'error',
-    element: <ErrorPage />
+    element: <ErrorPage notFound={false}/>
   }
 ]}
 ]

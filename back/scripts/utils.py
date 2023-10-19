@@ -2,6 +2,9 @@ import numpy as np
 import tensorflow as tf
 import os
 import cv2
+import imageio.v3 as imageio
+import logging
+import pathlib
 
 def set_seeds(seed=11): #pragma: no cover, just setting seeds
   np.random.seed(seed)
@@ -47,3 +50,12 @@ def frames_from_video_file(video_path, n_frames=None, output_size=(256,256)):
   result = np.array(result)[..., [0, 1, 2]]
 
   return result
+
+def capture_to_mpeg(images, output_file, fps, verbose:int=0):
+
+  converted_images = np.array(images).astype('uint8')
+  pathlib.Path(output_file).touch(exist_ok=True)
+  imageio.imwrite(output_file, converted_images, fps=fps)
+  
+  if verbose:
+    logging.info(f'A capture was written to {output_file}!')

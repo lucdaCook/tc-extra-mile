@@ -1,22 +1,21 @@
-// import { useState, createContext } from 'react'
-// import { useSearchParams } from 'react-router-dom'
+import { useState, createContext, useEffect } from 'react'
 
-// export const CredentialsContext = createContext()
+export const CredentialsContext = createContext()
 
 
-// export default function CredentialsContextProvider({ defaultYtCode, children }) {
+export default function CredentialsContextProvider({ children }) {
 
-//   const [ youtube, setYoutube ] = useState(defaultYtCode)
+  const [ youtube, setYoutube ] = useState('')
 
-//   const values = {
-//     youtube,
-//     setYoutube
-//   }
+  const values = {
+    youtube,
+    setYoutube,
+  }
 
-//   return (
-//     <CredentialsContext.Provider value={values}>
-//         { children }
-//     </CredentialsContext.Provider>
-//   )
+  return (
+    <CredentialsContext.Provider value={values}>
+        { children }
+    </CredentialsContext.Provider>
+  )
 
-// }
+}

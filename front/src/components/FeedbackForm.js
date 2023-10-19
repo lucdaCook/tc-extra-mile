@@ -57,9 +57,10 @@ export default function FeedbackForm({ info }) {
           onSubmit={e => submitFeedback(e, feedbackStars, info)}
           >
           <input type="text" 
-          defaultValue='Got anything to say..?' 
+          placeholder='Got anything to say..?' 
           autoComplete="off"
-          name="text"/>
+          name="text"
+          />
           <input type='submit' value='Submit'
           className="submit-input"
           onClick={e => e.target.blur()}/> 
