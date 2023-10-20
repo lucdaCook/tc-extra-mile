@@ -1,19 +1,25 @@
 from flask import Flask
 from flask import Blueprint
-import config.config as cfg
+# from celery import Celery
+import back.config.config as cfg
 import pathlib
-
 from flask_cors import CORS
+
+# celery = Celery(__name__, include=['back.api.model.routes'])
+
 def create_app():
   
   app = Flask(__file__)
   app.config['CORS_HEADERS'] = 'Content-Type'
   app.config['UPLOAD_FOLDER'] = cfg.UPLOAD_FOLDER
+  app.config['CELERY_BROKER_URL'] = 'amqp://localhost'
   pathlib.Path(cfg.UPLOAD_FOLDER).mkdir(exist_ok=True, parents=True)
 
   CORS(app)
   
   app.secret_key = cfg.SECRET_KEY
+  
+  # celery.conf.update(app.config)
   
   app.add_url_rule(
     '/model/extract/<id>', endpoint='model.downlod', build_only=True

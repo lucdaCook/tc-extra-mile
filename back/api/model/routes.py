@@ -6,27 +6,11 @@ import os
 import config.config as cfg
 import json
 from scripts.serve import predict_on_stream
-
+import back.api.model.gvar as gvar
 
 @bp.route('/')
 def model():
-  return f'This is a model route' 
-
- 
-# @bp.route('/extract/', methods=['POST'])
-# async def extract_toxic_clouds():
-
-#   c = request.data
-#   print(request.form, 'form', request.files, 'files')
-  
-#   with open('back/api/testing.mp4', 'wb') as vid:
-#     await vid.write(c)
-#     predict_on_video('back/api/testing.mp4', model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
-#                      output_filename='back/api/testing.mp4')
-#   return c
-
-
-
+  return 'This is a model route' 
 
 @bp.route('/extract/', methods=['GET', 'POST'])
 def extract_toxic_clouds():
@@ -70,21 +54,17 @@ def extract_for_many_videos():
                                 model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
                                 out_location=current_app.config['UPLOAD_FOLDER'],
                                 n_frames_to_extract=int(request.form['n_frames'])))
-    
-
-    
-    
       
   return json.dumps(res)
 
-
 @bp.route('/extract-live/', methods=['POST'])
 def extract_from_livestream():
+  global abort
   
   if 'video' in request.form: 
-    
     req = request.form
-    print(req['video'], 'Live vid')
+    
+    print(req['video'], 'Live vid') 
     
     res = predict_on_stream(req['video'],
                             model_name='mobilevit_xxs_tfr_nopreproc_vl39',
@@ -94,14 +74,17 @@ def extract_from_livestream():
     return json.dumps(res)
   
   return Response('An error occured', 400)
-  
-  
-  
+    
 @bp.route('clip/<video_id>', methods=['GET']) 
 def video_loader(video_id): 
   return send_from_directory(current_app.config['UPLOAD_FOLDER'], video_id)
 
-@bp.route('feedback')
+@bp.route('/feedback/')
 def get_feedback():
   
   return Response(200)
+
+@bp.route('/abort/', methods=['POST', 'GET'])
+def abort_extraction(): 
+  gvar.abort = ['True']
+  return json.dumps(True)

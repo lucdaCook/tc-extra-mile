@@ -172,7 +172,7 @@ export default function Topbar() {
               <input type='range' 
               name='threshold'
               step='0.1'
-              min='0'
+              min='0.1'
               max='1.0'
               
               onChange={e => updateConfig(e)}

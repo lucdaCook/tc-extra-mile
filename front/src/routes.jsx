@@ -11,6 +11,7 @@ import {
 import YoutubeUploader from './components/YoutubeUploader';
 import YoutubeWindow from './components/YoutubeWindow';
 import YoutubeAuthorizer from './components/YoutubeAuth';
+import LiveExtractor from './components/LiveExtractor';
 
 const routerConf = [
   {
@@ -48,8 +49,7 @@ const routerConf = [
     path: 'cloud/:cloudId',
     element: <CloudLoader />,
     loader: async ({ params }) => {
-
-      const cloudId = params.cloudId
+      const cloudId = await params.cloudId
       return cloudId
     },
   },

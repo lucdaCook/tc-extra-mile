@@ -32,6 +32,7 @@ REDIRECT_FRONT=os.environ.get('REDIRECT_FRONT')
 
 SECRET_KEY = secrets.token_hex()
 UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
+BROKER_URL = os.environ.get('BROKER_URL')
 
 SCOPES=os.environ.get('USER_SCOPE')
 API_SERVICE_NAME = os.environ.get('API_SERVICE_NAME')

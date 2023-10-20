@@ -60,7 +60,7 @@ export default function Library() {
   console.log(toDelete)
   const ret = logs.map(l => {
     const prev = {...l}
-    prev.written = prev.written.filter(j => !toDelete.includes(j))
+    prev.written = prev.written?.filter(j => !toDelete.includes(j))
 
     return prev
   })
@@ -72,6 +72,7 @@ export default function Library() {
       return pre.written?.length > 0
     })
   })
+  setSelectionBlobs([])
 
 }
 

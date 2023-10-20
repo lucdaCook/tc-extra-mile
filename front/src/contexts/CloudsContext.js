@@ -191,8 +191,7 @@ export default function CloudsContextProvider({ children }) {
     })
   }
 
-  
-  async function extractFromLivestream(video) {
+  async function extractFromLivestream(video, nav) {
     console.log(video)
     
     const formData = new FormData()
@@ -205,8 +204,9 @@ export default function CloudsContextProvider({ children }) {
     
     const res = await fetch(`${server}/extract-live`, {
       method: 'POST',
-      body: formData
+      body: formData,
     })
+
 
     if (res.ok) {
       const j = await res.json()
@@ -228,7 +228,7 @@ export default function CloudsContextProvider({ children }) {
       return j
 
     } else {
-      console.log('ERROR', res.status)
+      nav('/error')
     }
     
     

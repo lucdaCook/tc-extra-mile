@@ -8,8 +8,8 @@ export default function YoutubeWindow() {
   const { youtube } = useContext(CredentialsContext)
   const { extractFromLivestream } = useContext(CloudsContext)
   const [ livestreamData, setLivestreamData ] = useState({})
-  const [ streamChosen, setStreamChosen ] = useState('')
-  const [ keepMonitoring, setKeepMonitoring ] = useState(false)
+  const [ keepMonitoring, setKeepMonitoring ] = useState({'streamChosen': '', 'keepMonitoring': false})
+  const [ askToContinue, setAskToContinue ] = useState({})
   const [ recentCapture, setRecentCapture ] = useState({'totalCaps': 0})
   const livestreamRef = useRef()
   const liveCounterRef = useRef()
@@ -30,37 +30,45 @@ export default function YoutubeWindow() {
   }
 
   const monitor = async () => {
-    let cont = keepMonitoring
-    // let first = true 
-    // this is for if something arises when switching between streams and we need to reset live captures
-    while(cont !== null && keepMonitoring === true) { 
+  let cont = keepMonitoring['keepMonitoring']
 
-      // if (first) {
-      //   setRecentCapture({'totalCaps': 0})
-      // }
-      console.log('extracting...')
-      const ret = await extractFromLivestream(streamChosen)
-      setRecentCapture(prev => {
-       return {...ret, 'totalCaps': prev.totalCaps + 1}
-      })
+  while(cont !== null &&  keepMonitoring['keepMonitoring'] === true) { 
+  console.log('extracting...')
+  const ret = await extractFromLivestream(keepMonitoring.streamChosen, nav)
+
+  if (ret.status === 205) {
+    console.log('ABORTINGGG... FROM JS')
+    break
+  }
+  else if (ret.status === 300) {
+  setAskToContinue(ret)
+  setKeepMonitoring(prev => { return {...prev, 'keepMonitoring': false}})
+  break
+  } else if (ret.status === 400) {
+  livestreamRef.current = null
+  setKeepMonitoring({'streamChosen': '', 'keepMonitoring': false})
+  nav('/error')
+  break
+  }
+
+  setRecentCapture(prev => {
+  return {...ret, 'totalCaps': prev.totalCaps + 1}
+  })
       
-      cont = livestreamRef.current
-    }
+  cont = livestreamRef.current
+  }
   }
 
 
   useEffect(() => {
-    if (keepMonitoring === true){
+    console.log(keepMonitoring)
+    if (keepMonitoring['keepMonitoring'] === true){
       monitor()
     } else {
       setRecentCapture({'totalCaps': 0})
-    }
-
+    } 
+     
   }, [keepMonitoring])
-
-  useEffect(() => {
-    setRecentCapture({'totalCaps': 0})
-  }, [streamChosen])
 
   useEffect(() => {
 
@@ -88,30 +96,37 @@ export default function YoutubeWindow() {
   }, [])
 
   useEffect(() => {
-    if (liveCounterRef.current !== null && recentCapture.totalCaps > 0) {
-      liveCounterRef.current.classList.add('plus-one')
+  console.log(recentCapture)
+  if (liveCounterRef.current !== null && recentCapture.totalCaps > 0) {
+  liveCounterRef.current.classList.add('plus-one')
 
-      setTimeout(() => {
-        if (liveCounterRef.current !== null) {
-          liveCounterRef.current.classList.remove('plus-one')
-        }
+  setTimeout(() => {
+  if (liveCounterRef.current !== null) {
+  liveCounterRef.current.classList.remove('plus-one')
+  }
       }, 2000)
-    }
+  }
   }, [recentCapture])
+
+  useEffect(() => {
+    console.log(askToContinue)
+  }, [askToContinue])
+
 
   return (
     <div className="container">
       <div className="view-refresh">
         <div className="action-window popup youtube">
-          <div className={`livestream-choices${+ streamChosen !== '' ? ' active' : ''}`}>
-            {!streamChosen ?
+          <div className={`livestream-choices${+ keepMonitoring.streamChosen !== '' ? ' active' : ''}`}>
+            {!keepMonitoring?.streamChosen ? 
             livestreamData?.items?.map((vid, i) => (
               <div className="livestream-choice" key={i}>
                 <button 
                   className="choose-livestream"
                   onClick={e => {
-                    setStreamChosen(e.target.nextSibling.src)
-                    setKeepMonitoring(true)
+                    setKeepMonitoring(() => {
+                      return {'streamChosen': e.target.nextSibling.src, 'keepMonitoring': true}
+                    })
                   }}
                 >
                   {livestreamData.items[i].snippet.title.split('-').at(1)}
@@ -126,23 +141,32 @@ export default function YoutubeWindow() {
             :
             <>
               <div className="livestream" style={{position: 'relative'}}>
-                <iframe src={`${streamChosen}?autoplay=1&mute=1&fs=1`} 
+                <iframe src={`${keepMonitoring.streamChosen}?autoplay=1&mute=1&fs=1`} 
                 allow="autoplay"
                 width='670px' height='475px' title="livestream"
                 ref={livestreamRef}/>
 
-              {
-              // recentCapture.totalCaps > 0 &&
-              //     <div
-              //       className='live-capture reward-container'
-              //     >
-              //         {/* <video 
-              //         src='../testing.mp4' 
-              //         placeholder="justCaptured.png" 
-              //         width='80px' height='80px'
-              //         className="live-reward png"/> */}
-              //         <span>+1</span>
-              //       </div>
+              {JSON.stringify(askToContinue) !== '{}' &&
+                  <div
+                    className='ask-continue'
+                  >
+                    <span>{askToContinue.status === 300 && `${askToContinue.message}`}</span>
+                    <button
+                    onClick={() => {
+                      setKeepMonitoring(prev => { 
+                        return {...prev, 'keepMonitoring': true}
+                      })
+                      setAskToContinue({})
+                    }}
+                    >
+                      Want to keep going?
+                    </button>
+                    <button
+                      onClick={() => nav('/')}
+                    >
+                      Exit
+                    </button>
+                  </div>
 
                     }
               </div>
@@ -156,15 +180,21 @@ export default function YoutubeWindow() {
                 <button 
                 className="stop-livestream"
                 onClick={() => {
-                  setKeepMonitoring(false)
-                  setStreamChosen('')
                   livestreamRef.current.src = undefined
+                  setKeepMonitoring({
+                    streamChosen: '',
+                    keepMonitoring: false
+                  })
+                  console.log('fetching for abort.....')
+                  fetch('http://localhost:8000/model/abort')
+                  .then(res => res.json())
+                  .then(json => console.log('BREAKPOINT FROM JS', json))
                 }}
                 >Stop monitoring</button>
                 <Link 
                 to='/library' 
                 state={{'justCaptured': recentCapture.totalCaps}}
-                onClick={() => setKeepMonitoring(false)}
+                onClick={() => setKeepMonitoring({'streamChosen': '', 'keepMonitoring': false})}
                 >Go to library</Link>
               </div>
             </>
@@ -172,7 +202,7 @@ export default function YoutubeWindow() {
           </div>
           <button className="window-exit"
             onClick={() => {
-              setKeepMonitoring(false)
+              setKeepMonitoring({'streamChosen': '', 'keepMonitoring': false})
               setRecentCapture({'totalCaps': 0})
               if (exitTo) {
                 nav(exitTo)

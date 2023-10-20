@@ -1101,6 +1101,32 @@ input[type='button'].active {
   gap: 40px;
  }
 
+ div.ask-continue {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: black;
+  display: flex;
+  opacity: 0.7;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-direction: column;
+  gap: 15px;
+ }
+ 
+ div.ask-continue button {
+  color: inherit;
+  background: #5b9bb8;
+  padding: 9px;
+  border-radius: 12px;
+  z-index: 11;
+  pointer-events: all;
+ }
+
  .stream-extras {
   display: grid;
   margin-left: 20px;
