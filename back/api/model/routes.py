@@ -86,5 +86,6 @@ def get_feedback():
 
 @bp.route('/abort/', methods=['POST', 'GET'])
 def abort_extraction(): 
+  print('mutating...')
   gvar.abort = ['True']
   return json.dumps(True)

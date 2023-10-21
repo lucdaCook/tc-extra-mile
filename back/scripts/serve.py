@@ -57,10 +57,6 @@ def predict_on_stream(stream:str,
   model = tf.keras.saving.load_model(f'back/models/{model_name}')
 
   while cont:
-
-    current_frame = vid.get(1)
-    ret, frame = vid.read()
-    
     if 'True' in gvar.abort:
       gvar.abort = ['False']
       return {
@@ -68,14 +64,17 @@ def predict_on_stream(stream:str,
         'message': 'User aborted'
       }
 
+    current_frame = vid.get(1)
+    ret, frame = vid.read()
+    
+
     if ret == True:
       frame = frame[..., [2, 1, 0]]
       frames.append(frame)
       if current_frame % frame_step == 0:
         f = format_frames(frame, output_size=image_shape)
-
         pred = model(tf.expand_dims(f, 0), training=False)
-        print(pred, 'pred')
+        print(pred)
         n_preds += 1
 
         if pred >= threshold:
@@ -114,6 +113,7 @@ def predict_on_stream(stream:str,
   if status == 200:
     return {
       'video_file': stream,
+      'status': 200,
       'live_capture': True,
       'captured': True,
       'n_captured': 1,

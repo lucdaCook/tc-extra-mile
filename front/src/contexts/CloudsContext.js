@@ -76,7 +76,7 @@ export default function CloudsContextProvider({ children }) {
       if(res.ok){
         return res.json()
       } else {
-        throw new Error(res.status)
+        throw res
       }
     })
     .then(json => {
@@ -122,7 +122,7 @@ export default function CloudsContextProvider({ children }) {
       nav('/no-clouds')
 
   }}).catch(err => {
-    nav('/error', {state: {'errorInfo': err, 'from': '/extract-many'}})
+    nav('/error', {state: {'error': err, 'from': '/extract-many'}})
   })
   }
 
@@ -148,7 +148,7 @@ export default function CloudsContextProvider({ children }) {
       if (res.ok){
         return res.json()
       } else {
-        throw new Error(res.status)
+        throw res
       }})
     .then(json => {
       
@@ -187,7 +187,7 @@ export default function CloudsContextProvider({ children }) {
         nav('/no-clouds')
       }
     }).catch((err) => {
-      nav('/error', {state: {'errorInfo': err, from: '/extract'}})
+      nav('/error', {state: {'error': err, from: '/extract'}})
     })
   }
 
@@ -210,27 +210,25 @@ export default function CloudsContextProvider({ children }) {
 
     if (res.ok) {
       const j = await res.json()
-
-      setLogs(prev => [j].concat(prev))
-
-      if ( storedLogs !== null && storedLogs.length > 0) {
-        localStorage.setItem('logs', 
-        JSON.stringify([j].concat([...JSON.parse(localStorage.getItem('logs'))])))
-        // .sort((a, b) => b.n_captured - a.n_captured)
+      console.log(j)
+      if(j.status === 200){
+        setLogs(prev => [j].concat(prev))
+        localStorage.setItem('cloudCount', 
+        JSON.parse(localStorage.getItem('cloudCount')) + 1)
+        if (storedLogs !== null && storedLogs.length > 0) {
+          localStorage.setItem('logs', 
+          JSON.stringify([j].concat([...JSON.parse(localStorage.getItem('logs'))])))
+          // .sort((a, b) => b.n_captured - a.n_captured)
         } else {
           localStorage.setItem('logs', 
-        JSON.stringify([j]))
+          JSON.stringify([j]))
         }
+      }
+    return j
 
-      localStorage.setItem('cloudCount', 
-      JSON.parse(localStorage.getItem('cloudCount')) + 1)
-
-      return j
-
-    } else {
-      nav('/error')
-    }
-    
+  } else {
+    nav('/error')
+  }
     
   }
   

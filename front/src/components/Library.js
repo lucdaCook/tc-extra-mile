@@ -13,8 +13,8 @@ export default function Library() {
   const [ selectionBlobs, setSelectionBlobs ] = useState([])
   const [ logs, setLogs ] = useState(JSON.parse(localStorage.getItem('logs')))
 
-  if(setLogs === null){
-    setLogs = []
+  if(logs === null){
+    setLogs([])
   }
 
   let justCaptured;

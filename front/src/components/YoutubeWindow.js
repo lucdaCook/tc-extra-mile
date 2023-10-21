@@ -29,15 +29,30 @@ export default function YoutubeWindow() {
     exitTo = locState.from
   }
 
+  function abort() {
+    // if (livestreamRef.current){
+    //   livestreamRef.current.src = undefined
+    // }
+
+    fetch('http://localhost:8000/model/abort')
+    .then(res => res.json()) 
+    .then(json => {
+      console.log('BREAKPOINT FROM JS', json)
+      setKeepMonitoring({
+        streamChosen: '',
+        keepMonitoring: false
+      })
+      setRecentCapture({'totalCaps': 0})
+    })
+  }
+
   const monitor = async () => {
   let cont = keepMonitoring['keepMonitoring']
 
   while(cont !== null &&  keepMonitoring['keepMonitoring'] === true) { 
-  console.log('extracting...')
   const ret = await extractFromLivestream(keepMonitoring.streamChosen, nav)
 
   if (ret.status === 205) {
-    console.log('ABORTINGGG... FROM JS')
     break
   }
   else if (ret.status === 300) {
@@ -73,24 +88,26 @@ export default function YoutubeWindow() {
   useEffect(() => {
 
     if (youtube !== null && livestreamRef.current === undefined) {
+      console.log(youtube)
       fetch(process.env.REACT_APP_FRISSEWIND_STREAMS, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${youtube}`,
           'Accept': 'application/json'
         }}).then(res => {
-          if(res.ok) {
-            return res.json()
-          } else {
-            throw new Error(res.status)
+          if (!res.ok) {
+            throw res
           }
+          return res.json()
         }).then(json => {
           console.log('setting livestreamData json is :', json)
           setLivestreamData(json)
-        }).catch(err => {
-          console.log(err, 'this is most likely because: 1. youtube is not signed in 2. the quota has been reached')
+        }).catch(error => {
+          if (error.status === 403) {
+            nav('/error', {state: {'message': 'Looks have reached your live inference limits for the day.'}})
+          } else {
           nav('/yt/auth', {state: {'from': '/extract-live'}})
-          // nav('/error', {state: {'message': 'Did you sign into your Youtube account yet?', 'goTo': '/yt/auth'}})
+        }
         })
     }
   }, [])
@@ -107,11 +124,6 @@ export default function YoutubeWindow() {
       }, 2000)
   }
   }, [recentCapture])
-
-  useEffect(() => {
-    console.log(askToContinue)
-  }, [askToContinue])
-
 
   return (
     <div className="container">
@@ -179,22 +191,12 @@ export default function YoutubeWindow() {
                 </div>
                 <button 
                 className="stop-livestream"
-                onClick={() => {
-                  livestreamRef.current.src = undefined
-                  setKeepMonitoring({
-                    streamChosen: '',
-                    keepMonitoring: false
-                  })
-                  console.log('fetching for abort.....')
-                  fetch('http://localhost:8000/model/abort')
-                  .then(res => res.json())
-                  .then(json => console.log('BREAKPOINT FROM JS', json))
-                }}
+                onClick={() => abort()}
                 >Stop monitoring</button>
                 <Link 
                 to='/library' 
                 state={{'justCaptured': recentCapture.totalCaps}}
-                onClick={() => setKeepMonitoring({'streamChosen': '', 'keepMonitoring': false})}
+                onClick={() => abort()}
                 >Go to library</Link>
               </div>
             </>
