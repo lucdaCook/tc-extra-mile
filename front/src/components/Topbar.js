@@ -27,6 +27,8 @@ export default function Topbar() {
 
   const loc = useLocation()
 
+  const focusExtraction =  loc.pathname.includes('extract') ? 'none' : 'auto'
+
   const cloudCount = JSON.parse(localStorage.getItem('cloudCount')) 
 
   const confRef= useRef()
@@ -54,10 +56,12 @@ export default function Topbar() {
   return (
     <div className='topbar nav'>
       <div className='left-icons'>
-        <Link to='/' className='home-link'>
+        <Link to='/' className='home-link'
+        style={{pointerEvents: focusExtraction}}>
           {/* You know what to do here */}
         </Link>
-        <button className='actions-btn actions'>
+        <button className='actions-btn actions'
+        style={{pointerEvents: focusExtraction}}>
             <CloudIcon />
             <div className='actions-after' >
               <div className='actions-main'>
@@ -121,7 +125,7 @@ export default function Topbar() {
 
           <Link
             to='/yt/auth'
-            style={{width: '60px'}}>
+            style={{width: '60px', pointerEvents: focusExtraction}}>
             <YoutubeIcon />
           </Link>
       </div>
@@ -130,7 +134,12 @@ export default function Topbar() {
           <CloudIcon />
           <span>{cloudCount}</span>
         </div>
-        <NavLink to='/library' className='library white' title='Your Library'>
+        <NavLink 
+        to='/library' 
+        className='library white' 
+        title='Your Library'
+        state={{'from': loc.pathname}}
+        style={{pointerEvents: focusExtraction}}>
           <LibraryIcon />
         </NavLink>
         <button className='settings'>

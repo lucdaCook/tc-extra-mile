@@ -11,7 +11,6 @@ import {
 import YoutubeUploader from './components/YoutubeUploader';
 import YoutubeWindow from './components/YoutubeWindow';
 import YoutubeAuthorizer from './components/YoutubeAuth';
-import LiveExtractor from './components/LiveExtractor';
 
 const routerConf = [
   {

@@ -31,7 +31,7 @@ export default function YoutubeAuthorizer() {
         >
         <input type='hidden' 
         name='client_id'
-        value = {process.env.REACT_APP_CLIENT_ID} />
+        value = {process.env.REACT_APP_CLIENT_ID_2} />
         <input type='hidden'
         name='redirect_uri'
         value = {process.env.REACT_APP_REDIRECT_URI} />

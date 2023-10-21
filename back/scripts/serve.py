@@ -8,6 +8,7 @@ from back.scripts.model import models
 from back.scripts.utils import format_frames, capture_to_mpeg
 import back.api.model.gvar as gvar
 
+
 def predict_on_stream(stream:str,
                       model_name:str,
                       threshold:float=0.5,
@@ -79,18 +80,26 @@ def predict_on_stream(stream:str,
 
         if pred >= threshold:
           n_pos += 1
+          print('pred gt thresh', n_pos)
           continue
 
-        if n_preds >= n_frames_to_extract and n_pos >= n_frames_to_extract:
-            out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
-            toxic_cloud = frames[-n_pos * frame_step:]
-            capture_to_mpeg(toxic_cloud, out_path,
-                            fps=frame_step)
-            frames = []
-            n_seconds = n_pos
+        if n_preds >= n_frames_to_extract:
+          
+          if n_pos >= n_frames_to_extract:
+              out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
+              toxic_cloud = frames[-n_pos * frame_step:]
+              capture_to_mpeg(toxic_cloud, out_path,
+                              fps=frame_step)
+              frames = []
+              n_seconds = n_pos
+              n_pos = 0
+              n_preds = 0
+              cont = False
+          else :
             n_pos = 0
+            frames = []
             n_preds = 0
-            cont = False
+            
         elif datetime.datetime.now() > stop_time:
           status = 300
           cont = False

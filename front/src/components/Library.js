@@ -13,15 +13,17 @@ export default function Library() {
   const [ selectionBlobs, setSelectionBlobs ] = useState([])
   const [ logs, setLogs ] = useState(JSON.parse(localStorage.getItem('logs')))
 
+
   if(logs === null){
     setLogs([])
   }
 
   let justCaptured;
 
-  if (locState !== null && locState.justCaptured) {
-    justCaptured = Array(locState.justCaptured).fill(locState.justCaptured)
+  if(locState !== null && locState.justCaptured) {
+      justCaptured = Array(locState.justCaptured).fill(locState.justCaptured)
   }
+
 
   function watchCloud(cloud, info) {
     setExtracted(true)

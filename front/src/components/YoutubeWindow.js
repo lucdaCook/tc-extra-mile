@@ -13,7 +13,8 @@ export default function YoutubeWindow() {
   const [ recentCapture, setRecentCapture ] = useState({'totalCaps': 0})
   const livestreamRef = useRef()
   const liveCounterRef = useRef()
-  const locState = useLocation().state
+  const loc = useLocation()
+  const locState = loc.state
   const nav = useNavigate()
   let embedWidth = 920
 
@@ -30,10 +31,10 @@ export default function YoutubeWindow() {
   }
 
   function abort() {
+    console.log('aborting...')
     // if (livestreamRef.current){
     //   livestreamRef.current.src = undefined
     // }
-
     fetch('http://localhost:8000/model/abort')
     .then(res => res.json()) 
     .then(json => {
@@ -125,6 +126,13 @@ export default function YoutubeWindow() {
   }
   }, [recentCapture])
 
+  useEffect(() => {
+    if(livestreamRef.current && keepMonitoring['keepMonitoring'] === false) {
+      abort()
+    }
+  }, [keepMonitoring])
+
+
   return (
     <div className="container">
       <div className="view-refresh">
@@ -204,8 +212,9 @@ export default function YoutubeWindow() {
           </div>
           <button className="window-exit"
             onClick={() => {
-              setKeepMonitoring({'streamChosen': '', 'keepMonitoring': false})
-              setRecentCapture({'totalCaps': 0})
+              if (keepMonitoring['keepMonitoring']){
+                abort()
+              }
               if (exitTo) {
                 nav(exitTo)
               } else {

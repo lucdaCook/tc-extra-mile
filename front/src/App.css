@@ -916,7 +916,7 @@ div.select-flex {
 }
 
 #cloud-1 {
-  animation: drift_cloud1 27s linear 22s infinite;
+  animation: drift_cloud1 27s linear 9s infinite;
   opacity: 0.9;
   left: 120%;
   top: 60px;
@@ -1068,6 +1068,7 @@ input[type='button'].active {
 }
 
 .tata-backdrop {
+  width: 100%;
   max-width: calc(100vw - 4em);
   height: 420px;
   position: absolute;
@@ -1226,17 +1227,11 @@ button.choose-livestream:focus {
   scale: 0.9;
 }
 
+div.slider-row.extras:not(.plural) {
+  margin-bottom: 50px;
+}
+
 @media screen and (max-width: 1430px) {
-  div.slider-row.extras:not(.plural) {
-    margin-bottom: 50px;
-  }
-
-  .slider-row.extras {
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 30px;
-  }
-
 
   a.blob-anchor {
     padding-right: 20px;
@@ -1265,9 +1260,6 @@ button.choose-livestream:focus {
 }
 
 @media screen and (max-width: 1400px) {
-  #cloud-1 {
-    scale: 0.7;
-   }
 
   .form-info {
     letter-spacing: 0.2px;
@@ -1461,7 +1453,7 @@ from {
 }
 
 .background-gradient {
-  width: 172%;
+  width: 174%;
 }
 
 #cloud-1 {
