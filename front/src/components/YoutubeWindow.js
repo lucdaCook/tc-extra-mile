@@ -1,6 +1,6 @@
 import { CredentialsContext } from "../contexts/CredentialsContext"
 import { useContext, useEffect, useState, useRef } from "react"
-import { useLocation, useNavigate, Link } from "react-router-dom"
+import { useLocation, useNavigate, Link, useBeforeUnload } from "react-router-dom"
 import { CloudsContext } from "../contexts/CloudsContext"
 
 export default function YoutubeWindow() { 
@@ -17,6 +17,12 @@ export default function YoutubeWindow() {
   const locState = loc.state
   const nav = useNavigate()
   let embedWidth = 920
+
+  useBeforeUnload(() => {
+    if(keepMonitoring.keepMonitoring === true) {
+      abort()
+    }
+  })
 
   if (window.innerWidth < 1000) {
     embedWidth = 600
@@ -83,7 +89,6 @@ export default function YoutubeWindow() {
     } else {
       setRecentCapture({'totalCaps': 0})
     } 
-     
   }, [keepMonitoring])
 
   useEffect(() => {
@@ -104,7 +109,7 @@ export default function YoutubeWindow() {
           console.log('setting livestreamData json is :', json)
           setLivestreamData(json)
         }).catch(error => {
-          if (error.status === 403) {
+          if (error.status === 401) {
             nav('/error', {state: {'message': 'Looks have reached your live inference limits for the day.'}})
           } else {
           nav('/yt/auth', {state: {'from': '/extract-live'}})
@@ -153,7 +158,7 @@ export default function YoutubeWindow() {
                   </button>
                 <iframe src={`https://www.youtube.com/embed/${vid.id.videoId}?frameBorder='0'`} 
                 width={livestreamData.items.length > 1 ? embedWidth / livestreamData.items.length : '420px'} 
-                height={window.innerWidth < 1275 ? embedWidth / livestreamData.items.length : '300px'}
+                height= '300px'
                 title={`livestream-${i}`}
                 />
               </div>
@@ -163,10 +168,10 @@ export default function YoutubeWindow() {
               <div className="livestream" style={{position: 'relative'}}>
                 <iframe src={`${keepMonitoring.streamChosen}?autoplay=1&mute=1&fs=1`} 
                 allow="autoplay"
-                width='670px' height='475px' title="livestream"
+                width={window.innerWidth > 1120 ? '670px' : '550px'} height='475px' title="livestream"
                 ref={livestreamRef}/>
 
-              {JSON.stringify(askToContinue) !== '{}' &&
+              {JSON.stringify(askToContinue) !== '{}' && 
                   <div
                     className='ask-continue'
                   >

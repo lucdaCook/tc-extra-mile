@@ -9,7 +9,7 @@
 html, body{
   height: 100vh;
   width: 100vw;
-
+  background: rgb(54,85,112);
 }
 
 button, input {
@@ -19,10 +19,8 @@ button, input {
   margin: 0;
 }
 
-.home-link { 
-  width: 40px;
-  display: inline-block;
-  height: 40px;
+.home-link:hover img {
+  filter: unset;
 }
 
 a.active svg{
@@ -68,6 +66,19 @@ a.active svg{
   align-items: center;
 }
 
+.home-link,
+.home-link img { 
+  width: 40px;
+  display: inline-block;
+  height: 40px;
+}
+
+.home-link img {
+  filter: opacity(0.6);
+  transition: filter 200ms ease;
+}
+
+
 .right-icons {
   justify-content: flex-end;
 }
@@ -94,6 +105,7 @@ div#cloud-counter {
 
 .left-icons {
   justify-content: flex-start;
+  margin-left: 20px;
 }
 
 
@@ -247,10 +259,6 @@ svg.yt-icon {
   margin: 0 auto;
 }
 
-.actions-btn.actions {
-  position: relative;
-}
-
 .actions-after {
   position: absolute;
   height: 400px;
@@ -280,7 +288,7 @@ svg.yt-icon {
 a.action-row {
   display: flex;
   align-items: center;
-  gap: 17px;
+  gap: 9px;
   text-decoration: none;
   color: black;
 }
@@ -323,6 +331,7 @@ a.action-row svg {
   grid-template-rows: repeat(3, 50px);
   grid-template-columns: 100%;
   font-size: 13px;
+  cursor: default;
 }
 
 .actions-btn.actions:focus .actions-after,
@@ -389,6 +398,15 @@ div.error .info {
   gap: 40px;
 }
 
+.error .info span {
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.error .info a {
+  font-size: 17px;
+}
+
 .view-refresh {
   height: calc(100vh - 60px);
   width: calc(100vw - 4em);
@@ -435,6 +453,13 @@ div.clouds-loading {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+div.clouds-loading rect {
+  height: 190px;
+  width: 35px;
+  background: #423e34;
+  border-radius: 5%;
 }
 
 .no-clouds { 
@@ -572,6 +597,7 @@ a.blob-anchor svg {
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
   justify-self: center;
+  width: 65%;
 }
 
 .video-widgets {
@@ -1067,24 +1093,62 @@ input[type='button'].active {
   width: 80%;
 }
 
-.tata-backdrop {
+.backdrop {
   width: 100%;
   max-width: calc(100vw - 4em);
   height: 420px;
   position: absolute;
   bottom: 0;
   left: 56px;
-  animation: show_tata 3s ease-out forwards;
 }
 
+.trees-backdrop {
+  height: 450px !important;
+  left: 0;
+  max-width: unset;
+}
+
+.trees-backdrop g {
+  opacity: 0;
+}
+
+.trees-backdrop #tree-1,
+.trees-backdrop #tree-2,
+.trees-backdrop #tree-3,
+.trees-backdrop #tree-4  {
+  animation: show_tree 2s ease forwards
+}
+
+.trees-backdrop path {
+  fill: #209520;
+}
+
+.trees-backdrop #tree-1 {
+  animation-delay: 1300ms;
+}
+
+
+.trees-backdrop #tree-2 {
+  animation-delay: 200ms;
+}
+
+.trees-backdrop #tree-3 {
+  animation-delay: 1600ms;
+}
+
+.trees-backdrop #tree-4 {
+  animation-delay: 600ms;
+}
+
+.trees-backdrop,
+.tata-backdrop {
+  animation: show_backdrop 3s ease-out forwards;
+}
+
+.bye-trees,
 .bye-tata {
-  width: 100vw;
-  height: 420px;
-  position: fixed;
-  bottom: -33px;
-  left: 20px; 
-  animation: hide_tata 2s ease-in forwards;
-} 
+  animation: hide_backdrop 2s ease-in forwards;
+}
 
 .extract path {
   stroke-width: 1;
@@ -1269,9 +1333,18 @@ div.slider-row.extras:not(.plural) {
   #cloud-2 {
     scale: 0.65;
   }
+
+  #cloud-1 {
+    scale: 0.84;
+  }
 }
 
 @media screen and (max-width: 1120px) {
+
+  #cloud-1 {
+    scale: 0.77;
+  }
+
   .action-popup.action-popup.clouds-display {
     width: 90%;
   }
@@ -1317,7 +1390,7 @@ div.slider-row.extras:not(.plural) {
 @keyframes drift_cloud1 {
 
   from {
-    right: 10%;
+    left: 120%;
   }
 
   to {
@@ -1335,18 +1408,14 @@ div.slider-row.extras:not(.plural) {
   }
 }
 
-@keyframes hide_tata {
-  10% {
-    opacity: 1;
-    width: 100vw;
-  }
+@keyframes hide_backdrop {
 
   60% {
   transform: rotateX(90deg);
   }
 
   75% {
-    width: 100vw;
+    width: 100%;
     height: 420px;
     opacity: 0;
   }
@@ -1362,7 +1431,7 @@ div.slider-row.extras:not(.plural) {
 
 }
 
-@keyframes show_tata {
+@keyframes show_backdrop {
 
 from {
   opacity: 0;
@@ -1444,6 +1513,26 @@ from {
   to {
     background-position: 100vh;
   }
+ }
+
+ @keyframes extracting {
+  0% {
+    transform: rotate(0deg);
+  } 100% {
+    transform: rotate(360deg);
+  }
+ }
+
+ @keyframes show_tree {
+
+  from {
+    opacity: 0;
+    /* transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, 350.689941); */
+  } to {
+    opacity: 1;
+    /* transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, -162.689941); */
+  }
+
  }
 
 /* this is keeping the background gradient scrollable */

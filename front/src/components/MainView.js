@@ -1,5 +1,5 @@
 import { CloudsContext } from "../contexts/CloudsContext"
-import { TataBackground } from "../svg/clouds"
+import { TataBackground, Trees } from "../svg/clouds"
 import SkyView from "./SkyView"
 import { useContext, useEffect } from 'react'
 import { useBeforeUnload } from 'react-router-dom'
@@ -7,8 +7,7 @@ import { useBeforeUnload } from 'react-router-dom'
 
 function MainView() {
 
-  const { tata, setTata } = useContext(CloudsContext)
- 
+  const { tata, setTata } = useContext(CloudsContext)   
 
   useBeforeUnload(() => {
     if (tata === true) {
@@ -21,9 +20,9 @@ function MainView() {
   useEffect(() => {
     if (JSON.parse(localStorage.getItem('showTata')) === true){
       setTata(true)
-  } else {
-    setTata(false)
-  }
+    } else {
+      setTata(false)
+    }
   }, [])
 
   return (
@@ -32,11 +31,11 @@ function MainView() {
             <SkyView>
             </SkyView>
           <div className='bottom-panel'>
-            { tata === true ?
+          { tata === true ?
             <TataBackground showTata={true}/>
             :
-            <TataBackground showTata={false}/>
-            }
+            <Trees showTrees={true}/>
+          }
           </div>
         </div>
       </main>

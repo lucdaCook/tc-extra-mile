@@ -1,11 +1,8 @@
 from flask import Flask
 from flask import Blueprint
-# from celery import Celery
 import back.config.config as cfg
 import pathlib
 from flask_cors import CORS
-
-# celery = Celery(__name__, include=['back.api.model.routes'])
 
 def create_app():
   
@@ -18,9 +15,7 @@ def create_app():
   CORS(app)
   
   app.secret_key = cfg.SECRET_KEY
-  
-  # celery.conf.update(app.config)
-  
+    
   app.add_url_rule(
     '/model/extract/<id>', endpoint='model.downlod', build_only=True
   )

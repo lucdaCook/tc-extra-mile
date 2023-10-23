@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { CloudsContext } from "../contexts/CloudsContext"
-import { PlayIcon, VideoAdd } from "../svg/clouds"
+import { VideoAdd } from "../svg/clouds"
 
 export default function Window({ many }) {
 
@@ -23,7 +23,13 @@ export default function Window({ many }) {
         <div className="view-refresh">
           <div className="action-window action-popup" > 
               { extracting ?
-                <div className="clouds-loading">Loading..</div>
+                <div className="clouds-loading"> Loading...
+                  {/* <rect height='180' 
+                  width='180'
+                  >
+                      <CloudIcon />
+                  </rect> */}
+                </div>
               :
               <>
               <div className="form-window">
@@ -63,6 +69,9 @@ export default function Window({ many }) {
               }
             <button className="window-exit" 
             onClick={() => {
+              if(extracting) {
+                fetch('http://localhost:8000/model/abort')
+              }
               if (exitTo){
                 nav(exitTo)
               } else {
@@ -80,3 +89,4 @@ export default function Window({ many }) {
       </div>
   )
   }
+  

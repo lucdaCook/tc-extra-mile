@@ -17,7 +17,6 @@ def predict_on_stream(stream:str,
                       write_location:str='clip',
                       persistence:int=6):
       
-  stop_time = datetime.datetime.now() + datetime.timedelta(hours=persistence)
 
   b = subprocess.Popen(f'$(yt-dlp -g {stream})', 
                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
@@ -46,6 +45,8 @@ def predict_on_stream(stream:str,
 
   pathlib.Path(write_location).mkdir(parents=True, exist_ok=True)
 
+  stop_time = datetime.datetime.now() + datetime.timedelta(hours=persistence)
+  
   for model in models:
     if model in model_name:
       model_token = models[model]
@@ -78,27 +79,27 @@ def predict_on_stream(stream:str,
         print(pred)
         n_preds += 1
 
-        if pred >= threshold:
+        if pred.numpy() >= threshold:
           n_pos += 1
           print('pred gt thresh', n_pos)
           continue
-
+        
         if n_preds >= n_frames_to_extract:
           
           if n_pos >= n_frames_to_extract:
-              out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
-              toxic_cloud = frames[-n_pos * frame_step:]
-              capture_to_mpeg(toxic_cloud, out_path,
-                              fps=frame_step)
-              frames = []
-              n_seconds = n_pos
-              n_pos = 0
-              n_preds = 0
-              cont = False
+            out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
+            toxic_cloud = frames[-n_pos * frame_step:]
+            capture_to_mpeg(toxic_cloud, out_path,
+                            fps=frame_step)
+            cont = False
+            frames = []
+            n_seconds = n_pos
+            n_pos = 0
+            n_preds = 0
           else :
             n_pos = 0
             frames = []
-            n_preds = 0
+            
             
         elif datetime.datetime.now() > stop_time:
           status = 300

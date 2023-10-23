@@ -7,6 +7,7 @@ import config.config as cfg
 import json
 from scripts.serve import predict_on_stream
 import back.api.model.gvar as gvar
+import collections
 
 @bp.route('/')
 def model():
@@ -36,6 +37,9 @@ def extract_toxic_clouds():
                            out_location=current_app.config['UPLOAD_FOLDER'],
                            n_frames_to_extract=int(request.form['n_frames']),
                            threshold=float(request.form['threshold']))
+    if 'True' in gvar.abort:
+      gvar.abort = ['False']
+      res['status'] = 205
    
     return json.dumps(res)
   
@@ -45,21 +49,24 @@ def extract_for_many_videos():
   res = list()
     
   for f in request.files.getlist('file[]'):
+    
     fname = secure_filename(f.filename)
     path = os.path.join(cfg.UPLOAD_FOLDER, fname)
     f.save(path)
     
-    
+    print('predicting')
     res.append(predict_on_video(path,
                                 model_name='mobilevit_xxs_tfr_nopreproc_vl39', 
                                 out_location=current_app.config['UPLOAD_FOLDER'],
                                 n_frames_to_extract=int(request.form['n_frames'])))
-      
+    
+  if 'True' in gvar.abort:
+    gvar.abort = ['False']
+    res.append({'status': 205, 'message': 'User aborted'})
   return json.dumps(res)
 
 @bp.route('/extract-live/', methods=['POST'])
 def extract_from_livestream():
-  global abort
   
   if 'video' in request.form: 
     req = request.form

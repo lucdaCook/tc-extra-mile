@@ -58,7 +58,7 @@ export default function Topbar() {
       <div className='left-icons'>
         <Link to='/' className='home-link'
         style={{pointerEvents: focusExtraction}}>
-          {/* You know what to do here */}
+          <img src='../home.png' alt='home'/>
         </Link>
         <button className='actions-btn actions'
         style={{pointerEvents: focusExtraction}}>
@@ -66,8 +66,8 @@ export default function Topbar() {
             <div className='actions-after' >
               <div className='actions-main'>
               <Link  to='/extract' 
-              state={{'from': loc.pathname}}
-              className='actions main-link extract'>
+                state={{'from': loc.pathname}}
+                className='actions main-link extract'>
                 <CloudSearchIcon /> 
               </Link>
               <Link to= '/extract-many' 

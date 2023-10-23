@@ -80,7 +80,13 @@ export default function CloudsContextProvider({ children }) {
       }
     })
     .then(json => {
-      
+      let aborted = false
+
+      if (json.at(-1).status === 205) {
+        aborted = true
+        json = json.slice(0, json.length - 1)
+      }
+
       let totalCaps = 0
       json.map(cap => {
         totalCaps += cap.n_captured
@@ -100,8 +106,11 @@ export default function CloudsContextProvider({ children }) {
       }
 
       setExtracted(true)
-
-      nav('/library', {state: {'justCaptured': totalCaps}})
+      setTata(true)
+      
+      if (!aborted) {
+        nav('/library', {state: {'justCaptured': totalCaps}})
+      }
 
       const vidsWithClouds = json.filter(cap => cap.captured === true).length
 
@@ -110,7 +119,9 @@ export default function CloudsContextProvider({ children }) {
       JSON.parse(localStorage.getItem('cloudCount')) + vidsWithClouds)
 
       } else {
-        
+        if (json.at(-1).status === 205) { 
+          return 
+        }
       setTata(false)
 
       localStorage.setItem('neg-clouds',
@@ -118,8 +129,7 @@ export default function CloudsContextProvider({ children }) {
 
 
       localStorage.setItem('showTata', false)
-
-      nav('/no-clouds')
+      
 
   }}).catch(err => {
     nav('/error', {state: {'error': err, 'from': '/extract-many'}})
@@ -127,6 +137,7 @@ export default function CloudsContextProvider({ children }) {
   }
 
   function predictOnVideo(e, nav) {
+
 
     e.preventDefault()
 
@@ -162,7 +173,6 @@ export default function CloudsContextProvider({ children }) {
         if (storedLogs !== null && storedLogs.length > 0) {
           localStorage.setItem('logs', 
           JSON.stringify([json].concat([...JSON.parse(localStorage.getItem('logs'))])))
-          // .sort((a, b) => b.n_captured - a.n_captured)
           } else {
             localStorage.setItem('logs', 
           JSON.stringify([json]))
@@ -171,10 +181,15 @@ export default function CloudsContextProvider({ children }) {
 
       localStorage.setItem('cloudCount', 
       JSON.parse(localStorage.getItem('cloudCount')) + 1)
-
-      nav(`/clouds/${logs.length}`)
+      
+      if (json.status !== 205) {
+        nav(`/clouds/${logs.length}`)
+      }
 
       } else {
+        if (json.status === 205) {
+          return
+        }
 
         setTata(false)
 
@@ -184,7 +199,7 @@ export default function CloudsContextProvider({ children }) {
 
         localStorage.setItem('showTata', false)
 
-        nav('/no-clouds')
+        nav('/no-clouds', {state: {'backdrop': 'no-clouds'}})
       }
     }).catch((err) => {
       nav('/error', {state: {'error': err, from: '/extract'}})
@@ -215,10 +230,10 @@ export default function CloudsContextProvider({ children }) {
         setLogs(prev => [j].concat(prev))
         localStorage.setItem('cloudCount', 
         JSON.parse(localStorage.getItem('cloudCount')) + 1)
+        setTata(true)
         if (storedLogs !== null && storedLogs.length > 0) {
           localStorage.setItem('logs', 
           JSON.stringify([j].concat([...JSON.parse(localStorage.getItem('logs'))])))
-          // .sort((a, b) => b.n_captured - a.n_captured)
         } else {
           localStorage.setItem('logs', 
           JSON.stringify([j]))
