@@ -16,7 +16,7 @@ const routerConf = [
   {
     path:'/',
     element: <Root />,
-    errorElement: <ErrorPage notFound={true} />,
+    errorElement: <ErrorPage notFound={true}/>,
     children: [{
       path: 'extract',
       element:<Window many={false}/>,

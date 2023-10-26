@@ -138,6 +138,18 @@ export const DeleteIcon = () => {
   )
 }
 
+export const RainyCloud = () => {
+  return (
+    <svg className='rainy-cloud' viewBox="0 0 300 300">
+      <path id="pathWnd8xjemibw8" d="M89.61031,164.12776C76.41874,164.12776,65.72485,154.55743,65.72485,142.75184C65.72485,130.94624,76.41873,121.37592,89.61031,121.37592L90.41886,121.37592C89.53971,118.54156,89.06635,115.52977,89.06635,112.40786C89.06635,95.64934,102.70681,82.06388,119.53318,82.06388C133.14129,82.06388,144.66563,90.94953,148.57619,103.21309C152.39684,99.98421,157.35634,98.03443,162.77642,98.03443C174.85338,98.03443,184.6437,107.71474,184.6437,119.65602C184.6437,120.26504,184.61823,120.86817,184.5683,121.46444C196.73416,122.45339,206.26533,131.6065,206.26533,142.75184C206.26533,154.55744,195.57145,164.12776,182.37987,164.12776L89.61031,164.12776Z" fill="rgb(179,179,179)" stroke="none" strokeWidth="0" ></path>
+      <rect id="rect-rayv3oj0ovf" fill="rgb(210,219,237)" width="1.965602" height="14.250614" rx="0.98" ry="0.98" stroke="none" strokeWidth="0" transform="translate(150 185.257986)"></rect>
+      <rect id="undefined-aypmnefvi4u" fill="rgb(210,219,237)" width="1.965602" height="14.250614" rx="0.98" ry="0.98" stroke="none" strokeWidth="0" transform="translate(127.149877 177.886979)" ></rect>
+      <rect id="undefined-qvma0bcs1en" fill="rgb(210,219,237)" width="1.965602" height="14.250614" rx="0.98" ry="0.98" stroke="none" strokeWidth="0" transform="translate(172.358722 170.761672)" ></rect>
+      <rect id="undefined-ik66qzjiul" fill="rgb(210,219,237)" width="1.965602" height="14.250614" rx="0.98" ry="0.98" stroke="none" strokeWidth="0" transform="translate(101.105651 171.007372)"></rect>
+    </svg>
+  )
+}
+
 export const Trees = ({ showTrees, delay }) => {
   return (
   <svg 

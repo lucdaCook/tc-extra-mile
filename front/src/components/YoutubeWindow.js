@@ -27,7 +27,7 @@ export default function YoutubeWindow() {
   if (window.innerWidth < 1000) {
     embedWidth = 600
   } else if (window.innerWidth < 1275) {
-    embedWidth = 700
+    embedWidth = 680
   }
 
   let exitTo;
@@ -168,7 +168,9 @@ export default function YoutubeWindow() {
               <div className="livestream" style={{position: 'relative'}}>
                 <iframe src={`${keepMonitoring.streamChosen}?autoplay=1&mute=1&fs=1`} 
                 allow="autoplay"
-                width={window.innerWidth > 1120 ? '670px' : '550px'} height='475px' title="livestream"
+                width={window.innerWidth > 1120 ? '670px' : '550px'} 
+                height={window.innerWidth > 1420 ? '475px' : '400px'} 
+                 title="livestream"
                 ref={livestreamRef}/>
 
               {JSON.stringify(askToContinue) !== '{}' && 

@@ -10,6 +10,7 @@ html, body{
   height: 100vh;
   width: 100vw;
   background: rgb(54,85,112);
+  background: linear-gradient(180deg, rgba(54,85,112,1) 5%, rgba(75,121,161,1) 25%, rgba(99,141,193,1) 45%, rgba(208,227,251,1) 100%);
 }
 
 button, input {
@@ -384,9 +385,26 @@ a.action-row svg {
 
 div.error {
   width: 100%;
-  height: 100vh;
   justify-content: center;
   display: flex;
+  transform: translateY(50%);
+  align-items: center;
+  flex-direction: column;
+}
+
+.not-found.clouds {
+  display: flex;
+  gap: 10%;
+  width: 100%;
+  justify-content: center;
+}
+
+.rainy-cloud {
+  height: 300px;
+  scale: 2;
+  z-index: -1;
+  justify-self: flex-end;
+  margin-left: 45px;
 }
 
 div.error .info {
@@ -501,6 +519,7 @@ div.feedback {
   margin-right: 20px;
   font-size: 15px;
   margin-bottom: 15px;
+  width: 95%;
 }
 
 .feedback-star {
@@ -1124,20 +1143,20 @@ input[type='button'].active {
 }
 
 .trees-backdrop #tree-1 {
-  animation-delay: 1300ms;
+  animation-delay: 2000ms;
 }
 
 
 .trees-backdrop #tree-2 {
-  animation-delay: 200ms;
+  animation-delay: 1000ms;
 }
 
 .trees-backdrop #tree-3 {
-  animation-delay: 1600ms;
+  animation-delay: 2500ms;
 }
 
 .trees-backdrop #tree-4 {
-  animation-delay: 600ms;
+  animation-delay: 1600ms;
 }
 
 .trees-backdrop,
@@ -1340,6 +1359,19 @@ div.slider-row.extras:not(.plural) {
 }
 
 @media screen and (max-width: 1120px) {
+
+  .actions-after {
+    width: 285px;
+    height: 380px;
+  }
+
+  .action-window .form-window {
+    width: 70%;
+  }
+
+  .action-window.action-popup {
+    width: 90%;
+  }
 
   #cloud-1 {
     scale: 0.77;
