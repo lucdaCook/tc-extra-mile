@@ -451,12 +451,20 @@ a.action-row svg {
 div.error {
   width: 100%;
   justify-content: center;
+  height: 100%;
   display: flex;
-  transform: translateY(50%);
   align-items: center;
   flex-direction: column;
 }
 
+.error.info {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
+}
 .not-found.clouds {
   display: flex;
   gap: 10%;
