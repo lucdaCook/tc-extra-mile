@@ -1,5 +1,5 @@
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { SettingsIcon } from '../svg/clouds'
+import { Form, Link, NavLink, useLocation } from 'react-router-dom'
+import { LoginIcon, SettingsIcon } from '../svg/clouds'
 import { useContext, useEffect, useRef } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
 import { 
@@ -16,6 +16,7 @@ export default function Topbar() {
   const { updateConfig } = useContext(CloudsContext)
 
   let defaultVals = JSON.parse(localStorage.getItem('Config'))
+  let user = true
 
   if (defaultVals === null) {
     defaultVals = {
@@ -124,10 +125,32 @@ export default function Topbar() {
           </form> */}
 
           <Link
-            to='/yt/auth'
-            style={{width: '60px', pointerEvents: focusExtraction}}>
+              to='/yt/auth'
+              state={{'from': loc.pathname, 'click': 1}}
+              style={{width: '60px', pointerEvents: focusExtraction}}
+              title='Sign into Youtube'
+            >
             <YoutubeIcon />
           </Link>
+{         user ? 
+          <Link 
+            to='lg/in'
+            className='user login'
+            title='Login'
+            state={{'from': loc.pathname}}
+          >
+            <LoginIcon />
+          </Link>
+          :
+          <Link 
+          to='lg/out'
+          className='user logout'
+          title='Logout'
+          state={{'from': loc.pathname}}
+        >
+          <LoginIcon />
+        </Link>
+          }
       </div>
       <div className='right-icons'>
         <div id='cloud-counter' ref={cloudRef}>

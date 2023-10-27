@@ -105,7 +105,7 @@ useEffect(() => {
       <div className='library-stage'>
       <div className='select-flex'>
         <button onClick={() => setActiveSelect(prev => !prev)} 
-        className='select-blobs' title='Toggle download selection'>
+        className='select-blobs' title='Toggle Selection'>
          { !activeSelect ? <CloudLock /> : <CloudUnlock /> }
         </button>
 

@@ -1,5 +1,5 @@
 import { CredentialsContext } from "../contexts/CredentialsContext"
-import { useContext, useEffect, useState, useRef } from "react"
+import { useContext, useEffect, useState, useRef, useCallback } from "react"
 import { useLocation, useNavigate, Link, useBeforeUnload } from "react-router-dom"
 import { CloudsContext } from "../contexts/CloudsContext"
 
@@ -18,11 +18,19 @@ export default function YoutubeWindow() {
   const nav = useNavigate()
   let embedWidth = 920
 
-  useBeforeUnload(() => {
-    if(keepMonitoring.keepMonitoring === true) {
-      abort()
-    }
-  })
+  // useBeforeUnload(() => {
+  //   if(keepMonitoring.keepMonitoring === true) {
+  //     abort()
+  //   }
+  // })
+
+  useBeforeUnload(
+    useCallback(() => {
+      if(keepMonitoring.keepMonitoring === true) {
+        abort()
+      }
+    }, [keepMonitoring])
+  )
 
   if (window.innerWidth < 1000) {
     embedWidth = 600
@@ -109,11 +117,11 @@ export default function YoutubeWindow() {
           console.log('setting livestreamData json is :', json)
           setLivestreamData(json)
         }).catch(error => {
-          if (error.status === 401) {
-            nav('/error', {state: {'message': 'Looks have reached your live inference limits for the day.'}})
-          } else {
-          nav('/yt/auth', {state: {'from': '/extract-live'}})
-        }
+          // if (error.status === 401) { TODO: figure which error status means quota is reached 401 and 403 seem to not be it all the time 
+          //   nav('/error', {state: {'message': 'Looks have reached your live inference limits for the day.'}})
+          // } else {
+          nav('/yt/auth', {state: {'from': '/', 'click': 1}})
+        // }
         })
     }
   }, [])

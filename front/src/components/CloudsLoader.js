@@ -1,17 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { CloudsContext } from "../contexts/CloudsContext"
-import { useNavigate, useLoaderData } from 'react-router-dom'
+import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { CloudDownload } from '../svg/clouds'
 import FeedbackForm from "./FeedbackForm"
 
 export default function CloudsLoader() {
 
   const cloudsId = useLoaderData() 
-  const { logs, setExtracted, submitFeedback } = useContext(CloudsContext)
+  const { logs, setExtracted } = useContext(CloudsContext)
   const mainVidRef = useRef()
   const nav = useNavigate()
   const videos = process.env.REACT_APP_SERVER
   const [ currentVidBlob, setCurrentVidBlob ] = useState()
+  const locState = useLocation().state
   
   const info = logs[cloudsId]
   
@@ -58,7 +59,8 @@ export default function CloudsLoader() {
   return (
     <div className="container">
       <div className="view-refresh">
-        <div className="action-popup clouds-display"> 
+        <div className="action-popup clouds-display"
+        style={{animation: locState.from === '/extract' && 'none'}}> 
 { 
 
     info?.written.length > 0 ?

@@ -11,6 +11,7 @@ import {
 import YoutubeUploader from './components/YoutubeUploader';
 import YoutubeWindow from './components/YoutubeWindow';
 import YoutubeAuthorizer from './components/YoutubeAuth';
+import Login from './components/Login';
 
 const routerConf = [
   {
@@ -32,6 +33,13 @@ const routerConf = [
     {
       path: 'library',
       element: <Library />
+    },
+    {
+      path: 'lg/:action',
+      element: <Login />,
+      loader: ({ params }) => {
+        return params.action
+      }
     },
     {
       path: 'clouds/:cloudsId',
@@ -69,7 +77,7 @@ const routerConf = [
       {
         path: 'auth',
         element: <YoutubeAuthorizer />,
-        loader: () => {
+        loader: ({ request }) => {
           const code =  new URLSearchParams(window.location.hash).get('access_token')
           if (code !== null) {
             window.history.pushState({}, null, '/')

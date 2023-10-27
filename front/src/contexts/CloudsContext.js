@@ -183,7 +183,7 @@ export default function CloudsContextProvider({ children }) {
       JSON.parse(localStorage.getItem('cloudCount')) + 1)
       
       if (json.status !== 205) {
-        nav(`/clouds/${logs.length}`)
+        nav(`/clouds/${logs.length}`, {state: {'from': '/extract'}})
       }
 
       } else {

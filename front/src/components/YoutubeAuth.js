@@ -7,10 +7,23 @@ export default function YoutubeAuthorizer() {
 
   const { setYoutube } = useContext(CredentialsContext)
 
+  
   const ytCode = useLoaderData()
   const nav = useNavigate()
   const formRef = useRef()
-  const locState = useLocation().state
+const loc = useLocation()
+  const locState = loc.state
+
+  console.log(ytCode)
+
+  useEffect(() => {
+    // if(locState === null) {
+    //   locState.from = '/'
+    // }
+    if (locState !== null && locState.click === 1) {
+      nav('/')
+    }
+  }, [loc])
 
   useEffect(() => {   
     if (ytCode !== null) {
@@ -19,6 +32,9 @@ export default function YoutubeAuthorizer() {
     } else {
       try {
         formRef.current.submit()
+        if(locState !== null && locState.click === 1) {
+          locState.click = 0
+        }
       } catch(err) {
         nav('/error', {'message': `That request isn't working right now... ${err.message}`})
       }

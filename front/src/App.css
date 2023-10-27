@@ -109,6 +109,71 @@ div#cloud-counter {
   margin-left: 20px;
 }
 
+.user {
+  height: 35px;
+  width: 35px;
+}
+
+.user path {
+  stroke: #000
+}
+
+div.login {
+  height: 90%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: show_tree 500ms ease forwards
+}
+
+.login input {
+  width: 400px;
+  height: 35px;
+  background: aliceblue;
+  opacity: 0.8;
+  padding: 20px;
+  outline: none;
+}
+
+.login,
+.login form,
+.login label {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login form {
+  gap: 4em;
+  align-items: center;
+  position: relative;
+}
+
+.login button.submit-btn {
+  background-color: #0692f06c;
+}
+
+.login button.submit-btn:hover {
+  background-color: #0692f0;
+}
+
+.login button.submit-btn:focus {
+  scale: 0.9;
+}
+
+.login form span {
+  position: absolute;
+  bottom: 9px;
+  right: 0;
+  margin-right: -42%;
+  text-decoration: underline;
+  color: #004b7d;
+  cursor: pointer;
+  pointer-events: all;
+  font-size: 16px;
+  user-select: none;
+}
 
 .background-gradient {
   height: 100%;
@@ -486,7 +551,8 @@ div.clouds-loading rect {
     justify-content: center;
     align-items: center;
     height: 100%;
-  
+    opacity: 0;
+    animation: show_tree 500ms ease forwards;
 }
 
 .not-captured {
@@ -1072,7 +1138,8 @@ div.settings-choice span {
 }
 
 .submit-input input,
-input.submit-input {
+input.submit-input,
+.submit-btn {
   background: rgb(219, 230, 239, 0.5);
   border: none;
   padding: 10px;
@@ -1090,7 +1157,8 @@ button.submit {
 
 .submit-input input:hover,
 input.submit-input:hover,
-button.submit {
+button.submit,
+.submit-btn:hover {
   background: rgb(190, 198, 205, 1);
 }
 
