@@ -59,7 +59,7 @@ export default function Topbar() {
       <div className='left-icons'>
         <Link to='/' className='home-link'
         style={{pointerEvents: focusExtraction}}>
-          <img src='../home.png' alt='home'/>
+          <img src={`${process.env.PUBLIC_URL}/home.png`} alt='home'/>
         </Link>
         <button className='actions-btn actions'
         style={{pointerEvents: focusExtraction}}>
