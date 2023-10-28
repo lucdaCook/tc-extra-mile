@@ -26,9 +26,6 @@ def create_app():
   from api.model.router import bp as model_bp
   app.register_blueprint(model_bp, url_prefix='/model')
   
-  from api.youtube.router import bp as youtube_bp
-  app.register_blueprint(youtube_bp, url_prefix='/yt')
-  
   @app.route('/test/')
   def test_app():
     return 'hello' 

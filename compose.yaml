@@ -1,0 +1,11 @@
+services:
+  back:
+    restart: always
+    ports:
+      - 8000:8000
+    image: lucciee/back-proto
+  front:
+    restart: always
+    ports:
+      - 3000:3000
+    image: lucciee/front-proto
