@@ -1,17 +1,7 @@
 detecting toxic clouds!
 
-To run locally:
+To pull images and run :
 
-1. git clone git@github.com:lucdaCook/tc-extra-mile.git
+docker compose up
 
-2. conda env create -f back/env.yml
-
-3. conda activate toxic-clouds
-
-4. export PYTHONPATH=$PYTHONPATH:$PWD
-
-5. flask run --port 8000 --debug
-
-6. cd front && npm i
-
-7. npm start
+!Note: You most likely need to increase docker's space and/or memory access!
