@@ -4,7 +4,7 @@ export const CloudsContext = createContext()
 
 export default function CloudsContextProvider({ children }) {
 
-  const server = process.env.REACT_APP_SERVER + '/model'
+  const server = 'http://localhost:8000/model'
 
   let defaultTata = JSON.parse(localStorage.getItem('showTata'))
   let defaultCloudCount = JSON.parse(localStorage.getItem('cloudCount'))

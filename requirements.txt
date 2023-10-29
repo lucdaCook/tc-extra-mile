@@ -3,7 +3,8 @@ tqdm==4.66
 pip==23.2.1
 python-dotenv==1.0
 jupyter==1.0
-imageio==2.31
+imageio==2.31.6
+imageio-ffmpeg
 matplotlib==3.8
 mlflow
 pydantic==2.4

@@ -26,7 +26,7 @@ export default function YoutubeUploader() {
       />
     </form>
     <div className='video-preview upload-video'>
-      <video src={`${process.env.REACT_APP_SERVER}/model/${uploadInfo.written[0]}`} controls>
+      <video src={`http://localhost:8000/model/${uploadInfo.written[0]}`} controls>
       </video>
     </div>
   </>

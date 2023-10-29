@@ -22,7 +22,7 @@ export default function CloudLoader() {
   const mainVidRef = useRef()
   const nav = useNavigate()
   
-  const videos = process.env.REACT_APP_SERVER
+  const videos ='http://localhost:8000'
 
   useEffect( () => {
     fetch(`${videos}/model/clip/${cloudId}`)

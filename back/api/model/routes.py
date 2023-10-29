@@ -42,6 +42,7 @@ def extract_toxic_clouds():
       res['status'] = 205
    
     return json.dumps(res)
+  return Response('that did not work', 400)
   
 @bp.route('/extract-many/', methods=['POST'])
 def extract_for_many_videos():

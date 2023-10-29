@@ -6,7 +6,7 @@ import { CloudDownload, CloudLock, CloudUnlock, DeleteIcon } from '../svg/clouds
 export default function Library() {
 
   const { setExtracted } = useContext(CloudsContext)
-  const vidServer = `${process.env.REACT_APP_SERVER}/model/`
+  const vidServer = `http://localhost:8000/model/`
   const nav = useNavigate()
   const locState = useLocation().state
   const [ activeSelect, setActiveSelect ] = useState(false)
@@ -79,7 +79,7 @@ export default function Library() {
 
 useEffect(() => {
   localStorage.setItem('logs', JSON.stringify(logs))
-}, [logs])
+}, [logs]) 
 
   return (
     <div className='container'> 

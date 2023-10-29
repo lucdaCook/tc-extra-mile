@@ -4,6 +4,7 @@ import MainView from './components/MainView';
 import Topbar from './components/Topbar';
 
 function Root() {
+  console.log(process.env.REACT_APP_SERVER)
   return (
     <div className='_Root'>
           <div className='root main-grid'>

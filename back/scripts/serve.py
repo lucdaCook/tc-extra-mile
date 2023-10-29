@@ -76,12 +76,10 @@ def predict_on_stream(stream:str,
       if current_frame % frame_step == 0:
         f = format_frames(frame, output_size=image_shape)
         pred = model(tf.expand_dims(f, 0), training=False)
-        print(pred)
         n_preds += 1
 
         if pred.numpy() >= threshold:
           n_pos += 1
-          print('pred gt thresh', n_pos)
           continue
         
         if n_preds >= n_frames_to_extract:
@@ -116,7 +114,7 @@ def predict_on_stream(stream:str,
       else:
         cont = False
         status = 400
-        message = 'Failed to read the last {max_retries} frames..aborting'
+        message = f'Failed to read the last {max_retries} frames..aborting'
         logging.info(message)
         break
 

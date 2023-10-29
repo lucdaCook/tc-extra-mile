@@ -42,21 +42,21 @@ const loc = useLocation()
   }, [ytCode])
 
   return (
-      <form action={process.env.REACT_APP_AUTH_URI}
+      <form action='https://accounts.google.com/o/oauth2/v2/auth'
         ref={formRef}
         >
         <input type='hidden' 
         name='client_id'
-        value = {process.env.REACT_APP_CLIENT_ID} />
+        value = '842834258318-m7n07hms83p6edq67s0meoqcoq5a3ar8.apps.googleusercontent.com' />
         <input type='hidden'
         name='redirect_uri'
-        value = {process.env.REACT_APP_REDIRECT_URI} />
+        value = 'http://localhost:3000/yt/auth' />
         <input type='hidden'
         name='response_type'
         value = 'token' />
         <input type='hidden'
         name='scope'
-        value = {process.env.REACT_APP_SCOPE} />
+        value = 'https://www.googleapis.com/auth/youtube.force-ssl' />
         <input type='hidden'
         name='include_granted_scopes'
         value ='true' />

@@ -103,7 +103,7 @@ export default function YoutubeWindow() {
 
     if (youtube !== null && livestreamRef.current === undefined) {
       console.log(youtube)
-      fetch(process.env.REACT_APP_FRISSEWIND_STREAMS, {
+      fetch('https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=UCMWAY35jAiyzkQ83WopFlfg&eventType=live&type=video', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${youtube}`,
@@ -160,6 +160,7 @@ export default function YoutubeWindow() {
                     setKeepMonitoring(() => {
                       return {'streamChosen': e.target.nextSibling.src, 'keepMonitoring': true}
                     })
+                    e.target.blur()
                   }}
                 >
                   {livestreamData.items[i].snippet.title.split('-').at(1)}

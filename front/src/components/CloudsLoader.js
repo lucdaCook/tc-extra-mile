@@ -10,7 +10,7 @@ export default function CloudsLoader() {
   const { logs, setExtracted } = useContext(CloudsContext)
   const mainVidRef = useRef()
   const nav = useNavigate()
-  const videos = process.env.REACT_APP_SERVER
+  const videos = 'http://localhost:8000'
   const [ currentVidBlob, setCurrentVidBlob ] = useState()
   const locState = useLocation().state
   
@@ -60,7 +60,7 @@ export default function CloudsLoader() {
     <div className="container">
       <div className="view-refresh">
         <div className="action-popup clouds-display"
-        style={{animation: locState.from === '/extract' && 'none'}}> 
+        style={{animation: locState?.from === '/extract' && 'none'}}> 
 { 
 
     info?.written.length > 0 ?
