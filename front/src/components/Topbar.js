@@ -41,6 +41,7 @@ export default function Topbar() {
 
   function unfocus(e) {
     e.target.blur()
+    setIsSettingsOpen(false)
   }
 
   function toggleModelChoice(clicked, otherBtn) {
