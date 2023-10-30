@@ -508,8 +508,8 @@ div.error .info {
   background-color: whitesmoke;
   border-radius: 5%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  height: 70%;
-top: 20px;
+  height: 75%;
+  top: 20px;
   color: black;
   position: relative;
   z-index: 10;
