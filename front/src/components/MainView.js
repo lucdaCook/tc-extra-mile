@@ -3,7 +3,7 @@ import { TataBackground, Trees } from "../svg/clouds"
 import SkyView from "./SkyView"
 import { useCallback, useContext, useEffect } from 'react'
 import { useBeforeUnload } from 'react-router-dom'
-
+import backgroundImage from '../svg/background.png';
 
 function MainView() {
 
@@ -37,15 +37,14 @@ function MainView() {
 
   return (
       <main className='main-view'>
-        <div className='background-gradient'>  
-            <SkyView>
-            </SkyView>
+             <div style={{ 
+                backgroundImage: `url(${backgroundImage})`, 
+                backgroundSize: 'cover', 
+                backgroundRepeat: 'no-repeat',
+                height: '100vh', 
+                width: '100vw'     
+              }}>    
           <div className='bottom-panel'>
-          { tata === true ?
-            <TataBackground showTata={true}/>
-            :
-            <Trees showTrees={true}/>
-          }
           </div>
         </div>
       </main>

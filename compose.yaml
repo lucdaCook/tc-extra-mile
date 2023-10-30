@@ -16,6 +16,8 @@ services:
     ports:
       - 8000:8000
     image: lucciee/back-proto
+    volumes:
+      - .:/app
   front:
     depends_on:
       - back
@@ -26,6 +28,8 @@ services:
     ports:
       - 3000:3000
     image: lucciee/front-proto
+    volumes:
+      - ./front:/usr/src/app
     
 
 # The commented out section below is an example of how to define a PostgreSQL
