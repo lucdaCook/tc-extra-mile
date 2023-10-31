@@ -66,13 +66,8 @@ export default function Library() {
     return prev
   })
 
-  setLogs(ret)
+  setLogs(ret.filter(prev => prev.written?.length > 0))
 
-  setLogs(prev => {
-    return prev.filter(pre => {
-      return pre.written?.length > 0
-    })
-  })
   setSelectionBlobs([])
 
 }

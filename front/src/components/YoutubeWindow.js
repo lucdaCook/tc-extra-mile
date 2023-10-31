@@ -35,7 +35,7 @@ export default function YoutubeWindow() {
   if (window.innerWidth < 1000) {
     embedWidth = 600
   } else if (window.innerWidth < 1275) {
-    embedWidth = 680
+    embedWidth = 700
   }
 
   let exitTo;
@@ -101,8 +101,8 @@ export default function YoutubeWindow() {
 
   useEffect(() => {
 
-    if (youtube !== null && livestreamRef.current === undefined) {
-      console.log(youtube)
+    if (youtube && livestreamRef.current === undefined) {
+      console.log(youtube, 'FROM WINDOW')
       fetch('https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=UCMWAY35jAiyzkQ83WopFlfg&eventType=live&type=video', {
         method: 'GET',
         headers: {
@@ -120,9 +120,11 @@ export default function YoutubeWindow() {
           // if (error.status === 401) { TODO: figure which error status means quota is reached 401 and 403 seem to not be it all the time 
           //   nav('/error', {state: {'message': 'Looks have reached your live inference limits for the day.'}})
           // } else {
-          nav('/yt/auth', {state: {'from': '/', 'click': 1}})
+            console.log(error)
         // }
         })
+    } else {
+      nav('/yt/auth', {state: {'from': '/extract-live'}})
     }
   }, [])
 
@@ -232,6 +234,7 @@ export default function YoutubeWindow() {
                 abort()
               }
               if (exitTo) {
+                console.log('EXIT TO ', exitTo)
                 nav(exitTo)
               } else {
                 nav(-1)

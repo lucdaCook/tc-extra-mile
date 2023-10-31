@@ -41,7 +41,7 @@ function MainView() {
                 backgroundImage: `url(${backgroundImage})`, 
                 backgroundSize: 'cover', 
                 backgroundRepeat: 'no-repeat',
-                height: '100vh', 
+                height: '100%', 
                 width: '100vw'     
               }}>    
           <div className='bottom-panel'>

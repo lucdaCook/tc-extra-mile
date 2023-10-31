@@ -1,6 +1,6 @@
 
 import { CredentialsContext } from "../contexts/CredentialsContext"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useLayoutEffect, useRef } from "react"
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom"
 
 export default function YoutubeAuthorizer() {
@@ -11,24 +11,14 @@ export default function YoutubeAuthorizer() {
   const ytCode = useLoaderData()
   const nav = useNavigate()
   const formRef = useRef()
-const loc = useLocation()
+  const loc = useLocation()
   const locState = loc.state
 
-  console.log(ytCode)
-
-  useEffect(() => {
-    // if(locState === null) {
-    //   locState.from = '/'
-    // }
-    if (locState !== null && locState.click === 1) {
-      nav('/')
-    }
-  }, [loc])
 
   useEffect(() => {   
     if (ytCode !== null) {
       setYoutube(ytCode)
-      nav(locState?.from ? locState?.from : '/')
+      nav('/extract-live', {state: {'from': locState?.from ? locState.from : '/'}})
     } else {
       try {
         formRef.current.submit()
@@ -47,7 +37,7 @@ const loc = useLocation()
         >
         <input type='hidden' 
         name='client_id'
-        value = '842834258318-m7n07hms83p6edq67s0meoqcoq5a3ar8.apps.googleusercontent.com' />
+        value = '208551081122-23vbrtn2fr01uftns27nigcs085g1vb5.apps.googleusercontent.com' />
         <input type='hidden'
         name='redirect_uri'
         value = 'http://localhost:3000/yt/auth' />

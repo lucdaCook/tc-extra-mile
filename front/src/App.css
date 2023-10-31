@@ -146,11 +146,15 @@ div.login {
 }
 
 .login button.submit-btn {
-  background-color: #0692f06c;
+  transition: background-color 255ms ease;
+}
+
+.login button.submit-btn {
+  background-color: #06f0876c;
 }
 
 .login button.submit-btn:hover {
-  background-color: #0692f0;
+  background-color: #25f006;
 }
 
 .login button.submit-btn:focus {
@@ -447,7 +451,7 @@ a.action-row svg {
 div.error {
   width: 100%;
   justify-content: center;
-  height: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -1603,7 +1607,7 @@ from {
   to {
     top: -20%;
   }
-}
+} */
 
 @keyframes push_btn {
   from {
@@ -1650,15 +1654,15 @@ from {
 
  @keyframes show_tree {
 
-  /* from {
+  from {
     opacity: 0;
-     transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, 350.689941); 
+     /* transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, 350.689941);  */
    } to {
     opacity: 1; 
-     transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, -162.689941); 
+     /* transform: matrix(0.734656, 0, 0, 0.736893, 432.04585, -162.689941);  */
   }
 
-  }  */
+  } 
 
 /* this is keeping the background gradient scrollable */
 .topbar.nav {
