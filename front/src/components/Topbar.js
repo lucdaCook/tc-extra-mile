@@ -132,7 +132,7 @@ export default function Topbar() {
             title='Login'
             state={{ 'from': loc.pathname }}
           >
-            <span>Login</span>
+            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Login</span>
           </Link>
           :
           <Link
@@ -141,14 +141,14 @@ export default function Topbar() {
             title='Logout'
             state={{ 'from': loc.pathname }}
           >
-            <span>Logout</span>
+            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Logout</span>
           </Link>
         }
       </div>
       <div className='right-icons'>
         <div id='cloud-counter' ref={cloudRef} className="cloud-container">
         <CloudIcon />
-        <span className="cloud-count">{cloudCount}</span>
+        <span className="cloud-count" >{cloudCount}</span>
       </div>
 
         <NavLink
@@ -157,10 +157,10 @@ export default function Topbar() {
           title='Your Library'
           state={{ 'from': loc.pathname }}
           style={{ pointerEvents: focusExtraction }}>
-          <span>Library</span>
+          <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Library</span>
         </NavLink>
         <button className='settings button-33' onClick={toggleSettings}>
-          <span>Model Settings</span>
+          <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Model Settings</span>
         </button>
         {isSettingsOpen && (
           <form
