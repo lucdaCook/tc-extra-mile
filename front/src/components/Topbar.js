@@ -1,4 +1,4 @@
-import { Form, Link, NavLink, useLocation } from 'react-router-dom'
+import { Form, Link, NavLink, unstable_useViewTransitionState, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { LoginIcon, SettingsIcon } from '../svg/clouds'
 import { useContext, useEffect, useRef } from 'react'
@@ -13,9 +13,10 @@ import {
 } from '../svg/clouds'
 import './Topbar.css';
 
-export default function Topbar() {
+export default function Topbar({ ctaFocus, setCtaFocus }) {
 
   const { updateConfig } = useContext(CloudsContext)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   let defaultVals = JSON.parse(localStorage.getItem('Config'))
   let user = true
@@ -37,6 +38,7 @@ export default function Topbar() {
   const confRef= useRef()
   const sensRef = useRef()
   const cloudRef = useRef()
+  const actionsRef = useRef()
 
 
   function unfocus(e) {
@@ -57,11 +59,20 @@ export default function Topbar() {
     }
   }, [confRef, sensRef])
   
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
   const toggleSettings = () => {
       setIsSettingsOpen(!isSettingsOpen);
   };
+
+  useEffect(() => {
+    if (ctaFocus) {
+      setCtaFocus(false)
+      actionsRef?.current?.focus()
+    }
+  }, [ctaFocus])
+
+  useEffect(() => {
+    setIsSettingsOpen(false)
+  }, [loc])
 
   return (
     <div className='topbar nav'>
@@ -69,8 +80,29 @@ export default function Topbar() {
         <Link to='/' className='button-33' style={{ pointerEvents: focusExtraction }}>
           Home
         </Link>
+        {user ?
+          <Link
+            to='lg/in'
+            className='button-33'
+            title='Login'
+            state={{ 'from': loc.pathname }}
+          >
+            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Login</span>
+          </Link>
+          :
+          <Link
+            to='lg/out'
+            className='button-33'
+            title='Logout'
+            state={{ 'from': loc.pathname }}
+          >
+            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Logout</span>
+          </Link>
+        }
         <button className='actions-btn actions'
-          style={{ pointerEvents: focusExtraction }}>
+          style={{ pointerEvents: focusExtraction }}
+          ref={actionsRef}
+          >
           <CloudIcon />
           <div className='actions-after' >
             <div className='quick-actions rows'>
@@ -117,7 +149,7 @@ export default function Topbar() {
             value ='pass-through value' />
           </form> */}
 
-        <Link
+        {/* <Link
           to='/yt/auth'
           state={{ 'from': loc.pathname, 'click': 1 }}
           style={{ pointerEvents: focusExtraction }}
@@ -125,26 +157,7 @@ export default function Topbar() {
           className='button-33'
         >
           <YoutubeIcon />
-        </Link>
-        {user ?
-          <Link
-            to='lg/in'
-            className='button-33'
-            title='Login'
-            state={{ 'from': loc.pathname }}
-          >
-            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Login</span>
-          </Link>
-          :
-          <Link
-            to='lg/out'
-            className='button-33'
-            title='Logout'
-            state={{ 'from': loc.pathname }}
-          >
-            <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Logout</span>
-          </Link>
-        }
+        </Link> */}
       </div>
       <div className='right-icons'>
         <div id='cloud-counter' ref={cloudRef} className="cloud-container">
@@ -160,12 +173,15 @@ export default function Topbar() {
           style={{ pointerEvents: focusExtraction }}>
           <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Library</span>
         </NavLink>
-        <button className='settings button-33' onClick={toggleSettings}>
+        <button className='settings button-33' 
+        style={{'zIndex': '11'}}
+        onClick={toggleSettings}
+        >
           <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Model Settings</span>
         </button>
         {isSettingsOpen && (
           <form
-            className={`settings-after ${isSettingsOpen ? 'open' : ''}`}
+            className={`settings-after${isSettingsOpen ? ' open' : ''}`}
             onSubmit={e => {
               e.preventDefault()
             }}
@@ -224,7 +240,7 @@ export default function Topbar() {
                 onClick={e => unfocus(e)} />
             </div>
           </form>
-        )}
+         )} 
       </div>
     </div>
   )

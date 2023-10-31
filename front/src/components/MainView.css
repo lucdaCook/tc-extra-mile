@@ -11,10 +11,10 @@
 
 .center-container {
   position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 20%;
+  justify-self: center;
   text-align: center;
+  max-width: 615px;
 }
 
 .cta-button {
@@ -35,6 +35,8 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   font-family: 'WimpC';
+  position: relative;
+  z-index: 11;
 }
 
 .greenpeace-header {
