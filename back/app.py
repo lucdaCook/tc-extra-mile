@@ -3,7 +3,6 @@ from flask import Blueprint
 import back.config.config as cfg
 import pathlib
 from flask_cors import CORS
-import shutil
 
 def create_app():
   
