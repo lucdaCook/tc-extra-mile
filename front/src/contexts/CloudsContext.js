@@ -118,22 +118,20 @@ export default function CloudsContextProvider({ children }) {
       localStorage.setItem('cloudCount', 
       JSON.parse(localStorage.getItem('cloudCount')) + vidsWithClouds)
 
-      } else {
+      } else{
         if (json.at(-1).status === 205) { 
           return 
         }
       setTata(false)
-
       localStorage.setItem('neg-clouds',
       JSON.parse(localStorage.getItem('neg-clouds')) + files.length)
-
-
       localStorage.setItem('showTata', false)
-      
-
-  }}).catch(err => {
-    nav('/error', {state: {'error': err, 'from': '/extract-many'}})
-  })
+      nav('/no-clouds')
+    }
+  
+  }).catch(err => {
+      nav('/error', {state: {'error': err, 'from': '/extract-many'}})
+    })
   }
 
   function predictOnVideo(e, nav) {

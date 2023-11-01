@@ -97,7 +97,8 @@ useEffect(() => {
           </div>
       ))
     }
-      <div className='library-stage'>
+      <div className='library-stage'
+        style={{'animation': locState?.from === '/yt/auth' && 'none !important'}}>
       <div className='select-flex'>
         <button onClick={() => setActiveSelect(prev => !prev)} 
         className='select-blobs' title='Toggle Selection'>

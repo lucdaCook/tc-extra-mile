@@ -14,15 +14,12 @@ export default function YoutubeWindow() {
   const livestreamRef = useRef()
   const liveCounterRef = useRef()
   const loc = useLocation()
+  const formRef = useRef()
   const locState = loc.state
   const nav = useNavigate()
   let embedWidth = 920
-
-  // useBeforeUnload(() => {
-  //   if(keepMonitoring.keepMonitoring === true) {
-  //     abort()
-  //   }
-  // })
+  let embedHeight = 300
+  let click = 1
 
   useBeforeUnload(
     useCallback(() => {
@@ -34,8 +31,10 @@ export default function YoutubeWindow() {
 
   if (window.innerWidth < 1000) {
     embedWidth = 600
+    embedHeight = 240
   } else if (window.innerWidth < 1275) {
     embedWidth = 700
+    embedHeight = 260
   }
 
   let exitTo;
@@ -124,7 +123,8 @@ export default function YoutubeWindow() {
         // }
         })
     } else {
-      nav('/yt/auth', {state: {'from': '/extract-live'}})
+        nav('/yt/auth', {state: {'from': locState.from, 'click': click}})
+        console.log('its from window')
     }
   }, [])
 
@@ -169,7 +169,7 @@ export default function YoutubeWindow() {
                   </button>
                 <iframe src={`https://www.youtube.com/embed/${vid.id.videoId}?frameBorder='0'`} 
                 width={livestreamData.items.length > 1 ? embedWidth / livestreamData.items.length : '420px'} 
-                height= '300px'
+                height={embedHeight}
                 title={`livestream-${i}`}
                 />
               </div>
@@ -248,5 +248,7 @@ export default function YoutubeWindow() {
         </div>
       </div>
     </div>
+
+    
   )
 } 

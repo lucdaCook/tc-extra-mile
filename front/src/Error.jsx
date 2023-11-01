@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import Topbar from './components/Topbar'
+import { useEffect } from "react";
 export default function ErrorPage({ notFound }) {
 
   const state = useLocation().state

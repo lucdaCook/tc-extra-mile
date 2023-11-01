@@ -91,8 +91,13 @@ div#cloud-counter {
 }
 
 #cloud-counter span {
-  text-align: center;
-  font-size: 12px;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-52%, -50%);
+  font-size: 11px;
+  color: #000;
+  font-weight: 100;
 }
 
 #cloud-counter.plus-one svg {
@@ -123,13 +128,13 @@ div.login {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  animation: show_tree 500ms ease forwards
+  animation: show_tree 350ms ease forwards
 }
 
 .login input {
   width: 400px;
   height: 35px;
-  background: aliceblue;
+  background: #fff;
   opacity: 0.8;
   padding: 20px;
   outline: none;
@@ -514,9 +519,9 @@ div.error .info {
 .action-window,
 .action-popup {
   background-color: whitesmoke;
-  border-radius: 5%;
+  border-radius: 1.5%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  height: 75%;
+  height: 70%;
   top: 20px;
   color: black;
   position: relative;
@@ -524,6 +529,7 @@ div.error .info {
   display: flex;
   width: 80%;
   max-width: 1030px;
+  max-height: 654px;
   animation: window_enter 80ms ease-in-out forwards;
 }
 
@@ -639,6 +645,10 @@ h4.give-feedback {
 .feedback-star svg {
   stroke: #4d4c4c;
   fill: currentColor !important;
+}
+
+.feedback-star svg path {
+  fill: transparent;
 }
 
 .vid-padding {
@@ -1608,13 +1618,13 @@ from {
   } to {
     margin-bottom: 0px;
   }
-}
+} */
 
 @keyframes float_top {
   to {
     top: -20%;
   }
-} */
+} 
 
 @keyframes push_btn {
   from {

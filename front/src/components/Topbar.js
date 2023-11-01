@@ -240,7 +240,7 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
                 onClick={e => unfocus(e)} />
             </div>
           </form>
-         )} 
+         )}
       </div>
     </div>
   )

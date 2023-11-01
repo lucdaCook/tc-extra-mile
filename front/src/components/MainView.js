@@ -34,6 +34,9 @@ function MainView({ setCtaFocus }) {
     }
   }, []);
 
+  // This makes mission desc dissapear after someone clicks it. Even after a reload
+  const hideCta = localStorage.getItem('ctaClicked')
+
   return (
       <main className='main-view'>
              <div style={{ 
@@ -44,13 +47,18 @@ function MainView({ setCtaFocus }) {
                 width: '100vw'     
               }}>    
             { loc.pathname === '/' &&
-          <div style={{'display': 'grid'}}>
+          <div 
+          style={{'display': hideCta ? 'none' : 'grid'}}
+          >
             <div className="center-container">
               <h1 className="greenpeace-header">Help Us Detect Toxic Clouds</h1>
               <p className="greenpeace-paragraph">Join Greenpeace, FrisseWind.nu, and FruitPunch AI in the 'Spot the Poison Cloud' initiative. Help us use cutting-edge artificial intelligence to identify toxic emissions from Tata Steel and make the world a safer place.</p>
               <button 
               className="cta-button" 
-              onClick={() => setCtaFocus(true)}
+              onClick={() => {
+                setCtaFocus(true)
+                localStorage.setItem('ctaClicked', true)
+              }}
               style={{'pointerEvents': 'all', zIndex: '11'}}
               >Join the Mission!</button>
             </div>
