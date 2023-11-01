@@ -95,7 +95,7 @@ export default function CloudsLoader() {
           ))
         }
         </div>
-        <div className="player-extras buttons plural">
+        <div className={`player-extras buttons${info.written.length > 1 ? ' plural' : ''}`}>
               {
                 mainVidRef.current &&
               <a className="download-cloud"

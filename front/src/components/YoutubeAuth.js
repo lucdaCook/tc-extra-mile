@@ -21,7 +21,7 @@ export default function YoutubeAuthorizer() {
       nav('/extract-live', {state: {'from': locState?.from ? locState.from : '/'}})
     } else {
       try {
-          nav('/')
+          nav('/', {state: {'from': "/yt/auth"}})
           formRef.current.submit()
       } catch(err) {
         nav('/error', {'message': `That request isn't working right now... ${err.message}`})

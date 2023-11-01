@@ -20,7 +20,7 @@ export default function YoutubeWindow() {
   let embedHeight = 300
   
   // const formRef = useRef()
-  // const [ youtube, setYoutube ] = useState('')
+  // const [ youtube, setYoutube ] = useState('') auth method 2
   // const code =  new URLSearchParams(window.location.hash).get('access_token')
   // if (code !== null) {
   //   window.history.pushState({}, null, '/')
@@ -129,8 +129,9 @@ export default function YoutubeWindow() {
         // }
         })
     } else {
-        nav('/yt/auth', {state: {'from': locState.from }})
-        console.log('its from window')
+        nav('/yt/auth', {state: {'from': locState.from}})
+          // nav('/') auth Method 2
+          // formRef.current.submit()
     }
   }, [])
 
@@ -274,7 +275,7 @@ export default function YoutubeWindow() {
           <input type='hidden'
           name='state'
           value ='pass-through value' />
-        </form> */}
+        </form> auth method 2*/}
     </div>
 
     

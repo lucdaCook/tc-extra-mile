@@ -108,9 +108,10 @@ def predict_on_video(video:str,
     pred = model(tf.expand_dims(f, 0), training=False)
     n_preds += 1
 
-    if pred >= threshold:
-
+    if pred.numpy() >= threshold:
       n_pos += 1
+      if i < vid.shape[0] - 1:
+        continue
 
     if n_preds >= n_frames_to_extract and n_pos >= n_frames_to_extract:
         captured = True
@@ -123,7 +124,7 @@ def predict_on_video(video:str,
         out_paths.append(str(out_path))
 
 
-        cloud = video_from_predictions(video, toxic_clouds[-frames_slice:])
+        cloud = video_from_predictions(video, toxic_clouds[-n_pos * frame_step:])
 
         capture_to_mpeg(cloud, out_path,
                         fps=frame_step)
@@ -136,7 +137,7 @@ def predict_on_video(video:str,
 
   optimism = ". That's a great thing!"
   message = f'Captured {n_captured} toxic clouds{f"! You can view them at {out_location}" if n_captured > 0 else optimism}'
-  logging.info(message)
+  logging.info(message) 
     
   data = {
     "video_file": video,

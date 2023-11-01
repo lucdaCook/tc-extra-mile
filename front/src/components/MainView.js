@@ -11,10 +11,6 @@ function MainView({ setCtaFocus }) {
 
   const loc = useLocation()
   const { tata, setTata } = useContext(CloudsContext);
-  
-  useEffect(() => {
-    console.log(loc)
-  }, [loc])
 
   useBeforeUnload(
     useCallback(() => {
@@ -35,7 +31,7 @@ function MainView({ setCtaFocus }) {
   }, []);
 
   // This makes mission desc dissapear after someone clicks it. Even after a reload
-  const hideCta = localStorage.getItem('ctaClicked')
+  // const hideCta = localStorage.getItem('ctaClicked')
 
   return (
       <main className='main-view'>
@@ -48,7 +44,8 @@ function MainView({ setCtaFocus }) {
               }}>    
             { loc.pathname === '/' &&
           <div 
-          style={{'display': hideCta ? 'none' : 'grid'}}
+          // style={{'display': hideCta ? 'none' : 'grid'}}
+          style={{'display': 'grid'}}
           >
             <div className="center-container">
               <h1 className="greenpeace-header">Help Us Detect Toxic Clouds</h1>
@@ -57,7 +54,7 @@ function MainView({ setCtaFocus }) {
               className="cta-button" 
               onClick={() => {
                 setCtaFocus(true)
-                localStorage.setItem('ctaClicked', true)
+                // localStorage.setItem('ctaClicked', true)
               }}
               style={{'pointerEvents': 'all', zIndex: '11'}}
               >Join the Mission!</button>

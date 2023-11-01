@@ -1202,6 +1202,24 @@ button.submit,
 .settings-choice.num-frames input {
   text-align: center;
   margin-left: 15px;
+  outline: none;
+}
+
+.frame-choice.grid {
+  width: calc(100% - 40px);
+  grid-template-columns: 1fr 1fr;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  direction: rtl;
+}
+
+.frame-choice.grid button {
+  background: #5b9bb8 !important;
+  border-radius: 50px;
+  font-size: 12px;
+  width: 30px;
+  height: 17px;
 }
 
 input[type='button'].active {
@@ -1413,6 +1431,10 @@ button.choose-livestream:focus {
 
 div.slider-row.extras:not(.plural) {
   margin-bottom: 50px;
+}
+
+.player-extras.buttons:not(.plural){
+  margin-right: -40%;
 }
 
 @media screen and (max-width: 1430px) {

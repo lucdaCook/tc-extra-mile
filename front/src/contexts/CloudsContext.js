@@ -48,7 +48,6 @@ export default function CloudsContextProvider({ children }) {
   }
   
   useEffect(() => {
-    
     localStorage.setItem('Config', JSON.stringify(userConfig))
 
   }, [userConfig])

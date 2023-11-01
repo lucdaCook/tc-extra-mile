@@ -51,6 +51,7 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
 
   }
 
+
   useEffect(() => {
     if (sensRef.current !== undefined && defaultVals.model === 'Confident') {
       confRef.current.classList.add('active')
@@ -216,13 +217,13 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
               />
             </div>
             <div className='num-frames settings-choice'>
-              <span>Seconds Per Capture</span>
-              <input type='number'
-                name='n_frames'
-                min='8'
-                onChange={e => updateConfig(e)}
-                defaultValue={defaultVals['n_frames']}
-              />
+              <span>Min Seconds Per Capture</span>
+                <input type='number'
+                  name='n_frames'
+                  min='8'
+                  onChange={e => updateConfig(e)}
+                  defaultValue={defaultVals['n_frames']}
+                  />
             </div>
             <div className='settings-save submit-input'>
               <input type='submit'

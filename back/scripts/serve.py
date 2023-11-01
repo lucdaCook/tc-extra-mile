@@ -25,7 +25,6 @@ def predict_on_stream(stream:str,
 
   src = b.decode('utf-8').split(' ')
   
-  
   src = [link for link in src if 'https' in link][0]
 
   if 'https://' not in src:
@@ -97,7 +96,6 @@ def predict_on_stream(stream:str,
           else :
             n_pos = 0
             frames = []
-            
             
         elif datetime.datetime.now() > stop_time:
           status = 300
