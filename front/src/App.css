@@ -1111,9 +1111,11 @@ button.settings {
   opacity: 0;
   transition: opacity ease 150ms;
   padding: 20px;
+  top: -350px;
 }
 
-.settings-after.open {
+button.settings:focus + .settings-after,
+.settings-after:focus-within {
   opacity: 1;
   margin-top: 10px;
   margin-right: -40px;
@@ -1130,21 +1132,6 @@ button.settings {
   justify-self: center;
   align-self: center;
 }
-
-.settings-after * {
-  opacity: 0;
-  transition: opacity linear;
-}
-
-.settings-after.open * {
-  opacity: unset;
-}
-
-button.settings:focus + .settings-after * {
-  opacity: 1;
-}
-
-
 
 .model-choices {
   display: flex;

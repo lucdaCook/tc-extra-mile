@@ -43,25 +43,22 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
 
   function unfocus(e) {
     e.target.blur()
-    setIsSettingsOpen(false)
   }
 
   function toggleModelChoice(clicked, otherBtn) {
     clicked.target.classList.add('active')
     otherBtn.current.classList.remove('active')
+
   }
 
   useEffect(() => {
-    if (confRef.current !== undefined && defaultVals.model === 'Confident') {
+    if (sensRef.current !== undefined && defaultVals.model === 'Confident') {
       confRef.current.classList.add('active')
-    } else if (sensRef.current !== undefined && defaultVals.model === 'Sensitive') {
+    } else if (confRef.current !== undefined && defaultVals.model === 'Sensitive') {
       sensRef.current.classList.add('active')
     }
   }, [confRef, sensRef])
   
-  const toggleSettings = () => {
-      setIsSettingsOpen(!isSettingsOpen);
-  };
 
   useEffect(() => {
     if (ctaFocus) {
@@ -69,10 +66,6 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
       actionsRef?.current?.focus()
     }
   }, [ctaFocus])
-
-  useEffect(() => {
-    setIsSettingsOpen(false)
-  }, [loc])
 
   return (
     <div className='topbar nav'>
@@ -175,11 +168,9 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
         </NavLink>
         <button className='settings button-33' 
         style={{'zIndex': '11'}}
-        onClick={toggleSettings}
         >
           <span style={{ fontFamily: "'Wimp', -apple-system, system-ui, Roboto, sans-serif" }}>Model Settings</span>
         </button>
-        {isSettingsOpen && (
           <form
             className={`settings-after${isSettingsOpen ? ' open' : ''}`}
             onSubmit={e => {
@@ -190,7 +181,7 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
               <span>Model Nature</span>
               <div className='model-choices setting-choice'>
                 <input type='button'
-                  className='model-choice'
+                  className={`model-choice`}
                   value='Sensitive'
                   name='model'
                   onClick={e => {
@@ -200,7 +191,7 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
                   ref={sensRef}
                 />
                 <input type='button'
-                  className='model-choice'
+                  className={`model-choice`}
                   ref={confRef}
                   name='model'
                   value='Confident'
@@ -237,10 +228,9 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
               <input type='submit'
                 name='video_size'
                 value='Done'
-                onClick={e => unfocus(e)} />
+                onClick={e => unfocus(e)}/>
             </div>
           </form>
-         )}
       </div>
     </div>
   )

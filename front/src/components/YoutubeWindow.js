@@ -14,12 +14,18 @@ export default function YoutubeWindow() {
   const livestreamRef = useRef()
   const liveCounterRef = useRef()
   const loc = useLocation()
-  const formRef = useRef()
   const locState = loc.state
   const nav = useNavigate()
   let embedWidth = 920
   let embedHeight = 300
-  let click = 1
+  
+  // const formRef = useRef()
+  // const [ youtube, setYoutube ] = useState('')
+  // const code =  new URLSearchParams(window.location.hash).get('access_token')
+  // if (code !== null) {
+  //   window.history.pushState({}, null, '/')
+  //   setYoutube(code)
+  // }
 
   useBeforeUnload(
     useCallback(() => {
@@ -123,7 +129,7 @@ export default function YoutubeWindow() {
         // }
         })
     } else {
-        nav('/yt/auth', {state: {'from': locState.from, 'click': click}})
+        nav('/yt/auth', {state: {'from': locState.from }})
         console.log('its from window')
     }
   }, [])
@@ -247,6 +253,28 @@ export default function YoutubeWindow() {
           </button>
         </div>
       </div>
+      {/* <form action='https://accounts.google.com/o/oauth2/v2/auth'
+          ref={formRef}
+          >
+          <input type='hidden' 
+          name='client_id'
+          value = '208551081122-23vbrtn2fr01uftns27nigcs085g1vb5.apps.googleusercontent.com' />
+          <input type='hidden'
+          name='redirect_uri'
+          value = 'http://localhost:3000/extract-live' />
+          <input type='hidden'
+          name='response_type'
+          value = 'token' />
+          <input type='hidden'
+          name='scope'
+          value = 'https://www.googleapis.com/auth/youtube.force-ssl' />
+          <input type='hidden'
+          name='include_granted_scopes'
+          value ='true' />
+          <input type='hidden'
+          name='state'
+          value ='pass-through value' />
+        </form> */}
     </div>
 
     
