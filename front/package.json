@@ -1,7 +1,7 @@
 {
   "name": "toxic-clouds-react",
   "version": "0.1.0",
-  "homepage": "http://lucdaCook.github.io/tc-extra-mile",
+  "homepage": "http://lucdaCook.github.io/",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.11.1",
