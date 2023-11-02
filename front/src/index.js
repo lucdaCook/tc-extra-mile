@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {
+  createBrowserRouter,
   createHashRouter,
   RouterProvider,
 } from 'react-router-dom'
@@ -11,7 +12,7 @@ import CredentialsContextProvider from './contexts/CredentialsContext';
 import CloudsContextProvider from './contexts/CloudsContext';
 
 console.log(window.innerWidth, window.innerHeight)
-const router = createHashRouter(routerConf)
+const router = createBrowserRouter(routerConf)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
