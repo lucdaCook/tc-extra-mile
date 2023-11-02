@@ -10,25 +10,25 @@ import './MainView.css'; // Import your CSS file if needed
 function MainView({ setCtaFocus }) {
 
   const loc = useLocation()
-  const { tata, setTata } = useContext(CloudsContext);
+  // const { tata, setTata } = useContext(CloudsContext);
 
-  useBeforeUnload(
-    useCallback(() => {
-      if (tata === true) {
-        localStorage.setItem('showTata', true);
-      } else {
-        localStorage.setItem('showTata', false);
-      }
-    }, [tata])
-  );
+  // useBeforeUnload(
+  //   useCallback(() => {
+  //     if (tata === true) {
+  //       localStorage.setItem('showTata', true);
+  //     } else {
+  //       localStorage.setItem('showTata', false);
+  //     }
+  //   }, [tata])
+  // );
 
-  useEffect(() => {
-    if (JSON.parse(localStorage.getItem('showTata')) === true) {
-      setTata(true);
-    } else {
-      setTata(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (JSON.parse(localStorage.getItem('showTata')) === true) {
+  //     setTata(true);
+  //   } else {
+  //     setTata(false);
+  //   }
+  // }, []);
 
   // This makes mission desc dissapear after someone clicks it. Even after a reload
   // const hideCta = localStorage.getItem('ctaClicked')

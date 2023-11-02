@@ -936,6 +936,7 @@ button.download-blobs {
   position: absolute;
   left: 100px;
   top: 5px;
+  cursor: pointer;
 }
 
 button.download-blobs a {

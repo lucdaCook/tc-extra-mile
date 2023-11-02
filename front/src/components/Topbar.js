@@ -104,13 +104,13 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
                 state={{ 'from': loc.pathname }}
                 className='action-row extract actions '>
                 <CloudSearchIcon />
-                <span>Capture from a single file</span>
+                <span>Upload your own file</span>
               </Link>
               <Link to='/extract-many'
                 state={{ 'from': loc.pathname }}
                 className='action-row actions'>
                 <TwoClouds />
-                <span>Capture from many files</span>
+                <span>Upload many files</span>
               </Link>
               <Link to='/extract-live'
                 state={{ 'from': loc.pathname }}

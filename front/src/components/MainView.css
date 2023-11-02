@@ -11,14 +11,14 @@
 
 .center-container {
   position: absolute;
-  top: 20%;
+  /* top: 20%; */
   justify-self: center;
   text-align: center;
-  max-width: 615px;
+  max-width: 800px;
 }
 
 .cta-button {
-   background-color: #c2fbd7;
+  background-color: #c2fbd7;
   border-radius: 100px;
   box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
   color: green;
@@ -43,14 +43,14 @@
   font-family: 'Wimp', -apple-system, system-ui, Roboto, sans-serif;
   font-size: 36px;
   color: white;
-  /* text-shadow: 2px 2px 4px rgba(44, 187, 99, .25); */
-  text-shadow: 0.04em 0 black, 0 0.04em black, -0.04em 0 #5cd379, 0 -0.04em #5cd379;
+  text-shadow: 2px 2px 4px rgba(44, 187, 99, .25);
+  /* text-shadow: 0.04em 0 black, 0 0.04em black, -0.04em 0 #5cd379, 0 -0.04em #5cd379; */
 }
 
 .greenpeace-paragraph {
   font-family: 'WimpC', -apple-system, system-ui, Roboto, sans-serif;
   font-size: 22px;
   color: white;
-  /* text-shadow: 1px 1px 2px rgba(44, 187, 99, .25); */
-  text-shadow: 0.04em 0 black, 0 0.04em black, -0.04em 0 #5cd379, 0 -0.04em #5cd379;
+  text-shadow: 1px 1px 2px rgba(44, 187, 99, .25);
+  /* text-shadow: 0.04em 0 black, 0 0.04em black, -0.04em 0 #5cd379, 0 -0.04em #5cd379; */
 }
