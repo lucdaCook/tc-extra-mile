@@ -12,7 +12,7 @@ import CredentialsContextProvider from './contexts/CredentialsContext';
 import CloudsContextProvider from './contexts/CloudsContext';
 
 console.log(window.innerWidth, window.innerHeight)
-const router = createBrowserRouter(routerConf)
+const router = createHashRouter(routerConf)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
