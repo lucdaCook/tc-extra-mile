@@ -41,6 +41,7 @@ def predict_on_stream(stream:str,
   n_preds = 0
   frames = []
   status = 200
+  n_neg = 0
 
   pathlib.Path(write_location).mkdir(parents=True, exist_ok=True)
 
@@ -79,7 +80,33 @@ def predict_on_stream(stream:str,
 
         if pred.numpy() >= threshold:
           n_pos += 1
+          n_neg = 0
+          print('n pos', n_pos)
           continue
+        
+        else:
+          n_neg += 1
+          print('neg', n_neg, 'pos', n_pos)
+          if n_neg < 3 and n_pos >= 4:
+            n_pos += 1
+            print('neg but continuing', n_neg, 'pos', n_pos)
+            continue
+          else:
+            if n_pos >= n_frames_to_extract:
+              print('neg thresh writing')
+              out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
+              toxic_cloud = frames[-n_pos * frame_step:]
+              capture_to_mpeg(toxic_cloud, out_path,
+                              fps=frame_step)
+              cont = False
+              frames = []
+              n_seconds = n_pos
+              n_pos = 0
+              n_preds = 0
+            n_neg = 0
+            n_pos = 0
+            n_preds = 0
+            frames = []
         
         if n_preds >= n_frames_to_extract:
           

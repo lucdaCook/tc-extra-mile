@@ -13,6 +13,16 @@ import logging
 - see if this or repredict is faster
 '''
 
+def write_cloud(out_path, video, toxic_cloud, frame_step):
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+
+    cloud = video_from_predictions(video, toxic_cloud)
+
+    capture_to_mpeg(cloud, out_path,
+                    fps=frame_step)
+
 def downsample(video:str, n_frames_to_extract, new_size:tuple=(512, 512)):
 
   vid = cv2.VideoCapture(video)
@@ -90,6 +100,7 @@ def predict_on_video(video:str,
   n_captured = 0
   n_pos = 0
   n_preds = 0
+  n_neg = 0
 
   out_name = pathlib.Path(video).stem
 
@@ -110,9 +121,36 @@ def predict_on_video(video:str,
 
     if pred.numpy() >= threshold:
       n_pos += 1
+      n_neg = 0
+      print('n_pos', n_pos)
       if i < vid.shape[0] - 1:
-        continue
+        continue 
+    else:
+      n_neg += 1
+      print('neg', n_neg, 'pos', n_pos)
+      if n_neg < 3 and n_pos >= 4:
+        if i < vid.shape[0] - 1:
+          print('neg but continuing')
+          n_pos += 1
+          continue
+      else:
+        if n_pos >= n_frames_to_extract:
+          captured = True
+          n_captured += 1
+          out_path = pathlib.Path(f'{out_location}/{out_name}_{n_captured}{out_ext}')
 
+          out_path.parent.mkdir(parents=True, exist_ok=True)
+
+          out_paths.append(str(out_path))
+
+          cloud = video_from_predictions(video, toxic_clouds[-n_pos * frame_step:])
+
+          capture_to_mpeg(cloud, out_path,
+                          fps=frame_step)
+        n_neg = 0
+        n_pos = 0
+        n_preds = 0
+        
     if n_preds >= n_frames_to_extract and n_pos >= n_frames_to_extract:
         captured = True
         n_captured += 1
@@ -123,7 +161,6 @@ def predict_on_video(video:str,
 
         out_paths.append(str(out_path))
 
-
         cloud = video_from_predictions(video, toxic_clouds[-n_pos * frame_step:])
 
         capture_to_mpeg(cloud, out_path,
@@ -132,6 +169,7 @@ def predict_on_video(video:str,
         logging.info(f'A toxic cloud has been captured! The clip has been written to {out_path}.')
         n_pos = 0
         n_preds = 0
+        n_neg = 0
     else:
       continue
 
