@@ -82,7 +82,7 @@ useEffect(() => {
 { 
     logs?.length === 0 ?
     <div> 
-      <span> You haven't captured any clouds yet, but hey, that's a good thing right?</span>
+      <span> You don't have any clouds saved now, but hey, that's a good thing right?</span>
     </div>
 
     :
