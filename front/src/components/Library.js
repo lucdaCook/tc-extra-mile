@@ -1,17 +1,36 @@
 import { useContext, useState, useEffect } from 'react'
 import { CloudsContext } from '../contexts/CloudsContext'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, ScrollRestoration } from 'react-router-dom'
 import { CloudDownload, CloudLock, CloudUnlock, DeleteIcon } from '../svg/clouds'
 
 export default function Library() {
 
   const { setExtracted } = useContext(CloudsContext)
-  const vidServer = `http://localhost:8000/model/`
+  const vidServer = `${process.env.PUBLIC_URL}/`
   const nav = useNavigate()
   const locState = useLocation().state
   const [ activeSelect, setActiveSelect ] = useState(false)
   const [ selectionBlobs, setSelectionBlobs ] = useState([])
-  const [ logs, setLogs ] = useState(JSON.parse(localStorage.getItem('logs')))
+  const [ logs, setLogs ] = useState([ 
+    {
+      "video_file": `/positive_clip_1.mp4`,
+      "captured": true,
+      "n_captured": 1,
+      "written": [
+          `/positive_clip_1.mp4`
+      ],
+      "message": "Captured 1 toxic clouds! You can view them at clip"
+  },
+  {
+      "video_file":  `prediction_clip_1.mp4`,
+      "captured": true,
+      "n_captured": 1,
+      "written": [
+        `prediction_clip_1.mp4`
+      ],
+      "message": "Captured 1 toxic clouds! You can view them at clip"
+  }
+  ])
 
   if(logs === null){
     setLogs([])
@@ -19,8 +38,9 @@ export default function Library() {
 
   let justCaptured;
 
+  
   if(locState !== null && locState.justCaptured) {
-      justCaptured = Array(locState.justCaptured).fill(locState.justCaptured)
+    justCaptured = Array(locState.justCaptured < 8 ? locState.justCaptured : 7).fill(locState.justCaptured)
   }
 
 
@@ -82,7 +102,7 @@ useEffect(() => {
 { 
     logs?.length === 0 ?
     <div> 
-      <span> You haven't captured any clouds yet, but hey, that's a good thing right?</span>
+      <span> You have no clouds saved, but hey, that's a good thing right?</span>
     </div>
 
     :
@@ -117,7 +137,7 @@ useEffect(() => {
 
             { 
               selectionBlobs?.length > 0 && selectionBlobs.map((info, i) => (
-                <a href={info['blob']} 
+                <a href={`${process.env.PUBLIC_URL}/${info['cloud']}`} 
                 className={`anchor-blob`} 
                 download={info['cloud']}
                 key={i}

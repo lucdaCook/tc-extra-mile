@@ -1435,7 +1435,7 @@ div.slider-row.extras:not(.plural) {
 }
 
 .player-extras.buttons:not(.plural){
-  margin-right: -40%;
+  margin-right: -33%;
 }
 
 @media screen and (max-width: 1430px) {

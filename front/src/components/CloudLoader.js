@@ -24,15 +24,15 @@ export default function CloudLoader() {
   
   const videos ='http://localhost:8000'
 
-  useEffect( () => {
-    fetch(`${videos}/model/clip/${cloudId}`)
-    .then(res => res.blob())
-    .then(blob => {
-     const url = URL.createObjectURL(blob)
-     setBlobUrl(url)
-     setExtracted(true)
-    })
-  }, []) 
+  // useEffect( () => {
+  //   fetch(`${videos}/model/clip/${cloudId}`)
+  //   .then(res => res.blob())
+  //   .then(blob => {
+  //    const url = URL.createObjectURL(blob)
+  //    setBlobUrl(url)
+  //    setExtracted(true)
+  //   })
+  // }, []) 
 
   return (
 
@@ -46,7 +46,7 @@ export default function CloudLoader() {
               <div className="video-overlay">
                 <video controls className="main-video" 
                 ref={mainVidRef} 
-                src={`${videos}/model/clip/${cloudId}`}
+                src={`${process.env.PUBLIC_URL}/${cloudId}`}
                 onMouseEnter={(e) => e.currentTarget.controls = true}
                 onMouseLeave={(e) => e.currentTarget.controls = false}
                 />
@@ -57,7 +57,7 @@ export default function CloudLoader() {
         <div className='slider-row extras'
         style={{display: 'flex'}}
         >
-          <a href={blobUrl} download={cloudId} className='blob-anchor' 
+          <a href={`${process.env.PUBLIC_URL}/${cloudId}`} download={cloudId} className='blob-anchor' 
           title="Download">
             <CloudDownload />
           </a> 

@@ -122,15 +122,12 @@ def predict_on_video(video:str,
     if pred.numpy() >= threshold:
       n_pos += 1
       n_neg = 0
-      print('n_pos', n_pos)
       if i < vid.shape[0] - 1:
         continue 
     else:
       n_neg += 1
-      print('neg', n_neg, 'pos', n_pos)
-      if n_neg < 3 and n_pos >= 4:
+      if n_neg <= 3 and n_pos >= n_frames_to_extract:
         if i < vid.shape[0] - 1:
-          print('neg but continuing')
           n_pos += 1
           continue
       else:

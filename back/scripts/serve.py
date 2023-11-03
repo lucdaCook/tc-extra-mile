@@ -86,14 +86,11 @@ def predict_on_stream(stream:str,
         
         else:
           n_neg += 1
-          print('neg', n_neg, 'pos', n_pos)
-          if n_neg < 3 and n_pos >= 4:
+          if n_neg <= 3 and n_pos >= n_frames_to_extract:
             n_pos += 1
-            print('neg but continuing', n_neg, 'pos', n_pos)
             continue
           else:
             if n_pos >= n_frames_to_extract:
-              print('neg thresh writing')
               out_path = f'{write_location}/toxic_cloud_{datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")}.mp4'
               toxic_cloud = frames[-n_pos * frame_step:]
               capture_to_mpeg(toxic_cloud, out_path,

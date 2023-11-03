@@ -94,7 +94,7 @@ export default function Topbar({ ctaFocus, setCtaFocus }) {
           </Link>
         }
         <button className='actions-btn actions'
-          style={{ pointerEvents: focusExtraction }}
+          style={{ pointerEvents: focusExtraction , display: 'none'}}
           ref={actionsRef}
           >
           <CloudIcon />
