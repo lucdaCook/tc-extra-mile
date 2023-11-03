@@ -42,7 +42,7 @@ function MainView({ setCtaFocus }) {
                 height: '100v%', 
                 width: '100vw'     
               }}>    
-            { loc.pathname === '/' &&
+            {/* { loc.pathname === '/' &&
           <div 
           // style={{'display': hideCta ? 'none' : 'grid'}}
           style={{'display': 'grid'}}
@@ -60,7 +60,7 @@ function MainView({ setCtaFocus }) {
               >Join the Mission!</button>
             </div>
           </div>
-          }
+          } */}
           <div className='bottom-panel'>
           </div>
         </div>
