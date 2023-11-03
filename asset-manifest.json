@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/tc-extra-mile/static/css/main.bddbdb0b.css",
+    "main.js": "/tc-extra-mile/static/js/main.7bbce661.js",
+    "static/js/787.fd48395f.chunk.js": "/tc-extra-mile/static/js/787.fd48395f.chunk.js",
+    "static/media/background.png": "/tc-extra-mile/static/media/background.eb42e3b9edcc84c442e8.png",
+    "static/media/wimp.ttf": "/tc-extra-mile/static/media/wimp.969f6559fedb3c032edf.ttf",
+    "static/media/wimpc.ttf": "/tc-extra-mile/static/media/wimpc.f341d87921f84eac0ef5.ttf",
+    "index.html": "/tc-extra-mile/index.html",
+    "main.bddbdb0b.css.map": "/tc-extra-mile/static/css/main.bddbdb0b.css.map",
+    "main.7bbce661.js.map": "/tc-extra-mile/static/js/main.7bbce661.js.map",
+    "787.fd48395f.chunk.js.map": "/tc-extra-mile/static/js/787.fd48395f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bddbdb0b.css",
+    "static/js/main.7bbce661.js"
+  ]
+}
